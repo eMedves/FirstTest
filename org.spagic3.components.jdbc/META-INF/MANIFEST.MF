@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Spagic 3
+Bundle-SymbolicName: org.spagic3.components.jdbc
+Bundle-Version: 1.0.0
+Bundle-Vendor: Engineering Ing. Informatica
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.apache.servicemix.nmr.api,
+ org.osgi.service.cm;version="1.2.1",
+ org.osgi.service.event;version="1.2.0",
+ org.spagic3.core,
+ org.spagic3.core.routing
+Service-Component: jdbc_cf.xml
