@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Spagic3 Integration API
+Bundle-SymbolicName: org.spagic3.integration.api
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.spagic3.integration.api.Activator
+Bundle-Vendor: E
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.apache.servicemix.nmr.api,
+ org.osgi.framework;version="1.3.0"
+Bundle-ActivationPolicy: lazy
+Export-Package: org.spagic3.integration.api
