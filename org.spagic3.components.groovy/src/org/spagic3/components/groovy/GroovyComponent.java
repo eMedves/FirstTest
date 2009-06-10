@@ -16,11 +16,11 @@ import org.apache.servicemix.nmr.api.Exchange;
 import org.apache.servicemix.nmr.api.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spagic3.core.SpagicSimpleService;
+import org.spagic3.core.BaseSpagicService;
 import org.spagic3.core.SpagicUtils;
 
 
-public class GroovyComponent extends SpagicSimpleService {
+public class GroovyComponent extends BaseSpagicService {
 	
 	private ScriptEngine engine;
 	private CompiledScript compiledScript;
