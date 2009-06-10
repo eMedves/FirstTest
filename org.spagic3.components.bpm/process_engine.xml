@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
+	name="org.spagic.workflow.api.IProcessEngine">
+	
+   <implementation class="org.spagic.workflow.api.jbpm.ProcessEngine"/>
+   
+   
+   
+   <service>
+      <provide interface="org.spagic.workflow.api.IProcessEngine"/>
+   </service>
+   
+</scr:component>
