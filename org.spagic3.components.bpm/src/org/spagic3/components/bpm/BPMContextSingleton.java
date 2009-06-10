@@ -14,9 +14,9 @@ public class BPMContextSingleton {
 	 */
 	
 	public static final String ORCHESTRATION_SERVICE_ID = "ORCHESTRATION_SERVICE_ID";
-	
-	
 	public static BPMContextSingleton instance = new BPMContextSingleton();
+	
+	
 	public ConcurrentHashMap<String, BPMComponent> bpmComponents = new ConcurrentHashMap<String, BPMComponent>();
 	
 	public ConcurrentHashMap<String, BPMComponent> getBpmComponents() {
