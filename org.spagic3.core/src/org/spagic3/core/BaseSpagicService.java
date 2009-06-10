@@ -7,9 +7,9 @@ import org.apache.servicemix.nmr.api.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class SpagicSimpleService extends AbstractSpagicService {
+public abstract class BaseSpagicService extends AbstractSpagicService {
 	
-	protected Logger logger = LoggerFactory.getLogger(SpagicSimpleService.class);
+	protected Logger logger = LoggerFactory.getLogger(BaseSpagicService.class);
 	
 	private boolean copyAttachments = true;
 	private boolean copyProperties = true;
