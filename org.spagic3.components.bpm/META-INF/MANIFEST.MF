@@ -31,4 +31,5 @@ Bundle-ClassPath: .,
  lib/spagic-monitor-2.5.1.jar,
  lib/spagic-monitor-workflow-2.5.1.jar,
  lib/spagic-workflow-api-2.5.1.jar
-Service-Component: process_engine.xml, bpm_cf.xml 
+Service-Component: process_engine.xml, bpm_cf.xml, service_invoker.xml 
+Export-Package: org.spagic3.components.bpm.invoker
