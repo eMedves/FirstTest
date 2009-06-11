@@ -43,30 +43,30 @@ public  abstract class AbstractSpagicService implements ISpagicService, EventHan
 		
 	}
 	
-	@Override
+	
 	public IMessageRouter getMessageRouter() {
 		return this.router.get();
 	}
 
-	@Override
+	
 	public void unsetMessageRouter(IMessageRouter router) {
 		this.router.compareAndSet(router, null);
 	}
 	
-	@Override
+	
 	public String getSpagicId() {
 		return this.spagicId;
 	}
 
 	
 
-	@Override
+	
 	public void setMessageRouter(IMessageRouter router) {
 		this.router.set(router);
 		
 	}
 
-	@Override
+	
 	public void handleEvent(Event event) {
 		logger.info("Service["+getSpagicId()+"] -> Received Event " + event);
 		Exchange exchange = ExchangeUtils.fromEvent(event);
