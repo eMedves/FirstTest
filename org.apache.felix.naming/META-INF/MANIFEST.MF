@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Felix Naming RFC 142
+Bundle-SymbolicName: org.apache.felix.naming
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.apache.felix.naming.internal.Activator
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.apache.xbean.naming.context;version="3.5.0",
+ org.apache.xbean.naming.global;version="3.5.0",
+ org.apache.xbean.naming.java;version="3.5.0",
+ org.apache.xbean.naming.reference;version="3.5.0",
+ org.osgi.framework;version="1.3.0",
+ org.osgi.util.measurement;version="1.0.1",
+ org.osgi.util.position;version="1.0.1",
+ org.osgi.util.tracker;version="1.4.2",
+ org.osgi.util.xml;version="1.0.1"
