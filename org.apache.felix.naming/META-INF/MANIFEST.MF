@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.apache.felix.naming.internal.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.apache.xbean.naming.context;version="3.5.0",
+Import-Package: org.apache.servicemix.nmr.api,
+ org.apache.xbean.naming.context;version="3.5.0",
  org.apache.xbean.naming.global;version="3.5.0",
  org.apache.xbean.naming.java;version="3.5.0",
  org.apache.xbean.naming.reference;version="3.5.0",
@@ -14,4 +15,17 @@ Import-Package: org.apache.xbean.naming.context;version="3.5.0",
  org.osgi.util.measurement;version="1.0.1",
  org.osgi.util.position;version="1.0.1",
  org.osgi.util.tracker;version="1.4.2",
- org.osgi.util.xml;version="1.0.1"
+ org.osgi.util.xml;version="1.0.1",
+ org.spagic3.components.bpm.invoker,
+ org.spagic3.connectors.http,
+ org.spagic3.connectors.http.handlers,
+ org.spagic3.connectors.http.servlet,
+ org.spagic3.connectors.http.ssl,
+ org.spagic3.connectors.tcp,
+ org.spagic3.connectors.tcp.codec,
+ org.spagic3.connectors.tcp.codec.util,
+ org.spagic3.connectors.tcp.ssl,
+ org.spagic3.core,
+ org.spagic3.core.routing,
+ org.spagic3.deployer,
+ org.spagic3.integration.api
