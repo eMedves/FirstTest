@@ -10,10 +10,11 @@
    		name="IMessageRouter" 
    		policy="dynamic" unbind="unsetMessageRouter"/>
    		
-   <reference bind="setProcessEngine" cardinality="1..1" 
+   <reference bind="setProcessEngine" 
+   		cardinality="1..1" 
    		interface="org.spagic.workflow.api.IProcessEngine" 
    		name="IProcessEngine" 
-   		policy="dynamic" unbind="setProcessEngine"/>
+   		policy="dynamic" unbind="unsetProcessEngine"/>
    
    <service>
       <provide interface="org.osgi.service.event.EventHandler"/>
