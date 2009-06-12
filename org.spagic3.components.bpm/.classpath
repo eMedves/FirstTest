@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/metadb-model-2.5.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spagic-monitor-2.5.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jta.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activation.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/asm.jar"/>
@@ -15,9 +18,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/junit.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/log4j.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mail-1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/metadb-model-2.5.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mysql-connector-java-5.0.7-bin.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/spagic-monitor-2.5.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spagic-monitor-workflow-2.5.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spagic-workflow-api-2.5.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spagic-workflow-jbpm.jar"/>
