@@ -5,11 +5,14 @@ Bundle-SymbolicName: org.spagic3.components.bpm
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.servicemix.nmr.api,
+ org.osgi.framework;version="1.5.0",
  org.osgi.service.cm;version="1.2.1",
  org.osgi.service.event;version="1.2.0",
+ org.osgi.util.tracker;version="1.4.2",
  org.slf4j;version="1.5.6",
  org.spagic3.core,
- org.spagic3.core.routing
+ org.spagic3.core.routing,
+ org.spagic3.integration.api
 Bundle-ClassPath: .,
  lib/metadb-model-2.5.1.jar,
  lib/spagic-workflow-jbpm.jar,
@@ -33,3 +36,4 @@ Bundle-ClassPath: .,
  lib/spagic-workflow-api-2.5.1.jar
 Service-Component: process_engine.xml, bpm_cf.xml, service_invoker.xml 
 Export-Package: org.spagic3.components.bpm.invoker
+Bundle-Activator: org.spagic3.components.bpm.activator.BPMComponentActivator
