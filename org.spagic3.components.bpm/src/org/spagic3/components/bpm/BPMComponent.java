@@ -62,7 +62,7 @@ public class BPMComponent extends BaseSpagicService  {
 	
 	public void init(){
 		try{
-			String process = propertyConfigurator.getString("script");
+			String process = propertyConfigurator.getString("process");
 			
 			
 		}catch (Exception e) {
