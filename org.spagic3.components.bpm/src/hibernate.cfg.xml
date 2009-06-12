@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory> 
+        <property name="current_session_context_class">thread</property>
+        <property name="hibernate.bytecode.use_reflection_optimizer">false</property>
+         <!--  ORACLE
+        <property name="hibernate.dialect">org.hibernate.dialect.OracleDialect</property>
+    	<property name="hibernate.connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+    	<property name="hibernate.connection.url">jdbc:oracle:thin:@sibilla:1521:repo</property>
+    	<property name="hibernate.connection.username">spagic</property>
+    	<property name="hibernate.connection.password">spagic</property>
+    	<property name="hibernate.query.substitutions">true 1, false 0</property>
+    	 -->
+        <!--  MySQL  -->
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.password">spagic</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/spagic</property>
+        <property name="hibernate.connection.username">spagic</property>
+        
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
+        <property name="show_sql">false</property>
+       
+	    <property name="SetBigStringTryClob">true</property>
+	    <property name="batch_size">0</property>
+        <mapping resource="org/spagic/metadb/model/PoolType.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/Process.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/Cscheme.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/ProcessDiagram.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/Rule.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/Catalog.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/ServiceClassification.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/Step.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/ProcessInstance.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/CschemeValues.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/TypeService.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/Attribute.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/RelevantData.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/TransitionInstance.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/PoolInstance.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/RelevantDataProcessInstance.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/PropertyStep.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/LogJournal.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/TransitionState.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/XmlNamespace.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/AttributePool.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/PoolTypeProcess.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/AttributeCatalog.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/StepRule.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/SubProcess.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/PropertyProcess.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/Property.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/Transition.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/WaitData.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/WaitDataAttribute.hbm.xml" />
+    	<mapping resource="org/spagic/metadb/model/SearchQuery.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/BcInputMessages.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/BcOutputMessages.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/BcErrorMessages.hbm.xml" />
+    	<mapping resource="org/spagic/metadb/model/StepInstance.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/ProcessExecutionState.hbm.xml" />
+
+        <mapping resource="org/spagic/metadb/model/StepInstanceState.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/StepInstanceStateLog.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/MonitoringType.hbm.xml" />
+        
+        
+        <mapping resource="org/spagic/metadb/model/StepInstanceMessageProperty.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/StepInstanceUserProperty.hbm.xml" />
+    </session-factory>
+</hibernate-configuration>
+
