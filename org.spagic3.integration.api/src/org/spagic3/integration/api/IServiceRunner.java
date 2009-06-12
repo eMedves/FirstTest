@@ -10,6 +10,6 @@ import org.apache.servicemix.nmr.api.Exchange;
  */
 public interface IServiceRunner {
 	
-	public void run(String serviceID, Exchange exchange);
+	public Exchange run(String serviceID, Exchange exchange);
 
 }
