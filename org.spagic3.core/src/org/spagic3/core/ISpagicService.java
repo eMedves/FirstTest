@@ -29,5 +29,7 @@ public interface ISpagicService {
 	
 	public void init();
 	
+	public void beforeDestroy();
+	
 
 }

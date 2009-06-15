@@ -25,7 +25,6 @@ public  abstract class AbstractSpagicService implements ISpagicService, EventHan
 	private final AtomicReference<IMessageRouter> router = new AtomicReference<IMessageRouter>(null); 
 	
 	
-
 	protected void activate(ComponentContext componentContext){
 		Dictionary propertiesDictionary = componentContext.getProperties();
 		this.propertyConfigurator = new PropertyConfigurator(propertiesDictionary);
@@ -36,7 +35,11 @@ public  abstract class AbstractSpagicService implements ISpagicService, EventHan
 	}
 	
 	protected void deactivate(ComponentContext componentContext){
+		beforeDestroy();
+	}
 	
+	public void beforeDestroy(){
+		
 	}
 	
 	public void init(){
