@@ -25,7 +25,7 @@
        
 	    <property name="SetBigStringTryClob">true</property>
 	    <property name="batch_size">0</property>
-        <mapping resource="org/spagic/metadb/model/PoolType.hbm.xml" />
+       <mapping resource="org/spagic/metadb/model/PoolType.hbm.xml" />
         <mapping resource="org/spagic/metadb/model/Process.hbm.xml" />
         <mapping resource="org/spagic/metadb/model/Cscheme.hbm.xml" />
         <mapping resource="org/spagic/metadb/model/ProcessDiagram.hbm.xml" />
@@ -49,7 +49,7 @@
         <mapping resource="org/spagic/metadb/model/PoolTypeProcess.hbm.xml" />
         <mapping resource="org/spagic/metadb/model/AttributeCatalog.hbm.xml" />
         <mapping resource="org/spagic/metadb/model/StepRule.hbm.xml" />
-        <mapping resource="org/spagic/metadb/model/SubProcess.hbm.xml" />
+
         <mapping resource="org/spagic/metadb/model/PropertyProcess.hbm.xml" />
         <mapping resource="org/spagic/metadb/model/Property.hbm.xml" />
         <mapping resource="org/spagic/metadb/model/Transition.hbm.xml" />
@@ -59,16 +59,9 @@
         <mapping resource="org/spagic/metadb/model/BcInputMessages.hbm.xml" />
         <mapping resource="org/spagic/metadb/model/BcOutputMessages.hbm.xml" />
         <mapping resource="org/spagic/metadb/model/BcErrorMessages.hbm.xml" />
-    	<mapping resource="org/spagic/metadb/model/StepInstance.hbm.xml" />
+        <mapping resource="org/spagic/metadb/model/SubProcess.hbm.xml" />
         <mapping resource="org/spagic/metadb/model/ProcessExecutionState.hbm.xml" />
-
-        <mapping resource="org/spagic/metadb/model/StepInstanceState.hbm.xml" />
-        <mapping resource="org/spagic/metadb/model/StepInstanceStateLog.hbm.xml" />
         <mapping resource="org/spagic/metadb/model/MonitoringType.hbm.xml" />
-        
-        
-        <mapping resource="org/spagic/metadb/model/StepInstanceMessageProperty.hbm.xml" />
-        <mapping resource="org/spagic/metadb/model/StepInstanceUserProperty.hbm.xml" />
     </session-factory>
 </hibernate-configuration>
 

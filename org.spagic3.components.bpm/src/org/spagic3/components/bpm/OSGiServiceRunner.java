@@ -9,21 +9,12 @@ import org.spagic3.integration.api.IServiceRunner;
 public class OSGiServiceRunner implements IServiceRunner {
 
 	@Override
-	public Exchange run(String serviceID, Exchange exchange) {
+	public void run(String serviceID, Exchange exchange) {
 		IServiceInvoker invoker = BPMComponentActivator.getServiceInvoker();
+		
 		invoker.invokeService(serviceID, exchange);
 
-		String exchangeId = exchange.getId();
-		
-		while(invoker.isReady(exchangeId)){
-			try {
-	            wait();
-	        } catch (Exception e) {
-	        }
-		}
-		
-		return invoker.getReadyExchange(exchangeId);
-	}
+	}	
 	/*
 	
 	*/

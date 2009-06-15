@@ -45,8 +45,6 @@ public class MonitorJBPMSpagic3 extends MonitorServiceJBPM {
 			String correlationID = ProcessEngine.createSpagicCorrelationId(jBPMProcessInstance);
 			spagicProcessInstance = AuditDBUtils.getProcessInstanceByIdCorrelation(aSession, correlationID);
 			
-				
-			
 			xmlMessage = (String)jBPMProcessInstance.getContextInstance().getVariable(BPMContextSingleton.XML_MESSAGE);
 			orchestrationServiceId = (String)jBPMProcessInstance.getContextInstance().getVariable(BPMContextSingleton.ORCHESTRATION_SERVICE_ID);
 			

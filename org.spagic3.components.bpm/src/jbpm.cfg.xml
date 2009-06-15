@@ -4,7 +4,7 @@
     <service name="tx" factory="org.jbpm.tx.TxServiceFactory" />
     <service name="message" factory="org.jbpm.msg.db.DbMessageServiceFactory" />
     <service name="scheduler" factory="org.jbpm.scheduler.db.DbSchedulerServiceFactory" />
-    <service name="logging" factory="org.spagic.monitoring.jbpm.SpagicMonitoringServiceFactory" />
+    <service name="logging" factory="org.spagic3.components.bpm.monitoring.Spagic3MonitoringServiceFactory" />
     <service name="authentication" factory="org.jbpm.security.authentication.DefaultAuthenticationServiceFactory" />
     
     <!-- 

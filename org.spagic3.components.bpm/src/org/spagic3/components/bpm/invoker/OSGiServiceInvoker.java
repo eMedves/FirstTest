@@ -4,25 +4,22 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.servicemix.nmr.api.Exchange;
+import org.jbpm.graph.exe.Token;
+import org.spagic.workflow.api.jbpm.ProcessEngine;
 import org.spagic3.core.AbstractSpagicService;
 import org.spagic3.core.SpagicConstants;
 
 public class OSGiServiceInvoker extends AbstractSpagicService implements IServiceInvoker{
 
-	private HashMap<String, Exchange> pendingExchanges = new HashMap<String, Exchange>();
-	private HashMap<String, Exchange> readyExhanges = new HashMap<String, Exchange>();
-	private HashMap<String, Thread> threadMap = new HashMap<String, Thread>();
+	private ConcurrentHashMap<String, Long> tokens = new ConcurrentHashMap<String, Long>();
 	
 	@Override
 	public void invokeService(String serviceID, Exchange exchange) {
-		synchronized (this) {
-			pendingExchanges.put(exchange.getId(), exchange);
-			threadMap.put(exchange.getId(), Thread.currentThread());
-		}
 		try{
+			tokens.put(exchange.getId(), (Long)exchange.getProperty("Token"));
 			exchange.setProperty(SpagicConstants.SPAGIC_SENDER, this.getSpagicId());
 			exchange.setProperty(SpagicConstants.SPAGIC_TARGET, serviceID);
-			getMessageRouter().send(exchange);
+			send(exchange);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -30,23 +27,11 @@ public class OSGiServiceInvoker extends AbstractSpagicService implements IServic
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		synchronized (this) {
 			String id = exchange.getId();
-			pendingExchanges.remove(id);
-			readyExhanges.put(id, exchange);
-			threadMap.remove(id).notify();
-		}
-		
+			Long tid = tokens.remove(id);
+			ProcessEngine.signalToken(tid);
 	} 
 	
-	public boolean isReady(String exchangeId){
-		return readyExhanges.containsKey(exchangeId);
-	}
-
-	@Override
-	public Exchange getReadyExchange(String exchangeId) {
-		
-		return readyExhanges.remove(exchangeId);
-	}
+	
 
 }

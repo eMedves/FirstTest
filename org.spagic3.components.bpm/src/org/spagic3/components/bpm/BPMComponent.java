@@ -1,37 +1,20 @@
 package org.spagic3.components.bpm;
 
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URL;
-import java.sql.PreparedStatement;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
-
-import javax.script.Bindings;
-import javax.script.Compilable;
-import javax.script.CompiledScript;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 import org.apache.servicemix.nmr.api.Exchange;
 import org.apache.servicemix.nmr.api.Message;
 import org.apache.servicemix.nmr.api.Status;
-import org.jbpm.JbpmContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spagic.metadb.model.ProcessInstance;
 import org.spagic.workflow.api.IControlAPI;
 import org.spagic.workflow.api.IProcessEngine;
 import org.spagic.workflow.api.IQueryAPI;
 import org.spagic.workflow.api.Variable;
 import org.spagic3.core.BaseSpagicService;
 import org.spagic3.core.ExchangeUtils;
-import org.spagic3.core.SpagicConstants;
-import org.spagic3.core.SpagicUtils;
-import org.spagic3.core.routing.IMessageRouter;
 
 
 public class BPMComponent extends BaseSpagicService  {
@@ -62,8 +45,8 @@ public class BPMComponent extends BaseSpagicService  {
 	
 	public void init(){
 		try{
-			String process = propertyConfigurator.getString("process");
-			
+			this.process = propertyConfigurator.getString("process");
+			BPMContextSingleton.getInstance().register(this);
 			
 		}catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -71,6 +54,9 @@ public class BPMComponent extends BaseSpagicService  {
 		}
 	}
 	
+	public void beforeDestroy(){
+		BPMContextSingleton.getInstance().unregister(this);
+	}
 	
     
 	public void process(Exchange exchange){
@@ -81,18 +67,19 @@ public class BPMComponent extends BaseSpagicService  {
 	  
 		  String xmlMessage = (String)exchange.getIn(false).getBody();
 		 
-	  	Variable[] var = new Variable[3];
-	  	var[0] = new Variable();
-	  	var[0].setName(BPMContextSingleton.XML_MESSAGE);
-	  	var[0].setValue(xmlMessage);
+	  		Variable[] var = new Variable[2];
+	  		var[0] = new Variable();
+	  		var[0].setName(BPMContextSingleton.XML_MESSAGE);
+	  		var[0].setValue(xmlMessage);
 		 
 		 
-	  	var[1] = new Variable();
-	  	var[1].setName(BPMContextSingleton.ORCHESTRATION_SERVICE_ID);
-	  	var[1].setValue(this.getSpagicId());
-
-	  	long pid =  controlAPI.startByProcessName(process, var);
-	  }
+	  		var[1] = new Variable();
+	  		var[1].setName(BPMContextSingleton.ORCHESTRATION_SERVICE_ID);
+	  		var[1].setValue(this.getSpagicId());
+	
+		  	long pid =  controlAPI.startByProcessName(process, var);
+		  	exchangeMap.put(pid, exchange);
+	  	}
 	}
 
 	

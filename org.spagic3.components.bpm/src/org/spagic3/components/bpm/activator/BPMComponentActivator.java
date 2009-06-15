@@ -12,6 +12,7 @@ public class BPMComponentActivator implements BundleActivator {
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
+		System.setProperty("SPAGIC_HIBERNATE_OSGI_STRATEGY", "org.spagic3.components.bpm.OSGiSessionFactoryInitializer");
 		invokerServiceTracker = new InvokerServiceTracker(context);
 		invokerServiceTracker.open();
 	}

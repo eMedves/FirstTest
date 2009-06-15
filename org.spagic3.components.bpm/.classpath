@@ -19,7 +19,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/log4j.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mail-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mysql-connector-java-5.0.7-bin.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/spagic-monitor-workflow-2.5.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spagic-monitor-workflow-2.5.1.jar" sourcepath="/SpagicMonitorJBPM"/>
 	<classpathentry exported="true" kind="lib" path="lib/spagic-workflow-api-2.5.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spagic-workflow-jbpm.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xstream-1.3.jar"/>

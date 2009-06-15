@@ -17,7 +17,7 @@ public class Spagic3MonitoringService implements LoggingService {
 	
 	public Spagic3MonitoringService() {
 		super();
-    	monitorService = new MonitorServiceJBPM(/*jbpmMessage*/);
+    	monitorService = new MonitorJBPMSpagic3();
 	}
 
 	public void log(ProcessLog processLog) {
