@@ -5,7 +5,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.servicemix.nmr.api.Exchange;
 import org.jbpm.graph.exe.Token;
+import org.spagic.workflow.api.Variable;
 import org.spagic.workflow.api.jbpm.ProcessEngine;
+import org.spagic3.components.bpm.BPMContextSingleton;
 import org.spagic3.core.AbstractSpagicService;
 import org.spagic3.core.SpagicConstants;
 
@@ -29,7 +31,13 @@ public class OSGiServiceInvoker extends AbstractSpagicService implements IServic
 	public void process(Exchange exchange) throws Exception {
 			String id = exchange.getId();
 			Long tid = tokens.remove(id);
-			ProcessEngine.signalToken(tid);
+			Variable[] vars = new Variable[1];
+			vars[0] = new Variable();
+			vars[0].setName(BPMContextSingleton.XML_MESSAGE);
+			
+			String responseXMLMessage = (String)exchange.getOut(true).getBody();
+			vars[0].setValue(responseXMLMessage);
+			ProcessEngine.signalToken(tid, vars);
 	} 
 	
 	
