@@ -33,7 +33,7 @@ public class SetVariableAndContinueProcessUpdater implements IWorkflowContextUpd
 	}
 
 	@Override
-	public Map<String, String> getProperties(Map<String, String> properties) {
+	public Map<String, String> getProperties() {
 		// TODO Auto-generated method stub
 		return null;
 	}
