@@ -17,7 +17,7 @@ public class VariableIntoMessageExchangeProvider implements IExchangeProvider {
 		
 		Exchange exchange = ExchangeUtils.createExchange(Pattern.InOut);
 		String xmlMessage = (String)context.getVariable(BPMContextSingleton.XML_MESSAGE);
-		exchange.getOut(true).setBody(xmlMessage);
+		exchange.getIn(true).setBody(xmlMessage);
 		exchange.setProperty(BPMContextSingleton.TOKEN_ID_PROPERTY, context.getToken().getId());
 		return exchange;
 	}

@@ -14,6 +14,8 @@ public class SpagicOSGiJBPMCustomHandler implements ActionHandler {
 
 	private String serviceId;
 	private String serviceRunnerClass;
+	
+
 	private String exchangeProviderClass;
 	private String workflowContextUpdaterClass;
 	
@@ -55,5 +57,21 @@ public class SpagicOSGiJBPMCustomHandler implements ActionHandler {
 	
 	public IExchangeProvider getExchangeProvider()  throws Exception {
 		return (IExchangeProvider) Class.forName(exchangeProviderClass).newInstance();
+	}
+	
+	public String getExchangeProviderClass() {
+		return exchangeProviderClass;
+	}
+
+	public void setExchangeProviderClass(String exchangeProviderClass) {
+		this.exchangeProviderClass = exchangeProviderClass;
+	}
+
+	public String getWorkflowContextUpdaterClass() {
+		return workflowContextUpdaterClass;
+	}
+
+	public void setWorkflowContextUpdaterClass(String workflowContextUpdaterClass) {
+		this.workflowContextUpdaterClass = workflowContextUpdaterClass;
 	}
 }
