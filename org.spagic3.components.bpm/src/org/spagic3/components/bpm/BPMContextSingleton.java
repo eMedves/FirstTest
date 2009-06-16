@@ -8,17 +8,24 @@ public class BPMContextSingleton {
 	 */
 	public static final String XML_MESSAGE = "XML_MESSAGE";
 	
+	public static final String WORKFLOW_UPDATER_CLASS = "WORKFLOW_UPDATER_CLASS";
+
 	/**
 	 * When a JBPM Process is started by BPMComponent we set two variable
 	 * Originating ConnectorID
 	 */
 	
 	public static final String ORCHESTRATION_SERVICE_ID = "ORCHESTRATION_SERVICE_ID";
+	
+	public static final String TOKEN_ID_PROPERTY = "Token";
+	
+	
+	
+	
+	
+	
 	public static BPMContextSingleton instance = new BPMContextSingleton();
-	
-	
 	public ConcurrentHashMap<String, BPMComponent> bpmComponents = new ConcurrentHashMap<String, BPMComponent>();
-	
 	public ConcurrentHashMap<String, BPMComponent> getBpmComponents() {
 		return bpmComponents;
 	}

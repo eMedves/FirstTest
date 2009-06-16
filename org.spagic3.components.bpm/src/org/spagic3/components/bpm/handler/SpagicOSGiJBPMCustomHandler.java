@@ -5,16 +5,20 @@ import org.apache.servicemix.nmr.api.Message;
 import org.apache.servicemix.nmr.api.Pattern;
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
+import org.spagic3.components.bpm.BPMContextSingleton;
 import org.spagic3.core.ExchangeUtils;
+import org.spagic3.integration.api.IExchangeProvider;
 import org.spagic3.integration.api.IServiceRunner;
 
 public class SpagicOSGiJBPMCustomHandler implements ActionHandler {
 
 	private String serviceId;
-	private String inputVariableName;
-	private String outputVariableName;
 	private String serviceRunnerClass;
-
+	private String exchangeProviderClass;
+	private String workflowContextUpdaterClass;
+	
+	
+	
 	public String getServiceId() {
 		return serviceId;
 	}
@@ -23,21 +27,7 @@ public class SpagicOSGiJBPMCustomHandler implements ActionHandler {
 		this.serviceId = serviceId;
 	}
 
-	public String getInputVariableName() {
-		return inputVariableName;
-	}
-
-	public void setInputVariableName(String inputVariableName) {
-		this.inputVariableName = inputVariableName;
-	}
-
-	public String getOutputVariableName() {
-		return outputVariableName;
-	}
-
-	public void setOutputVariableName(String outputVariableName) {
-		this.outputVariableName = outputVariableName;
-	}
+	
 	
 	public String getServiceRunnerClass() {
 		return serviceRunnerClass;
@@ -48,15 +38,12 @@ public class SpagicOSGiJBPMCustomHandler implements ActionHandler {
 	}
 	
 	public void execute(ExecutionContext ctx) throws Exception {
-		//get service id
-		String xmlMessage = (String) ctx.getVariable(getInputVariableName());
-
-		Exchange exchange = ExchangeUtils.createExchange(Pattern.InOut);
-		exchange.getIn(true).setBody(xmlMessage);
 		
-		exchange.setProperty("Token", ctx.getToken().getId());
+		IExchangeProvider exchangeProvider = getExchangeProvider();
 		IServiceRunner runner = getServiceRunner();
 		
+		Exchange exchange = exchangeProvider.createExchangeFromWorkflowContext(ctx);
+		exchange.setProperty(BPMContextSingleton.WORKFLOW_UPDATER_CLASS, workflowContextUpdaterClass);
 		runner.run(serviceId, exchange);
 		
 		
@@ -66,4 +53,7 @@ public class SpagicOSGiJBPMCustomHandler implements ActionHandler {
 		return (IServiceRunner) Class.forName(serviceRunnerClass).newInstance();
 	}
 	
+	public IExchangeProvider getExchangeProvider()  throws Exception {
+		return (IExchangeProvider) Class.forName(exchangeProviderClass).newInstance();
+	}
 }

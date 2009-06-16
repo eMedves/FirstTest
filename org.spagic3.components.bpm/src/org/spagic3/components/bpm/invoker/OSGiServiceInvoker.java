@@ -10,15 +10,17 @@ import org.spagic.workflow.api.jbpm.ProcessEngine;
 import org.spagic3.components.bpm.BPMContextSingleton;
 import org.spagic3.core.AbstractSpagicService;
 import org.spagic3.core.SpagicConstants;
+import org.spagic3.integration.api.IExchangeProvider;
+import org.spagic3.integration.api.IWorkflowContextUpdater;
 
 public class OSGiServiceInvoker extends AbstractSpagicService implements IServiceInvoker{
 
-	private ConcurrentHashMap<String, Long> tokens = new ConcurrentHashMap<String, Long>();
+	private ConcurrentHashMap<String, Exchange> storedExchanges = new ConcurrentHashMap<String, Exchange>();
 	
 	@Override
 	public void invokeService(String serviceID, Exchange exchange) {
 		try{
-			tokens.put(exchange.getId(), (Long)exchange.getProperty("Token"));
+			storedExchanges.put(exchange.getId(), exchange);
 			exchange.setProperty(SpagicConstants.SPAGIC_SENDER, this.getSpagicId());
 			exchange.setProperty(SpagicConstants.SPAGIC_TARGET, serviceID);
 			send(exchange);
@@ -28,17 +30,19 @@ public class OSGiServiceInvoker extends AbstractSpagicService implements IServic
 	}
 
 	@Override
-	public void process(Exchange exchange) throws Exception {
-			String id = exchange.getId();
-			Long tid = tokens.remove(id);
-			Variable[] vars = new Variable[1];
-			vars[0] = new Variable();
-			vars[0].setName(BPMContextSingleton.XML_MESSAGE);
+	public void process(Exchange responseExchange) throws Exception {
+			String id  = responseExchange.getId();
+			Exchange storedExchange = storedExchanges.remove(id);
 			
-			String responseXMLMessage = (String)exchange.getOut(true).getBody();
-			vars[0].setValue(responseXMLMessage);
-			ProcessEngine.signalToken(tid, vars);
+			Long tokenId =(Long) storedExchange.getProperty(BPMContextSingleton.TOKEN_ID_PROPERTY);
+			responseExchange.setProperty(BPMContextSingleton.TOKEN_ID_PROPERTY, tokenId);
+			String workflowContextUpdaterClass = (String) storedExchange.getProperty(BPMContextSingleton.WORKFLOW_UPDATER_CLASS);
+			
+			IWorkflowContextUpdater updater = (IWorkflowContextUpdater)Class.forName(workflowContextUpdaterClass).newInstance();;
+			updater.updateWorkflowContext(null, responseExchange);
 	} 
+	
+	
 	
 	
 
