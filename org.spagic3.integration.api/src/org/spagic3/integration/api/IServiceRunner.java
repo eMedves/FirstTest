@@ -8,8 +8,8 @@ import org.apache.servicemix.nmr.api.Exchange;
  * This interface is the main interface to be used by the orchestration
  * engine to call message style service
  */
-public interface IServiceRunner {
-	
+public interface IServiceRunner extends IElementWithProperties {
+
 	public void run(String serviceID, Exchange exchange);
 
 }
