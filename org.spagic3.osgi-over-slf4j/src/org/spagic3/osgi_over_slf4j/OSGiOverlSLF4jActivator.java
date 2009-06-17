@@ -9,10 +9,14 @@ import org.osgi.service.log.LogListener;
 import org.osgi.service.log.LogReaderService;
 import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
+import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
+
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class OSGiOverlSLF4jActivator implements BundleActivator {
 
@@ -22,9 +26,19 @@ public class OSGiOverlSLF4jActivator implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
+		System.out.println("**********************************************************************");
+		System.out.println("***************  OSGi OVER SLF4J ACTIVATED ***************************");
+		
+		
+		Context lc = (Context) LoggerFactory.getILoggerFactory();
+	    // print logback's internal status
+	    StatusPrinter.print(lc);
+	    System.out.println("**********************************************************************");
 		Filter filter = context.createFilter("(objectClass=org.osgi.service.log.LogReaderService)");
+		
 		logTracker = new LogServiceTracker(context, filter );
 		logTracker.open(true);
+
 	}
 
 	/**

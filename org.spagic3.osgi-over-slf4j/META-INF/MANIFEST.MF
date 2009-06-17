@@ -6,7 +6,9 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.spagic3.osgi_over_slf4j.OSGiOverlSLF4jActivator
 Bundle-Vendor: Engineering Ing Informatica
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.equinox.log,
+Import-Package: ch.qos.logback.core;version="0.9.15",
+ ch.qos.logback.core.util;version="0.9.15",
+ org.eclipse.equinox.log,
  org.osgi.framework;version="1.3.0",
  org.osgi.service.log;version="1.3.0",
  org.osgi.util.tracker;version="1.4.2",

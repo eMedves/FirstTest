@@ -6,7 +6,9 @@
     </layout>
   </appender>
 
-
+  <logger name="org.spagic3.osgi_over_slf4j" level="DEBUG"/>
+  <logger name="org.mortbay.log" level="WARN"/> 
+  		
   <root level="info">
     <appender-ref ref="STDOUT" />
   </root>
