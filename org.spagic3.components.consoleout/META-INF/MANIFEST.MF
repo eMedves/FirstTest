@@ -14,3 +14,4 @@ Import-Package: org.apache.servicemix.nmr.api,
  org.spagic3.core,
  org.spagic3.core.routing,
  org.spagic3.integration.api
+Service-Component: console_cf.xml, empty_cf.xml
