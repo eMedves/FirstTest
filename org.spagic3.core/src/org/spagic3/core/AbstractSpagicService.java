@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.servicemix.nmr.api.Exchange;
+import org.apache.servicemix.nmr.api.Message;
 import org.apache.servicemix.nmr.api.Pattern;
+import org.apache.servicemix.nmr.api.Status;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
@@ -89,6 +91,26 @@ public  abstract class AbstractSpagicService implements ISpagicService, EventHan
 			logger.error("Exception sending exchange ["+exchange+"]", e);
 		}
 	}
+	
+	public void fail(Exchange exchange, Exception error) {
+			configureForResponse(exchange);
+			if (ExchangeUtils.isInOnly(exchange)) {
+	            exchange.setError(error);
+	        } else {
+	            Message fault = exchange.getFault(true);
+	            fault.setBody(error.getMessage());
+	            exchange.setFault(fault);
+	        }
+	        send(exchange);
+	 }
+	
+	public void done(Exchange exchange) {
+		configureForResponse(exchange);
+		exchange.setStatus(Status.Done);
+		send(exchange);
+	}
+	 
+	 
 	
 	public void configureForResponse(Exchange exchange){
 		String originalSender = (String)exchange.getProperty(SpagicConstants.SPAGIC_SENDER);
