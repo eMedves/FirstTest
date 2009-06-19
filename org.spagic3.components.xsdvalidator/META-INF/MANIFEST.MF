@@ -30,3 +30,4 @@ Import-Package: org.apache.servicemix.nmr.api,
  org.spagic3.core.routing,
  org.spagic3.integration.api
 Bundle-ActivationPolicy: lazy
+Service-Component: xsdvalidator_cf.xml

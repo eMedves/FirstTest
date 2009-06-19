@@ -29,6 +29,7 @@ import org.xml.sax.InputSource;
 
 public class ValidateComponent extends BaseSpagicService {
 
+	
 	public static final String FAULT_FLOW = "FAULT_FLOW";
 	public static final String FAULT_WITH_EXCEPTION = "FAULT_WITH_EXCEPTION";
 	private Schema schema;
