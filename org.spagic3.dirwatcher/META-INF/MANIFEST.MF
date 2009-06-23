@@ -16,3 +16,4 @@ Import-Package: org.dom4j;version="1.6.1",
  org.spagic3.deployer
 Bundle-ActivationPolicy: lazy
 Service-Component: dirwatcher.xml
+Export-Package: org.spagic3.dirwatcher

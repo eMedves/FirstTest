@@ -28,11 +28,13 @@ public abstract class DirWatcher extends TimerTask {
 	  }
 
 	  public DirWatcher(String path, String filter) {
-	    
-		this.path = path;
+		  this(new File(path), filter);
+		  this.path = path;  
+	  }
+	  
+	  public DirWatcher(File pathFile, String filter) {
+		  
 	    dfw = new DirFilterWatcher(filter);
-	    
-	    File pathFile = new File(path);
 	    if (!pathFile.exists())
 	    	pathFile.mkdirs();
 	    
