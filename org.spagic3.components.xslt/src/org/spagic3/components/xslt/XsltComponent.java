@@ -96,8 +96,7 @@ public class XsltComponent extends BaseSpagicService {
 			throws Exception {
 		try{
 			Transformer transformer = getTransformerFactory().newTransformer(getXsltSource());
-			org.dom4j.Document inDocument = DocumentHelper.parseText((String) in
-				.getBody());
+			org.dom4j.Document inDocument = DocumentHelper.parseText((String) in.getBody());
 			DocumentSource source = new DocumentSource(inDocument);
 			DocumentResult result = new DocumentResult();
 			transformer.transform(source, result);
