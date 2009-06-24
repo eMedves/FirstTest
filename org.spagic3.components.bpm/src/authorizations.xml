@@ -5,6 +5,7 @@
 		<USERS>
 			<USER userID="andrea" password="andrea" />
 			<USER userID="gianfri" password="gianfri" />
+			<USER userID="zoppello" password="zoppello" />
 		</USERS>
 		<ROLES>
 			<ROLE roleName="ruolo1" description="Programmatore" />
