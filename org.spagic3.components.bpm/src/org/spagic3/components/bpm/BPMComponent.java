@@ -58,36 +58,41 @@ public class BPMComponent extends BaseSpagicService  {
 	
     
 	public void process(Exchange exchange){
-	
+	   
 	  if ( exchange.getStatus() == Status.Active){
+		  if (ExchangeUtils.isInOnly(exchange)){
+				done(exchange);
+		  }
+		  
 		  IControlAPI controlAPI = getProcessEngine().getControlAPI();
 		  IQueryAPI queryAPI = getProcessEngine().getQueryAPI();
 	  
 		  String xmlMessage = (String)exchange.getIn(false).getBody();
 		 
-	  		Variable[] var = new Variable[2];
-	  		var[0] = new Variable();
-	  		var[0].setName(BPMContextSingleton.XML_MESSAGE);
-	  		var[0].setValue(xmlMessage);
+	  	  Variable[] var = new Variable[2];
+	  	  var[0] = new Variable();
+	  	  var[0].setName(BPMContextSingleton.XML_MESSAGE);
+	  	  var[0].setValue(xmlMessage);
 		 
 		 
-	  		var[1] = new Variable();
-	  		var[1].setName(BPMContextSingleton.ORCHESTRATION_SERVICE_ID);
-	  		var[1].setValue(this.getSpagicId());
-	
-		  	long pid =  controlAPI.startByProcessName(process, var);
-		  	exchangeMap.put(pid, exchange);
+	  	  var[1] = new Variable();
+	  	  var[1].setName(BPMContextSingleton.ORCHESTRATION_SERVICE_ID);
+	  	  var[1].setValue(this.getSpagicId());
+	  	  
+	  	  done(exchange);
+		  long pid =  controlAPI.startByProcessName(process, var);
+		  exchangeMap.put(pid, exchange);
 	  	}
 	}
 
 	
 	public void callBack(Long pid,  String xmlMessage, boolean isProcessTerminated){
 
-		Exchange exchange = exchangeMap.get(pid);
+		Exchange exchange = exchangeMap.remove(pid);
 		
 		if (exchange != null){
 			if (ExchangeUtils.isInOnly(exchange)){
-				done(exchange);
+				
 				if (!isProcessTerminated){
 					Exchange newExchange = createInOnlyExchange();
 					Message newIn = exchange.getIn(true);
