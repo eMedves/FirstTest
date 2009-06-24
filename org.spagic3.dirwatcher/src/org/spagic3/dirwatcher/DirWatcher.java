@@ -9,7 +9,7 @@ import java.util.TimerTask;
 
 public abstract class DirWatcher extends TimerTask {
 
-	  private String path;
+	  private File path = null;
 	  private File filesArray [];
 	  private HashMap<File, Long> dir = new HashMap();
 	  
@@ -29,11 +29,10 @@ public abstract class DirWatcher extends TimerTask {
 
 	  public DirWatcher(String path, String filter) {
 		  this(new File(path), filter);
-		  this.path = path;  
 	  }
 	  
 	  public DirWatcher(File pathFile, String filter) {
-		  
+		this.path = pathFile;
 	    dfw = new DirFilterWatcher(filter);
 	    if (!pathFile.exists())
 	    	pathFile.mkdirs();
@@ -51,7 +50,10 @@ public abstract class DirWatcher extends TimerTask {
 
 	  public final void run() {
 	    HashSet<File> checkedFiles = new HashSet();
-	    filesArray = new File(path).listFiles(dfw);
+	    
+	   
+	    filesArray = path.listFiles(dfw);
+	   
 
 	    
 	    // scan the files and check for modification/addition

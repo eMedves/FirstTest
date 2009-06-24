@@ -48,4 +48,5 @@ public class SpagicConstants {
     public static final String PROTOCOL_HEADERS = "nmr.messaging.protocol.headers";
     
     public final static String WF_VARIABLE_PREFIX = "WF_VARIABLE";
+    public final static String WF_IS_PROCESS_TERMINATED = "WF_IS_PROCESS_TERMINATED";
 }
