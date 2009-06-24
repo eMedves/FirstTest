@@ -38,7 +38,7 @@ public class XsltComponent extends BaseSpagicService {
 	
 	protected Logger logger = LoggerFactory.getLogger(XsltComponent.class);
 	private TransformerFactory transformerFactory;
-    private Source xsltSource;
+    
     
     public URL xsltURL = null;
 	
@@ -74,38 +74,43 @@ public class XsltComponent extends BaseSpagicService {
     }
 
     public Source getXsltSource() throws Exception {
+    	Source xsltSource;
     	logger.debug("XSLT Transformer::getXsltSource::->start");
-        if (xsltSource == null) {
+      
         	logger.debug("XSLT Transformer::getXsltSource::xsltSource is null create it ");
             // lets create a new one each time
             // as we can only read a stream once
             xsltSource = new StreamSource(xsltURL.openStream());
             logger.debug("XSLT Transformer::getXsltSource::xsltSource created ");
-        }
+      
         logger.debug("XSLT Transformer::getXsltSource::xsltSource " + ((xsltSource != null) ? "XSLT Source is not null " : "xsltSource IS NULL"));
         return xsltSource;
     }
 
-    public void setXsltSource(Source xsltSource) {
-        this.xsltSource = xsltSource;
-    }
+    
 
     
 
 	
 	public boolean run(Exchange exchange, Message in, Message out)
 			throws Exception {
-		Transformer transformer = getTransformerFactory().newTransformer(getXsltSource());
-		org.dom4j.Document inDocument = DocumentHelper.parseText((String) in
+		try{
+			Transformer transformer = getTransformerFactory().newTransformer(getXsltSource());
+			org.dom4j.Document inDocument = DocumentHelper.parseText((String) in
 				.getBody());
-		DocumentSource source = new DocumentSource(inDocument);
-		DocumentResult result = new DocumentResult();
-		transformer.transform(source, result);
+			DocumentSource source = new DocumentSource(inDocument);
+			DocumentResult result = new DocumentResult();
+			transformer.transform(source, result);
 
-		// return the transformed document
-		org.dom4j.Document transformedDoc = result.getDocument();
-		out.setBody(transformedDoc.asXML());
-		return true;
+			// return the transformed document
+			org.dom4j.Document transformedDoc = result.getDocument();
+			out.setBody(transformedDoc.asXML());
+			return true;
+		}catch (Throwable e) {
+			logger.error(e.getMessage(), e);
+			e.fillInStackTrace();
+			throw new Exception();
+		}
 	}
 
    

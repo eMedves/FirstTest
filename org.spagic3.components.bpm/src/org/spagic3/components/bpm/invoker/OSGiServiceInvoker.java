@@ -21,6 +21,7 @@ public class OSGiServiceInvoker extends AbstractSpagicService implements IServic
 	public void invokeService(String serviceID, Exchange exchange) {
 		try{
 			storedExchanges.put(exchange.getId(), exchange);
+			System.out.println(" Storing exchange ["+exchange.getId()+"] Associated to ["+this.getSpagicId()+"] -> ["+serviceID+"]");
 			exchange.setProperty(SpagicConstants.SPAGIC_SENDER, this.getSpagicId());
 			exchange.setProperty(SpagicConstants.SPAGIC_TARGET, serviceID);
 			send(exchange);
@@ -31,7 +32,10 @@ public class OSGiServiceInvoker extends AbstractSpagicService implements IServic
 
 	@Override
 	public void process(Exchange responseExchange) throws Exception {
+			
+			System.out.println("============== ["+ responseExchange.getProperty(SpagicConstants.SPAGIC_SENDER) + "] -> ["+responseExchange.getProperty(SpagicConstants.SPAGIC_TARGET) +"]");
 			String id  = responseExchange.getId();
+			System.out.println(" Removing ["+responseExchange.getId()+"]");
 			Exchange storedExchange = storedExchanges.remove(id);
 			
 			Long tokenId =(Long) storedExchange.getProperty(BPMContextSingleton.TOKEN_ID_PROPERTY);
