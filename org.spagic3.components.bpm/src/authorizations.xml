@@ -9,7 +9,7 @@
 		<ROLES>
 			<ROLE roleName="ruolo1" description="Programmatore" />
 			<ROLE roleName="ruolo2" description="ProjectManager" />
-		</ROLES>
+		</ROLES> 
 	</ENTITIES>
 	<RELATIONS>
 		<BEHAVIOURS>
