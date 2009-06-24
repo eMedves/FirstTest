@@ -19,8 +19,6 @@ import org.spagic3.core.ExchangeUtils;
 
 public class BPMComponent extends BaseSpagicService  {
 	
-	
-	
 	public String process = null;
 	protected Logger logger = LoggerFactory.getLogger(BPMComponent.class);
 	
@@ -83,15 +81,23 @@ public class BPMComponent extends BaseSpagicService  {
 	}
 
 	
-	public void callBack(Long pid,  String xmlMessage){
+	public void callBack(Long pid,  String xmlMessage, boolean isProcessTerminated){
 
 		Exchange exchange = exchangeMap.get(pid);
 		
 		if (exchange != null){
 			if (ExchangeUtils.isInOnly(exchange)){
-				configureForResponse(exchange);
-				exchange.setStatus(Status.Done);
-				send(exchange);
+				done(exchange);
+				if (!isProcessTerminated){
+					Exchange newExchange = createInOnlyExchange();
+					Message newIn = exchange.getIn(true);
+					newIn.setBody(xmlMessage);
+					newExchange.setIn(newIn);
+					send(newExchange);
+				}else{
+					// The process is terminated by one of the component in the workflow
+					// process this means we stop here
+				}
 			}else if (ExchangeUtils.isInAndOut(exchange)){
 				configureForResponse(exchange);
 				Message out = exchange.getOut(true);

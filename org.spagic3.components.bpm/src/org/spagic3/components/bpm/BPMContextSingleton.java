@@ -47,9 +47,9 @@ public class BPMContextSingleton {
 		getInstance().getBpmComponents().remove(bpmnComponent.getSpagicId());
 	}
 	
-	public static void callBack(String orchestrationServiceId,  Long processInstanceId, String xmlMessage){
+	public static void callBack(String orchestrationServiceId,  Long processInstanceId, String xmlMessage, boolean isProcessTerminated){
 		BPMComponent bpmnComponent = getInstance().getBpmComponents().get(orchestrationServiceId);
-		bpmnComponent.callBack(processInstanceId,  xmlMessage);
+		bpmnComponent.callBack(processInstanceId,  xmlMessage, isProcessTerminated);
 	}
 	
 

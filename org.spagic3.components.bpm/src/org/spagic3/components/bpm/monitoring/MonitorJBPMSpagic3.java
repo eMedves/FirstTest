@@ -20,6 +20,7 @@ import org.spagic.monitoring.jbpm.MonitorServiceJBPM;
 import org.spagic.workflow.api.jbpm.ProcessEngine;
 import org.spagic3.components.bpm.BPMComponent;
 import org.spagic3.components.bpm.BPMContextSingleton;
+import org.spagic3.core.SpagicConstants;
 
 public class MonitorJBPMSpagic3 extends MonitorServiceJBPM {
 
@@ -36,6 +37,7 @@ public class MonitorJBPMSpagic3 extends MonitorServiceJBPM {
 		ProcessInstance spagicProcessInstance = null;
 		Session aSession = null;
 		Transaction tx = null;
+		boolean isProcessTerminated = false;
 		try {
 			// Retrieve current session
 			aSession = getSession();
@@ -48,6 +50,12 @@ public class MonitorJBPMSpagic3 extends MonitorServiceJBPM {
 			xmlMessage = (String)jBPMProcessInstance.getContextInstance().getVariable(BPMContextSingleton.XML_MESSAGE);
 			orchestrationServiceId = (String)jBPMProcessInstance.getContextInstance().getVariable(BPMContextSingleton.ORCHESTRATION_SERVICE_ID);
 			
+			String processTerminated = (String)jBPMProcessInstance.getContextInstance().getVariable(SpagicConstants.WF_IS_PROCESS_TERMINATED);
+			
+			
+			if (processTerminated != null)
+				isProcessTerminated = Boolean.valueOf(processTerminated);
+			
 			aSession.flush();
 			tx.commit();
 			
@@ -57,7 +65,7 @@ public class MonitorJBPMSpagic3 extends MonitorServiceJBPM {
 //        	!!!
 		} finally {
 			closeSession(aSession);
-			BPMContextSingleton.callBack(orchestrationServiceId, spagicProcessInstance.getIdProcessInstance(), xmlMessage);
+			BPMContextSingleton.callBack(orchestrationServiceId, spagicProcessInstance.getIdProcessInstance(), xmlMessage, isProcessTerminated);
 		}
 	}
 
