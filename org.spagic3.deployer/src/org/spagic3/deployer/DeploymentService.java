@@ -24,23 +24,20 @@ public class DeploymentService implements IDeploymentService {
 	private ComponentContext componentContext = null;
 
 	protected void activate(ComponentContext componentContext) {
-		System.out.println(" Deployment Service Activated ");
+		logger.info(" Deployment Service - ACTIVATED");
 		this.componentContext = componentContext;
 	}
 
 	protected void deactivate(ComponentContext componentContext) {
-		System.out.println(" Deployment Service DeActivated ");
+		logger.info(" Deployment Service - DEACTIVATED");
 	}
 
 	public void addComponentFactory(ServiceReference componentFactoryReference) {
-		String[] propKeys = componentFactoryReference.getPropertyKeys();
+		
 		String componentFactoryIdentifier = (String) componentFactoryReference
 				.getProperty("component.factory");
-		for (String prop : propKeys) {
-			System.out.println(prop + "->"
-					+ componentFactoryReference.getProperty(prop));
-		}
-
+		
+		logger.info(" Component Factory ["+componentFactoryIdentifier+"] -- REGISTERED");
 		this.factories.put(componentFactoryIdentifier,
 				componentFactoryReference);
 
@@ -50,11 +47,14 @@ public class DeploymentService implements IDeploymentService {
 			ServiceReference componentFactoryReference) {
 		String componentFactoryIdentifier = (String) componentFactoryReference
 				.getProperty("component.factory");
+		
+		logger.info(" Component Factory ["+componentFactoryIdentifier+"] -- UNREGISTERED");
 		factories.remove(componentFactoryIdentifier);
 	}
 
 	public void deploy(String spagicId, String factoryName, Hashtable properties) {
-
+		logger.info("Deploying Spagic Service ["+spagicId+"] using the ["+factoryName+"]");
+				
 		ServiceReference sr = factories.get(factoryName);
 
 		if (sr == null) {
@@ -71,6 +71,7 @@ public class DeploymentService implements IDeploymentService {
 			
 			ComponentInstance ci = cf.newInstance(properties);
 			componentInstances.put(spagicId, ci);
+			logger.info("Spagic Service ["+spagicId+"] DEPLOYED ==");
 		}
 	}
 	
