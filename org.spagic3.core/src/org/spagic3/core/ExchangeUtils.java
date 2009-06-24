@@ -92,7 +92,12 @@ public class ExchangeUtils {
 				if (fault != null)
 					fault.setHeader(realPropertyName, event.getProperty(pNames[i]));
 			} else if (pNames[i].startsWith(SpagicConstants.EXCHANGE_PROPERTY)) {
-				realPropertyName = pNames[i].substring(pNames[i].lastIndexOf(".") + 1 );
+				realPropertyName = pNames[i].substring(pNames[i].indexOf(".") + 1);
+				
+				if (realPropertyName.startsWith(SpagicConstants.WF_VARIABLE_PREFIX))
+					System.out.println(realPropertyName);
+				else
+					realPropertyName = pNames[i].substring(pNames[i].lastIndexOf(".") + 1 );
 				if (exchange != null)
 					exchange.setProperty(realPropertyName, event.getProperty(pNames[i]));
 			}
