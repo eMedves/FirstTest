@@ -79,7 +79,7 @@ public class FileSystemPollerConnector extends AbstractSpagicConnector{
 				throw new Exception("Cannot Get The Opened file Stream for Exchange" + exchangeId);
 			
 			if (deleteFile){
-				if (f.delete()){
+				if (!f.delete()){
 					  throw new IOException("Could not delete file " + f);
 				}
 			}

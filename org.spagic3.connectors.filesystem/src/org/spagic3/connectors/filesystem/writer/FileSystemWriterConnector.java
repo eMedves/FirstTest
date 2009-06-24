@@ -80,6 +80,7 @@ public class FileSystemWriterConnector extends AbstractSpagicConnector {
 	            bw = new BufferedWriter(new FileWriter(newFile, false));
 	            adapter.writeMessage(exchange, in, bw);
 	            success = true;
+	            done(exchange);
 	        } finally {
 	            if (bw != null) {
 	                try {
