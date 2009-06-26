@@ -1,20 +1,14 @@
 package org.spagic3.components.bpm.handler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.servicemix.nmr.api.Exchange;
-import org.apache.servicemix.nmr.api.Pattern;
-import org.jbpm.graph.exe.ExecutionContext;
 import org.spagic.workflow.api.Variable;
 import org.spagic.workflow.api.jbpm.ProcessEngine;
 import org.spagic3.components.bpm.BPMContextSingleton;
-import org.spagic3.core.ExchangeUtils;
 import org.spagic3.core.SpagicConstants;
-import org.spagic3.integration.api.IExchangeProvider;
 import org.spagic3.integration.api.IWorkflowContextUpdater;
 
 public class SetVariableAndContinueProcessUpdater implements IWorkflowContextUpdater {
@@ -27,13 +21,22 @@ public class SetVariableAndContinueProcessUpdater implements IWorkflowContextUpd
 		Long tokenId =(Long) exchange.getProperty(BPMContextSingleton.TOKEN_ID_PROPERTY);
 		
 		List<Variable> vars = new ArrayList<Variable>();
-		Variable var = new Variable();
-		var.setName(BPMContextSingleton.XML_MESSAGE);
 		
-		String responseXMLMessage = (String)exchange.getOut(true).getBody();
-		var.setValue(responseXMLMessage);
 		
-		vars.add(var);
+		String noUpdateToXMLMessage = (String) exchange.getProperty(SpagicConstants.WF_NO_UPDATE_XML_MESSAGE);
+		
+		boolean noUpdate = noUpdateToXMLMessage != null ? Boolean.valueOf(noUpdateToXMLMessage) : false;
+		
+		if (!noUpdate){
+			Variable var = new Variable();
+			var.setName(BPMContextSingleton.XML_MESSAGE);
+			// no Update is false proceed
+			String responseXMLMessage = (String)exchange.getOut(true).getBody();
+			var.setValue(responseXMLMessage);
+			vars.add(var);
+		}
+		
+		
 		Map<String, Object> exchangeProperties = exchange.getProperties();
 		
 		for ( String exchangePropertiesKey : exchangeProperties.keySet()){

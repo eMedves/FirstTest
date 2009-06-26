@@ -47,6 +47,26 @@ public class SpagicConstants {
     
     public static final String PROTOCOL_HEADERS = "nmr.messaging.protocol.headers";
     
+    
+    // This variables could be setted into the exchange to modify wf engine behavour
+    
+    //
+    // This will set/update the variable called VAR_A in Workflow Process Instance
+    // exchange.setProperty("WF_VARIABLE.VAR_A", "ValueOfVariableA");
+    //
     public final static String WF_VARIABLE_PREFIX = "WF_VARIABLE";
+    
+    //
+    // This will say to OSGiService Invoker do not update the value of the XML_MESSAGE_VARIABLE_WHEN_RETURNING
+    // from workflow
+    // exchange.setProperty("WF_NO_UPDATE_XML_MESSAGE", "true");
+    //
+    public final static String WF_NO_UPDATE_XML_MESSAGE = "WF_NO_UPDATE_XML_MESSAGE";
+   
+    // If this property id valorized when the Workflow Process Instance is end the result is not porpagated to
+    // the target connectors of orchestration service
     public final static String WF_IS_PROCESS_TERMINATED = "WF_IS_PROCESS_TERMINATED";
+    
+    
+    
 }
