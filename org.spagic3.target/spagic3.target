@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.5"?>
+
+<target name="Spagic3">
+<locations>
+<location path="C:\Progetti\Spagic3\Spagic3Target" type="Directory"/>
+</locations>
+</target>
