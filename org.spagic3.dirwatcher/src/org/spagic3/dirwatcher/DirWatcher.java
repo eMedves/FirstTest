@@ -72,6 +72,7 @@ public abstract class DirWatcher extends TimerTask {
 	      }
 	    }
 
+	    
 	    // now check for deleted files
 	    Set<File> ref = ((HashMap)dir.clone()).keySet();
 	    ref.removeAll((Set)checkedFiles);

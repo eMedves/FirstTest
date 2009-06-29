@@ -24,7 +24,14 @@ public class DirWatcherService {
 	protected void activate(ComponentContext componentContext){
 		final IDeploymentService deploymentService = (IDeploymentService)componentContext.locateService("deploymentService");
 	
-		TimerTask task = new DirWatcher("c:/temp/spagic3", "service") {
+		String spagicHome = System.getProperty("spagic.home");
+		
+		if (spagicHome == null){
+			logger.warn(" Spagic HOME NOT SETTED Using [c:/temp/spagic3]");
+			spagicHome = "c:/temp/spagic3";
+		}
+			
+		TimerTask task = new DirWatcher(spagicHome, "service") {
 			protected void onChange(File file, String action) {
 				try{
 					String filePath = file.getCanonicalPath();
