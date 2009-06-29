@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Core
 Bundle-SymbolicName: org.spagic3.core
 Bundle-Version: 1.0.0
-Bundle-Activator: org.spagic3.core.Activator
 Bundle-Vendor: Engineering Ing. Informatica
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.dom4j;version="1.6.1",
@@ -26,7 +25,6 @@ Import-Package: org.dom4j;version="1.6.1",
  org.osgi.service.event,
  org.osgi.service.framework;version="1.0.0",
  org.slf4j;version="1.5.6"
-Bundle-ActivationPolicy: lazy
 Require-Bundle: org.apache.servicemix.bundles.commons-codec;bundle-version="1.2.0",
  org.apache.servicemix.nmr.api;bundle-version="1.0.0",
  org.spagic3.nmr.core;bundle-version="1.0.0"

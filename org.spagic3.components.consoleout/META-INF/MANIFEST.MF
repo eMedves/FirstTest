@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Consoleout
 Bundle-SymbolicName: org.spagic3.components.consoleout
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.servicemix.nmr.api,
  org.dom4j;version="1.6.1",

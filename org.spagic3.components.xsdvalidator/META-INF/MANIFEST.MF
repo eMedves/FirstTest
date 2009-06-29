@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Xsdvalidator
 Bundle-SymbolicName: org.spagic3.components.xsdvalidator
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-Vendor: Engineering Ing. Informatica
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.servicemix.nmr.api,
