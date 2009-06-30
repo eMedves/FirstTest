@@ -1,7 +1,12 @@
 package org.spagic3.deployer;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.swing.plaf.basic.BasicScrollPaneUI.HSBChangeListener;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -20,6 +25,7 @@ public class DeploymentService implements IDeploymentService {
 
 	private ConcurrentHashMap<String, ServiceReference> factories = new ConcurrentHashMap<String, ServiceReference>();
 	private ConcurrentHashMap<String, ComponentInstance> componentInstances = new ConcurrentHashMap<String, ComponentInstance>();
+	private ConcurrentHashMap<String, HashMap<String, Hashtable>> pendingDeployments = new ConcurrentHashMap<String, HashMap<String,Hashtable>>();
 	
 	private ComponentContext componentContext = null;
 
@@ -40,7 +46,13 @@ public class DeploymentService implements IDeploymentService {
 		logger.info(" Component Factory ["+componentFactoryIdentifier+"] -- REGISTERED");
 		this.factories.put(componentFactoryIdentifier,
 				componentFactoryReference);
-
+		
+		HashMap<String, Hashtable> pendingDeploymentForFactory = pendingDeployments.remove(componentFactoryIdentifier);
+		if (pendingDeploymentForFactory != null){
+			for ( String spID : pendingDeploymentForFactory.keySet()){
+				deploy(spID, componentFactoryIdentifier, pendingDeploymentForFactory.get(spID));
+			}
+		}
 	}
 
 	public void removeComponentFactory(
@@ -58,8 +70,10 @@ public class DeploymentService implements IDeploymentService {
 		ServiceReference sr = factories.get(factoryName);
 
 		if (sr == null) {
-			logger.error("Cannot Find a component factory [" + factoryName
-					+ "]");
+			logger.error("Cannot Find a component factory [" + factoryName + "]");
+			if (pendingDeployments.get(factoryName) == null)
+				pendingDeployments.put(factoryName, new HashMap<String, Hashtable>());
+			pendingDeployments.get(factoryName).put(spagicId, properties);
 		} else {
 			ComponentFactory cf = (ComponentFactory) componentContext
 					.locateService("cf", sr);
