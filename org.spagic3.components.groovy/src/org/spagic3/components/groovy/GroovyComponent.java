@@ -30,13 +30,18 @@ public class GroovyComponent extends BaseSpagicService {
 	
 	public void init(){
 		try{
+			logger.debug("Initializing Groovy Component with ID ["+getSpagicId()+"]");
 			String scriptProperty = propertyConfigurator.getString("script");
 			this.script = SpagicUtils.getURL(scriptProperty);
+			logger.debug("Script Property Is ["+script+"]");
 			this.engine = createScriptEngine();
-			
+			logger.debug("Engine Created ["+script+"]");
 			if (engine instanceof Compilable) {
+					logger.debug("Engine is IstanceOf Compilable ["+script+"]");
 	                Compilable compilable = (Compilable) engine;
+	                logger.debug("Compiling Script ["+script+"]");
 	                compileScript(compilable);
+	                logger.debug("Script Compiled ["+script+"]");
 	        }
 			
 		}catch (Throwable e) {
