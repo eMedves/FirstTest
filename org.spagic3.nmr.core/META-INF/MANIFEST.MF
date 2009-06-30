@@ -43,4 +43,6 @@ Bundle-DocURL: http://www.apache.org/
 Bundle-Vendor: The Apache Software Foundation
 Tool: Bnd-0.0.255
 Require-Bundle: org.apache.servicemix.nmr.api;bundle-version="1.0.0"
+Bundle-ClassPath: .,
+ lib/camel-core-1.6.0.jar
 

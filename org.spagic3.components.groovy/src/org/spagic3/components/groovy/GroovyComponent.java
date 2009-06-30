@@ -13,6 +13,7 @@ import javax.script.ScriptException;
 
 import org.apache.servicemix.nmr.api.Exchange;
 import org.apache.servicemix.nmr.api.Message;
+import org.codehaus.groovy.jsr223.GroovyScriptEngineImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spagic3.core.BaseSpagicService;
@@ -36,6 +37,8 @@ public class GroovyComponent extends BaseSpagicService {
 			logger.debug("Script Property Is ["+script+"]");
 			this.engine = createScriptEngine();
 			logger.debug("Engine Created ["+script+"]");
+			if (engine == null)
+				throw new RuntimeException("Engine is Null");
 			if (engine instanceof Compilable) {
 					logger.debug("Engine is IstanceOf Compilable ["+script+"]");
 	                Compilable compilable = (Compilable) engine;
@@ -61,8 +64,9 @@ public class GroovyComponent extends BaseSpagicService {
     }
 
     protected ScriptEngine createScriptEngine() {
-        ScriptEngineManager manager = new ScriptEngineManager();
-        return manager.getEngineByName("groovy");
+        /*ScriptEngineManager manager = new ScriptEngineManager();
+        return manager.getEngineByName("groovy");*/
+    	return new GroovyScriptEngineImpl();
     }
 	
     protected void populateBindings(Bindings bindings, Exchange exchange, Message in, Message out) throws Exception {
