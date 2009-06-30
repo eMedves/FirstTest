@@ -2,7 +2,6 @@ package org.spagic3.components.groovy;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.net.URL;
 
 import javax.script.Bindings;
@@ -40,7 +39,7 @@ public class GroovyComponent extends BaseSpagicService {
 	                compileScript(compilable);
 	        }
 			
-		}catch (Exception e) {
+		}catch (Throwable e) {
 			logger.error(e.getMessage(), e);
 			throw new RuntimeException(" Cannot instantiate Groovy Component", e);
 		}
@@ -76,11 +75,15 @@ public class GroovyComponent extends BaseSpagicService {
 		//synchronized (this) {
  		
 		logger.info(" GroovyComponent Component -> Run ["+getSpagicId()+"]"  );
-     	Bindings bindings = engine.createBindings();
-     
-     	
-     	populateBindings(bindings, exchange, in, out);
-     	
+		Bindings bindings = null;
+     	try{
+     		logger.info(" GroovyComponent Component -> Before Create Bindings ["+getSpagicId()+"]"  );
+     		bindings = engine.createBindings();
+     		logger.info(" GroovyComponent Component -> Populating Bindings  ["+getSpagicId()+"]"  );
+     		populateBindings(bindings, exchange, in, out);
+     	}catch (Throwable e) {
+     		logger.error(" Script Component Error", e);
+		}
      	try {
      		long startAt = System.currentTimeMillis();
          	runScript(bindings);
