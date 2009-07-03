@@ -1,6 +1,9 @@
 package org.spagic3.core;
 
 import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Properties;
 
 public class PropertyConfigurator {
 	
@@ -75,5 +78,17 @@ public class PropertyConfigurator {
 	
 	protected String getPropertyGeneric(String propertyName){
 		return properties.get(propertyName);
+	}
+	
+	public Properties asProperties(){
+		Properties prop = new Properties();
+		Enumeration<String> eKeys = properties.keys();
+		String key = null;
+		while (eKeys.hasMoreElements()){
+			key = eKeys.nextElement();
+			prop.put(key, properties.get(key));
+			
+		}
+		return prop;
 	}
 }

@@ -7,6 +7,20 @@ import org.osgi.service.component.ComponentFactory;
 
 public interface IDeploymentService {
 	
-	public void deploy(String spagicId, String factoryName, Hashtable properties);
-	public void undeploy(String spagicId);
+	public static final String SPAGIC_SERVICE = "SPAGIC_SERVICE";
+	public static final String SPAGIC_CONNECTOR = "SPAGIC_CONNECTOR";
+	public static final String SPAGIC_DATASOURCE = "SPAGIC_DATASOURCE";
+	
+	public static final String SPAGIC_TYPE = "SPAGIC_TYPE";
+	
+	public void deployService(String spagicId, String factoryName, Hashtable properties);
+	public void undeployService(String spagicId);
+	
+	public void deployConnector(String spagicId, String factoryName, Hashtable properties);
+	public void undeployConnector(String spagicId);
+	
+	public void deployDatasource(String dataSourceID, Hashtable properties);
+	public void undeployDatasource(String dataSourceID);
+	
+	
 }

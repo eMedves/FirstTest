@@ -19,7 +19,9 @@ import org.spagic3.deployer.IDeploymentService;
 public class DirWatcherService {
 	
 	protected Logger logger = LoggerFactory.getLogger(DirWatcherService.class); 
-	private ConcurrentHashMap<String, String> filesToIDMap = new ConcurrentHashMap<String, String>();
+	private ConcurrentHashMap<String, String> servicesFileToIdMap = new ConcurrentHashMap<String, String>();
+	private ConcurrentHashMap<String, String> connectorsFileToIdMap = new ConcurrentHashMap<String, String>();
+	private ConcurrentHashMap<String, String> datasourcesFileToIdMap = new ConcurrentHashMap<String, String>();
 	
 	protected void activate(ComponentContext componentContext){
 		final IDeploymentService deploymentService = (IDeploymentService)componentContext.locateService("deploymentService");
@@ -31,7 +33,12 @@ public class DirWatcherService {
 			spagicHome = "c:/temp/spagic3";
 		}
 			
-		TimerTask task = new DirWatcher(spagicHome, "service") {
+		String servicesHome = spagicHome + File.separator + "services";
+		String connectorsHome = spagicHome + File.separator + "connectors";
+		String dsHome = spagicHome + File.separator + "datasources";
+		String resourcesHome = spagicHome + File.separator + "resources";
+		
+		TimerTask servicePollingTask = new DirWatcher(servicesHome, "service") {
 			protected void onChange(File file, String action) {
 				try{
 					String filePath = file.getCanonicalPath();
@@ -39,13 +46,13 @@ public class DirWatcherService {
 			
 						if (action.equalsIgnoreCase("delete")){
 							
-							String spagicId = filesToIDMap.get(filePath);
+							String spagicId = servicesFileToIdMap.get(filePath);
 							
 							if (spagicId != null){
 								logger.warn("DirWatcher -> No component deployed for this file");
-								deploymentService.undeploy(spagicId);
+								deploymentService.undeployService(spagicId);
 							}
-							filesToIDMap.remove(filePath);
+							servicesFileToIdMap.remove(filePath);
 							
 						}else if (action.equalsIgnoreCase("add")){
 							SAXReader reader = new SAXReader();
@@ -64,9 +71,9 @@ public class DirWatcherService {
 								properties.put(pn.valueOf("@name"), pn.valueOf("@value"));
 							}
 							
-							deploymentService.deploy(spagicId, factoryName, properties);
+							deploymentService.deployService(spagicId, factoryName, properties);
 							
-							filesToIDMap.put(filePath, spagicId);
+							servicesFileToIdMap.put(filePath, spagicId);
 							
 						}else if (action.equalsIgnoreCase("modify")){
 							logger.warn("DirWatcher Service action ["+action+"] not supported");
@@ -79,8 +86,112 @@ public class DirWatcherService {
 			}
 		};
 
-		Timer timer = new Timer();
-		timer.schedule(task, new Date(), 5000);
+		
+		TimerTask connectorsPollingTask = new DirWatcher(servicesHome, "connector") {
+			protected void onChange(File file, String action) {
+				try{
+					String filePath = file.getCanonicalPath();
+					logger.info("DirWatcher Connector File ["+filePath+"] --> Action ["+action+"]");
+			
+						if (action.equalsIgnoreCase("delete")){
+							
+							String spagicId = connectorsFileToIdMap.get(filePath);
+							
+							if (spagicId != null){
+								logger.warn("DirWatcher -> No component deployed for this file");
+								deploymentService.undeployConnector(spagicId);
+							}
+							connectorsFileToIdMap.remove(filePath);
+							
+						}else if (action.equalsIgnoreCase("add")){
+							SAXReader reader = new SAXReader();
+							Document doc = reader.read(file);
+							
+							Node n = doc.selectSingleNode("/spagic:component");
+							String spagicId = n.valueOf("@spagic.id");
+							String factoryName =  n.valueOf("@factory.name");
+							
+							List<Node> propertiesNode = doc.selectNodes("/spagic:component/spagic:property");
+							
+							Hashtable<String, String> properties = new Hashtable<String, String>();
+							properties.put("spagic.id", spagicId);
+							properties.put("factory.name", factoryName);
+							for (Node pn : propertiesNode){
+								properties.put(pn.valueOf("@name"), pn.valueOf("@value"));
+							}
+							
+							deploymentService.deployConnector(spagicId, factoryName, properties);
+							
+							connectorsFileToIdMap.put(filePath, spagicId);
+							
+						}else if (action.equalsIgnoreCase("modify")){
+							logger.warn("DirWatcher Service action ["+action+"] not supported");
+						}else{
+							logger.warn("DirWatcher Service action ["+action+"] unknown");
+						}
+				}catch(Exception e){
+					logger.error(e.getMessage(), e);
+				}		
+			}
+		};
+		
+		
+		TimerTask dataSourcesPollingTask = new DirWatcher(servicesHome, "datasource") {
+			protected void onChange(File file, String action) {
+				try{
+					String filePath = file.getCanonicalPath();
+					logger.info("DirWatcher Datasource File ["+filePath+"] --> Action ["+action+"]");
+			
+						if (action.equalsIgnoreCase("delete")){
+							
+							String dataSourceId = datasourcesFileToIdMap.get(filePath);
+							
+							if (dataSourceId != null){
+								logger.warn("DirWatcher -> No component deployed for this file");
+								deploymentService.undeployDatasource(dataSourceId);
+							}
+							datasourcesFileToIdMap.remove(filePath);
+							
+						}else if (action.equalsIgnoreCase("add")){
+							
+							SAXReader reader = new SAXReader();
+							Document doc = reader.read(file);
+							
+							Node n = doc.selectSingleNode("/spagic:ds");
+							String dataSourceId = n.valueOf("@id");
+							
+							List<Node> propertiesNode = doc.selectNodes("/spagic:ds/spagic:property");
+							
+							Hashtable<String, String> properties = new Hashtable<String, String>();
+							properties.put("id", dataSourceId);
+
+							for (Node pn : propertiesNode){
+								properties.put(pn.valueOf("@name"), pn.valueOf("@value"));
+							}
+							
+							deploymentService.deployDatasource(dataSourceId, properties);
+							datasourcesFileToIdMap.put(filePath, dataSourceId);
+					
+							
+						}else if (action.equalsIgnoreCase("modify")){
+							logger.warn("DirWatcher DataSource action ["+action+"] not supported");
+						}else{
+							logger.warn("DirWatcher DataSource action ["+action+"] unknown");
+						}
+				}catch(Exception e){
+					logger.error(e.getMessage(), e);
+				}		
+			}
+		};
+		
+		Timer timerService = new Timer();
+		timerService.schedule(servicePollingTask, new Date(), 5000);
+		
+		Timer timerConnectors = new Timer();
+		timerConnectors.schedule(connectorsPollingTask, new Date(), 5000);
+		
+		Timer timerDataSources = new Timer();
+		timerDataSources.schedule(dataSourcesPollingTask, new Date(), 5000);
 	}
 	
 	protected void deactivate(ComponentContext componentContext){
