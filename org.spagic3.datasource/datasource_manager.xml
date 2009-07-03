@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
+	name="org.spagic3.datasource.DataSourceManager"
+
+	
+   <implementation class="org.spagic3.datasource.DataSourceManager"/>
+   <service>
+      <provide interface="org.spagic3.datasource.IDataSourceManager"/>
+   </service>
+   <reference 
+   		name="datasources"
+   		bind="addDataSource" 
+   		cardinality="0..n" 
+   		interface="javax.sql.DataSource" 
+   		policy="dynamic" 
+   		unbind="removeDataSource"/>
+</scr:component>

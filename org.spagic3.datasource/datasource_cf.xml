@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
+	name="org.spagic3.datasource.factory"
+	factory="spagic3.datasourcefactory">
+	
+   <implementation class="org.spagic3.datasource.DataSource"/>
+   <service>
+      <provide interface="javax.sql.DataSource"/>
+   </service>
+   
+</scr:component>
