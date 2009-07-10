@@ -68,5 +68,11 @@ public class SpagicConstants {
     public final static String WF_IS_PROCESS_TERMINATED = "WF_IS_PROCESS_TERMINATED";
     
     
+    public static final String SPAGIC_HOME_PROPERTY="spagic.home";
+	public static final String CONNECTORS_FOLDER="connectors";
+	public static final String SERVICES_FOLDER="services";
+	public static final String DATASOURCES_FOLDER="datasources";
+	public static final String RESOURCES_FOLDER="resources";
+	public static final String LOG_BACK_FILE_SYS_PROP = "logback.configurationFile";
     
 }
