@@ -14,13 +14,18 @@
     	<property name="hibernate.connection.password">spagic</property>
     	<property name="hibernate.query.substitutions">true 1, false 0</property>
     	 -->
-        <!--  MySQL  -->
+        <!--  MySQL  
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="hibernate.connection.password">spagic</property>
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/spagic</property>
         <property name="hibernate.connection.username">spagic</property>
+        -->
         
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
+        <property name="hibernate.connection.datasource">osgi/metadb</property>
+    	<property name="hibernate.connection.provider_class">org.spagic3.components.bpm.OSGiDataSourceConnectionProvider</property>
+    
+        
         <property name="show_sql">false</property>
        
 	    <property name="SetBigStringTryClob">true</property>

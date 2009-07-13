@@ -10,13 +10,17 @@
     <!-- hibernate dialect -->
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
 
-    <!-- JDBC connection properties (begin) -->
+    <!-- JDBC connection properties (begin) 
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/jbpm</property>
     <property name="hibernate.connection.username">jbpm</property>
     <property name="hibernate.connection.password">jbpm</property>
     <property name="hibernate.query.substitutions">true 1, false 0</property>
-    <!-- JDBC connection properties (end) -->
+    -->
+    
+    <property name="hibernate.connection.datasource">osgi/jbpm</property>
+    <property name="hibernate.connection.provider_class">org.spagic3.components.bpm.OSGiDataSourceConnectionProvider</property>
+    
 
 
     <!-- DataSource properties (begin) ===
