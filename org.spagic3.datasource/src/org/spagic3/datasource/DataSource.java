@@ -6,12 +6,15 @@ import java.sql.SQLException;
 
 import org.apache.commons.dbcp.BasicDataSourceFactory;
 import org.osgi.service.component.ComponentContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spagic3.core.PropertyConfigurator;
 
 
 
 public class DataSource implements javax.sql.DataSource{
-		
+	
+	private Logger logger = LoggerFactory.getLogger(DataSource.class);
 	private javax.sql.DataSource internalDS = null;
 	private BasicDataSourceFactory bdf = new BasicDataSourceFactory();
 	
@@ -28,8 +31,12 @@ public class DataSource implements javax.sql.DataSource{
 	
 	@Override
 	public Connection getConnection() throws SQLException {
-		
-		return internalDS.getConnection();
+		try{
+			return internalDS.getConnection();
+		}catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SQLException(e);
+		}
 	}
 
 	@Override

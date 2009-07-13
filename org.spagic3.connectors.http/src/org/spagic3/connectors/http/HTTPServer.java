@@ -141,7 +141,8 @@ public class HTTPServer extends AbstractSpagicConnector {
         try{
         	WSDLFactory wsdlFactory = WSDLFactory.newInstance();
     		WSDLReader reader = wsdlFactory.newWSDLReader();
-    		Definition def = reader.readWSDL(wsdl.toString());
+    		
+    		Definition def = reader.readWSDL(wsdl.asURL().toString());
     		
     		/*
     		WSIBPValidator validator = new WSIBPValidator(def);

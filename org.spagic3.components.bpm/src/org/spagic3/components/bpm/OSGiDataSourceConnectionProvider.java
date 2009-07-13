@@ -44,7 +44,7 @@ public class OSGiDataSourceConnectionProvider implements ConnectionProvider {
 		pass = props.getProperty(Environment.PASS);
 
 		try {
-			String realDatasourceId = jndiName.substring(IDataSourceManager.OSGI_PREFIX.length()+1);
+			String realDatasourceId = jndiName.substring(IDataSourceManager.OSGI_PREFIX.length());
 			ds = (DataSource) BPMComponentActivator.getDataSourceManager().getDataSource(realDatasourceId);
 		}
 		catch (Exception e) {

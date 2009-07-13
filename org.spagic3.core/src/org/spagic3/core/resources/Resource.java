@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,12 +42,30 @@ public class Resource implements IResource {
 			URI uri = new URI(resource);
 			String scheme = uri.getScheme();
 			if (customProtocols.contains(uri.getScheme())){
-				String resourceLocation = System.getProperty(SpagicConstants.RESOURCES_FOLDER) + File.separator + scheme + File.separator + uri.getHost();
+				String resourceLocation = System.getProperty(SpagicConstants.SPAGIC_HOME_PROPERTY) + File.separator + SpagicConstants.RESOURCES_FOLDER + File.separator + scheme + File.separator + uri.getHost();
 				System.out.println("Resource Resolved to "+ resourceLocation);
 				return new FileInputStream(resourceLocation);
 			}else{
 				return uri.toURL().openStream();
 			}
+		}catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return null;
+		}
+	}
+	
+	public URL asURL(){
+		try{
+			URI uri = new URI(resource);
+			String scheme = uri.getScheme();
+			if (customProtocols.contains(uri.getScheme())){
+				String resourceLocation = System.getProperty(SpagicConstants.SPAGIC_HOME_PROPERTY) + File.separator + SpagicConstants.RESOURCES_FOLDER + File.separator + scheme + File.separator + uri.getHost();
+				System.out.println("Resource Resolved to "+ resourceLocation);
+				File f = new File(resourceLocation);
+				URI fileURI =  f.toURI();
+				return fileURI.toURL();
+			}else{
+				return uri.toURL();			}
 		}catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return null;

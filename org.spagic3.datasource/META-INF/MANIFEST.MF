@@ -13,6 +13,4 @@ Import-Package: org.apache.commons.dbcp;version="1.2.2.osgi",
  org.slf4j;version="1.5.6",
  org.spagic3.core
 Export-Package: org.spagic3.datasource
-Require-Bundle: com.springsource.com.mysql.jdbc;bundle-version="5.1.6",
- com.springsource.oracle.jdbc;bundle-version="10.2.0",
- com.springsource.org.postgresql.jdbc4;bundle-version="8.3.604"
+Service-Component: datasource_cf.xml, datasource_manager.xml
