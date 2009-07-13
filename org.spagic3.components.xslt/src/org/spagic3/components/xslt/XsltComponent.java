@@ -16,8 +16,6 @@
  */
 package org.spagic3.components.xslt;
 
-import java.net.URL;
-
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -31,7 +29,7 @@ import org.dom4j.io.DocumentSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spagic3.core.BaseSpagicService;
-import org.spagic3.core.SpagicUtils;
+import org.spagic3.core.resources.IResource;
 
 
 public class XsltComponent extends BaseSpagicService {
@@ -40,13 +38,13 @@ public class XsltComponent extends BaseSpagicService {
 	private TransformerFactory transformerFactory;
     
     
-    public URL xsltURL = null;
+    public IResource xslt = null;
 	
 	
 	public void init(){
 		try{
-			String xsltURI = propertyConfigurator.getString("xslt");
-			this.xsltURL = SpagicUtils.getURL(xsltURI);
+			this.xslt = propertyConfigurator.getResource("xslt");
+		
 			
 			
 		}catch (Exception e) {
@@ -80,7 +78,7 @@ public class XsltComponent extends BaseSpagicService {
         	logger.debug("XSLT Transformer::getXsltSource::xsltSource is null create it ");
             // lets create a new one each time
             // as we can only read a stream once
-            xsltSource = new StreamSource(xsltURL.openStream());
+            xsltSource = new StreamSource(xslt.openStream());
             logger.debug("XSLT Transformer::getXsltSource::xsltSource created ");
       
         logger.debug("XSLT Transformer::getXsltSource::xsltSource " + ((xsltSource != null) ? "XSLT Source is not null " : "xsltSource IS NULL"));

@@ -29,5 +29,6 @@ Require-Bundle: org.apache.servicemix.bundles.commons-codec;bundle-version="1.2.
  org.apache.servicemix.nmr.api;bundle-version="1.0.0",
  org.spagic3.nmr.core;bundle-version="1.0.0"
 Export-Package: org.spagic3.core,
+ org.spagic3.core.resources,
  org.spagic3.core.routing
 Service-Component: spagic-router.xml

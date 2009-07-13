@@ -1,14 +1,11 @@
 package org.spagic3.components.groovy;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.apache.servicemix.nmr.api.Exchange;
@@ -17,7 +14,8 @@ import org.codehaus.groovy.jsr223.GroovyScriptEngineImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spagic3.core.BaseSpagicService;
-import org.spagic3.core.SpagicUtils;
+import org.spagic3.core.resources.IResource;
+
 
 
 public class GroovyComponent extends BaseSpagicService {
@@ -26,14 +24,13 @@ public class GroovyComponent extends BaseSpagicService {
 	private CompiledScript compiledScript;
 	protected Logger logger = LoggerFactory.getLogger(GroovyComponent.class);
 	
-	public URL script = null;
+	public IResource script = null;
 	
 	
 	public void init(){
 		try{
 			logger.debug("Initializing Groovy Component with ID ["+getSpagicId()+"]");
-			String scriptProperty = propertyConfigurator.getString("script");
-			this.script = SpagicUtils.getURL(scriptProperty);
+			this.script = propertyConfigurator.getResource("script");
 			logger.debug("Script Property Is ["+script+"]");
 			this.engine = createScriptEngine();
 			logger.debug("Engine Created ["+script+"]");
@@ -58,14 +55,11 @@ public class GroovyComponent extends BaseSpagicService {
         	this.compiledScript = compilable.compile(new InputStreamReader(script.openStream()));
         }catch (ScriptException e) {
             throw new Exception("Failed to parse compiledScript. Reason:  " + e, e);
-        } catch (IOException e) {
-            throw new Exception("Failed to parse compiledScript. Reason:  " + e, e);
-        }
+        } 
     }
 
     protected ScriptEngine createScriptEngine() {
-        /*ScriptEngineManager manager = new ScriptEngineManager();
-        return manager.getEngineByName("groovy");*/
+       
     	return new GroovyScriptEngineImpl();
     }
 	

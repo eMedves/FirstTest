@@ -35,6 +35,7 @@ import org.spagic3.core.AbstractSpagicConnector;
 import org.spagic3.core.PropertyConfigurator;
 import org.spagic3.core.SpagicConstants;
 import org.spagic3.core.SpagicUtils;
+import org.spagic3.core.resources.IResource;
 
 
 
@@ -48,7 +49,7 @@ public class HTTPServer extends AbstractSpagicConnector {
 	private String mep = null;
 	private long timeout = -1;
 	private boolean isSoap = false;
-	private URL wsdl = null;
+	private IResource wsdl = null;
 	
 	private QName service = null;
 	private String port = null;
@@ -95,12 +96,7 @@ public class HTTPServer extends AbstractSpagicConnector {
 			this.adapter = new PlainHTTPInputProtocolAdapter();
 		}else{
 			this.adapter = new SOAPInputProtocolAdapter();
-			String wsdlURI = propertyConfigurator.getString("wsdl");
-			try{
-				this.wsdl = SpagicUtils.getURL(wsdlURI);
-			}catch (Exception e) {
-				throw new RuntimeException(e);
-			}
+			this.wsdl = propertyConfigurator.getResource("wsdl");
 		}
 		validate();
 	}

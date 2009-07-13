@@ -5,6 +5,9 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 
+import org.spagic3.core.resources.IResource;
+import org.spagic3.core.resources.Resource;
+
 public class PropertyConfigurator {
 	
 	private Dictionary<String, String> properties;
@@ -90,5 +93,14 @@ public class PropertyConfigurator {
 			
 		}
 		return prop;
+	}
+	
+	public  IResource getResource(String propertyName){
+		String o = getPropertyGeneric(propertyName);
+		
+		if (o == null){
+			throw new MandatoryPropertyNotFoundException(propertyName);
+		}
+		return new Resource(o);
 	}
 }

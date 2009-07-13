@@ -26,10 +26,7 @@ public class SpagicUtils {
 	protected final static TransformerFactory tf = TransformerFactory
 			.newInstance();
 
-	public static URL getURL(String uriString) throws Exception {
-		URI uri = new URI(uriString);
-		return uri.toURL();
-	}
+	
 
 	public static String normalizeTopic(String topic) {
 		return topic.replaceAll("\\.", "-");

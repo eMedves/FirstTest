@@ -39,6 +39,7 @@ import org.spagic3.core.AbstractSpagicConnector;
 import org.spagic3.core.PropertyConfigurator;
 import org.spagic3.core.SpagicConstants;
 import org.spagic3.core.SpagicUtils;
+import org.spagic3.core.resources.IResource;
 
 public class HTTPClient extends AbstractSpagicConnector{
 	
@@ -47,24 +48,8 @@ public class HTTPClient extends AbstractSpagicConnector{
 	private String locationURI = null;
 	private boolean ssl = false; 
 	private SslParameters sslParameters = null;
-
-	private URL wsdl;
-	
+	private IResource wsdl;
 	private QName service = null;
-	public QName getService() {
-		return service;
-	}
-	public void setService(QName service) {
-		this.service = service;
-	}
-	public String getPort() {
-		return port;
-	}
-	public void setPort(String port) {
-		this.port = port;
-	}
-
-
 	private String port = null;
 	
 	private long clientTimeout = 60000;
@@ -98,15 +83,7 @@ public class HTTPClient extends AbstractSpagicConnector{
 			this.protocolAdapter = new PlainHTTPOutputProtocolAdapter(); 
 		}else{
 			this.protocolAdapter = new SOAPProtocolOutputAdapter();
-			String wsdlURI = propertyConfigurator.getString("wsdl", null);
-
-			if (wsdlURI != null){
-				try{
-					this.wsdl = SpagicUtils.getURL(wsdlURI);
-				}catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			}
+			this.wsdl = propertyConfigurator.getResource("wsdl");
 		}
 		validate();
 		
@@ -325,6 +302,18 @@ public class HTTPClient extends AbstractSpagicConnector{
         }
     }
     
+    public QName getService() {
+		return service;
+	}
+	public void setService(QName service) {
+		this.service = service;
+	}
+	public String getPort() {
+		return port;
+	}
+	public void setPort(String port) {
+		this.port = port;
+	}
 
 	
     

@@ -1,10 +1,5 @@
 package org.spagic3.components.xsdvalidator;
 
-import java.io.File;
-import java.io.StringReader;
-import java.net.URL;
-
-import javax.script.Compilable;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
@@ -15,16 +10,12 @@ import javax.xml.validation.Validator;
 
 import org.apache.servicemix.nmr.api.Exchange;
 import org.apache.servicemix.nmr.api.Message;
-import org.apache.servicemix.nmr.api.Status;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.DOMWriter;
-import org.dom4j.io.SAXReader;
 import org.spagic3.core.BaseSpagicService;
-import org.spagic3.core.ExchangeUtils;
-import org.spagic3.core.SpagicUtils;
-import org.xml.sax.InputSource;
+import org.spagic3.core.resources.IResource;
 
 
 public class ValidateComponent extends BaseSpagicService {
@@ -36,18 +27,17 @@ public class ValidateComponent extends BaseSpagicService {
 	private String schemaLanguage = "http://www.w3.org/2001/XMLSchema";
 	private Source schemaSource;
 	private boolean includeStackTraceInError = false;
-	private String schemaURLString = null;
 	private String faultHandlingMethod = null;
-	private  URL schemaURL = null;
+	private IResource schemaResource = null;
 	
 	
 	public void init(){
 		try{
-			schemaURLString = propertyConfigurator.getString("schema");
+			
 			includeStackTraceInError = propertyConfigurator.getBoolean("includeStackTraceInError");
-			this.schemaURL = SpagicUtils.getURL(schemaURLString);
+			this.schemaResource = propertyConfigurator.getResource("schema");
             SchemaFactory factory = SchemaFactory.newInstance(schemaLanguage);
-            schemaSource = new StreamSource(schemaURL.openStream());
+            schemaSource = new StreamSource(schemaResource.openStream());
             schema = factory.newSchema(schemaSource);
 		}catch (Exception e) {
 			logger.error(e.getMessage(), e);
