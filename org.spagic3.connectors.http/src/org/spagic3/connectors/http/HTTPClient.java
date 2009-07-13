@@ -83,7 +83,7 @@ public class HTTPClient extends AbstractSpagicConnector{
 			this.protocolAdapter = new PlainHTTPOutputProtocolAdapter(); 
 		}else{
 			this.protocolAdapter = new SOAPProtocolOutputAdapter();
-			this.wsdl = propertyConfigurator.getResource("wsdl");
+			this.wsdl = propertyConfigurator.getResource("wsdl", null);
 		}
 		validate();
 		

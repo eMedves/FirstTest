@@ -103,4 +103,16 @@ public class PropertyConfigurator {
 		}
 		return new Resource(o);
 	}
+	
+	public  IResource getResource(String propertyName, String defaultValue){
+		String o = getPropertyGeneric(propertyName);
+		
+		if (o != null)
+			return new Resource(o);
+		else if (defaultValue != null)
+			return new Resource(defaultValue);
+		else
+			return null;
+	}
+	
 }

@@ -30,8 +30,8 @@ public class DirWatcherService {
 		String spagicHome = System.getProperty("spagic.home");
 		
 		if (spagicHome == null){
-			logger.warn(" Spagic HOME NOT SETTED Using [c:/temp/spagic3]");
-			spagicHome = "c:/temp/spagic3";
+			logger.warn(" Spagic HOME NOT SETTED ");
+			return;
 		}
 			
 		String servicesHome = spagicHome + File.separator + SpagicConstants.SERVICES_FOLDER;
