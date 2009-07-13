@@ -113,12 +113,7 @@ public class BPMComponent extends BaseSpagicService  {
 		}
 	}
 
-	@Override
-	public boolean run(Exchange exchange, Message in, Message out)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 	
 	
 	

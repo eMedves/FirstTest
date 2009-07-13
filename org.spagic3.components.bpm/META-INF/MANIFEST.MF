@@ -30,7 +30,6 @@ Bundle-ClassPath: .,
  lib/junit.jar,
  lib/log4j.jar,
  lib/mail-1.4.jar,
- lib/mysql-connector-java-5.0.7-bin.jar,
  lib/xstream-1.3.jar,
  lib/jta.jar,
  lib/metadb-model-2.5.1.jar,
@@ -41,3 +40,6 @@ Bundle-ClassPath: .,
 Service-Component: process_engine.xml, bpm_cf.xml, service_invoker.xml 
 Export-Package: org.spagic3.components.bpm.invoker
 Bundle-Activator: org.spagic3.components.bpm.activator.BPMComponentActivator
+Require-Bundle: com.springsource.com.mysql.jdbc;bundle-version="5.1.6",
+ com.springsource.oracle.jdbc;bundle-version="10.2.0",
+ com.springsource.org.postgresql.jdbc4;bundle-version="8.3.604"
