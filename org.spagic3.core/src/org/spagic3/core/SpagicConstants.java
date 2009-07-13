@@ -47,8 +47,21 @@ public class SpagicConstants {
     
     public static final String PROTOCOL_HEADERS = "nmr.messaging.protocol.headers";
     
-    
-    // This variables could be setted into the exchange to modify wf engine behavour
+    public static final String SPAGIC_HOME_PROPERTY="spagic.home";
+	public static final String CONNECTORS_FOLDER="connectors";
+	public static final String SERVICES_FOLDER="services";
+	public static final String DATASOURCES_FOLDER="datasources";
+	public static final String RESOURCES_FOLDER="resources";
+	public static final String LOG_BACK_FILE_SYS_PROP = "logback.configurationFile";
+	
+	public static final String[] SERVICE_DEPLOYMENTS_EXTENSIONS = {"service","scrappy"};
+	public static final String[] CONNECTOR_DEPLOYMENTS_EXTENSIONS = {"connector","service","scrappy"};
+	public static final String[] DATASOURCE_DEPLOYMENTS_EXTENSIONS = {"datasource","ds","scrappy"};
+	
+	
+	
+	
+	//This variables could be setted into the exchange to modify wf engine behavour
     
     //
     // This will set/update the variable called VAR_A in Workflow Process Instance
@@ -66,13 +79,5 @@ public class SpagicConstants {
     // If this property id valorized when the Workflow Process Instance is end the result is not porpagated to
     // the target connectors of orchestration service
     public final static String WF_IS_PROCESS_TERMINATED = "WF_IS_PROCESS_TERMINATED";
-    
-    
-    public static final String SPAGIC_HOME_PROPERTY="spagic.home";
-	public static final String CONNECTORS_FOLDER="connectors";
-	public static final String SERVICES_FOLDER="services";
-	public static final String DATASOURCES_FOLDER="datasources";
-	public static final String RESOURCES_FOLDER="resources";
-	public static final String LOG_BACK_FILE_SYS_PROP = "logback.configurationFile";
     
 }

@@ -41,7 +41,9 @@ public class FileSystemPollerConnector extends AbstractSpagicConnector{
 		}
 	   
 		public void start() throws Exception {
-			this.pollingTask  = new DirWatcher(directory, extensionFilter) {
+			String[] filters = new String[1];
+			filters[0] = extensionFilter;
+			this.pollingTask  = new DirWatcher(directory, filters) {
 				protected void onChange(File file, String action) {
 					try{
 						if (action.equalsIgnoreCase("add")){

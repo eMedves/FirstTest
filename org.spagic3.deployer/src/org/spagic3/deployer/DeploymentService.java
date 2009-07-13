@@ -79,7 +79,7 @@ public class DeploymentService implements IDeploymentService {
 		properties.put(IDeploymentService.SPAGIC_TYPE, spagicType);
 		
 		if (sr == null) {
-			logger.error("Cannot Find A Component Factory [" + factoryName + "] for ["+spagicType+"] With ID ["+id+"]");
+			logger.warn("Cannot Find A Component Factory [" + factoryName + "] for ["+spagicType+"] With ID ["+id+"]");
 			if (pendingDeployments.get(factoryName) == null)
 				pendingDeployments.put(factoryName, new HashMap<String, Hashtable>());
 			pendingDeployments.get(factoryName).put(id, properties);

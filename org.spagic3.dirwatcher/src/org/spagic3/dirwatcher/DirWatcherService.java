@@ -14,6 +14,7 @@ import org.dom4j.io.SAXReader;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spagic3.core.SpagicConstants;
 import org.spagic3.deployer.IDeploymentService;
 
 public class DirWatcherService {
@@ -33,12 +34,12 @@ public class DirWatcherService {
 			spagicHome = "c:/temp/spagic3";
 		}
 			
-		String servicesHome = spagicHome + File.separator + "services";
-		String connectorsHome = spagicHome + File.separator + "connectors";
-		String dsHome = spagicHome + File.separator + "datasources";
-		String resourcesHome = spagicHome + File.separator + "resources";
+		String servicesHome = spagicHome + File.separator + SpagicConstants.SERVICES_FOLDER;
+		String connectorsHome = spagicHome + File.separator + SpagicConstants.CONNECTORS_FOLDER;
+		String dsHome = spagicHome + File.separator + SpagicConstants.DATASOURCES_FOLDER;
+
 		
-		TimerTask servicePollingTask = new DirWatcher(servicesHome, "service") {
+		TimerTask servicePollingTask = new DirWatcher(servicesHome, SpagicConstants.SERVICE_DEPLOYMENTS_EXTENSIONS ) {
 			protected void onChange(File file, String action) {
 				try{
 					String filePath = file.getCanonicalPath();
@@ -87,7 +88,7 @@ public class DirWatcherService {
 		};
 
 		
-		TimerTask connectorsPollingTask = new DirWatcher(servicesHome, "connector") {
+		TimerTask connectorsPollingTask = new DirWatcher(connectorsHome, SpagicConstants.CONNECTOR_DEPLOYMENTS_EXTENSIONS) {
 			protected void onChange(File file, String action) {
 				try{
 					String filePath = file.getCanonicalPath();
@@ -136,7 +137,7 @@ public class DirWatcherService {
 		};
 		
 		
-		TimerTask dataSourcesPollingTask = new DirWatcher(servicesHome, "datasource") {
+		TimerTask dataSourcesPollingTask = new DirWatcher(dsHome, SpagicConstants.DATASOURCE_DEPLOYMENTS_EXTENSIONS) {
 			protected void onChange(File file, String action) {
 				try{
 					String filePath = file.getCanonicalPath();
