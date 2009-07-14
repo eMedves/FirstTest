@@ -4,5 +4,6 @@
 <target name="Spagic3">
 <locations>
 <location path="C:\Progetti\Spagic3\Spagic3Target" type="Directory"/>
+<location path="C:\Progetti\Spagic3\DriversJDBC" type="Directory"/>
 </locations>
 </target>

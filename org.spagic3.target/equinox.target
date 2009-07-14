@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.5"?>
-
-<target name="Equinox 3.5 M6">
-<locations>
-<location path="C:\Progetti\Spagic3\target" type="Directory"/>
-</locations>
-</target>
