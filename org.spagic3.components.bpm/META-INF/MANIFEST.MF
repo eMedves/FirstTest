@@ -10,6 +10,7 @@ Import-Package: org.apache.servicemix.nmr.api,
  org.osgi.service.event;version="1.2.0",
  org.osgi.util.tracker;version="1.4.2",
  org.slf4j;version="1.5.6",
+ org.spagic3.constants,
  org.spagic3.core,
  org.spagic3.core.routing,
  org.spagic3.datasource,
@@ -40,6 +41,3 @@ Bundle-ClassPath: .,
 Service-Component: process_engine.xml, bpm_cf.xml, service_invoker.xml 
 Export-Package: org.spagic3.components.bpm.invoker
 Bundle-Activator: org.spagic3.components.bpm.activator.BPMComponentActivator
-Require-Bundle: com.springsource.com.mysql.jdbc;bundle-version="5.1.6",
- com.springsource.oracle.jdbc;bundle-version="10.2.0",
- com.springsource.org.postgresql.jdbc4;bundle-version="8.3.604"

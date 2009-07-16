@@ -21,7 +21,7 @@
         <property name="hibernate.connection.username">spagic</property>
         -->
         
-        <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
+        <!--  <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property> -->
         <property name="hibernate.connection.datasource">osgi/metadb</property>
     	<property name="hibernate.connection.provider_class">org.spagic3.components.bpm.OSGiDataSourceConnectionProvider</property>
         

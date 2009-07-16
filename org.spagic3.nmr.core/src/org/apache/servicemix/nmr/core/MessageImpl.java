@@ -18,12 +18,17 @@ package org.apache.servicemix.nmr.core;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
+import javax.activation.DataHandler;
 import javax.security.auth.Subject;
+import javax.xml.bind.attachment.AttachmentUnmarshaller;
 
 import org.apache.servicemix.nmr.api.Message;
 import org.apache.servicemix.nmr.core.util.ExchangeUtils;
+import org.spagic3.attachments.Attachment;
+import org.spagic3.attachments.AttachmentStore;
 
 /**
  * The default {@link Message} implementation.
@@ -43,7 +48,9 @@ public class MessageImpl implements Message {
     private String contentEncoding;
     private Subject securitySubject;
     private Map<String, Object> headers;
-    private Map<String, Object> attachments;
+    
+    // ID_IN THE MESSAGE, ID IN PERSITENT STORE
+    private Map<String, Long> _internalAttachments;
     private static transient Converter converter;
 
     public MessageImpl() {
@@ -264,10 +271,13 @@ public class MessageImpl implements Message {
      * @return the attachement or <code>null</code> if none exists
      */
     public Object getAttachment(String id) {
-        if (attachments == null) {
+        if (_internalAttachments == null) {
             return null;
         }
-        return attachments.get(id);
+        
+        Long idInPersistentStore = _internalAttachments.get(id);
+        Attachment att = AttachmentStore.load(idInPersistentStore);
+        return att.getDh();
     }
 
     /**
@@ -277,10 +287,12 @@ public class MessageImpl implements Message {
      * @param value the attachment to add
      */
     public void addAttachment(String id, Object value) {
-        if (attachments == null) {
-            attachments = new HashMap<String, Object>();
+    	if (_internalAttachments == null) {	  
+    		  _internalAttachments = new HashMap<String, Long>();
+    		 
         }
-        attachments.put(id, value);
+    	Long idInPersistenceStore = AttachmentStore.store(id, (DataHandler)value);
+       _internalAttachments.put(id, idInPersistenceStore);
     }
 
     /**
@@ -289,8 +301,10 @@ public class MessageImpl implements Message {
      * @param id the id of the attachment to remove
      */
     public void removeAttachment(String id) {
-        if (attachments != null) {
-            attachments.remove(id);
+        if (_internalAttachments != null) {
+            Long idInPersistenceStore = _internalAttachments.get(id);
+            AttachmentStore.delete(idInPersistenceStore);
+            _internalAttachments.remove(id);
         }
     }
 
@@ -300,10 +314,14 @@ public class MessageImpl implements Message {
      * @return the map of attachments
      */
     public Map<String, Object> getAttachments() {
-        if (attachments == null) {
-            attachments = new HashMap<String, Object>();
+        if (_internalAttachments == null) {
+        	_internalAttachments = new HashMap<String, Long>();
         }
-        return attachments;
+        Map<String, Object> realAttachmentMap = new HashMap<String, Object>();
+        for (String idAtt :_internalAttachments.keySet()){
+        	realAttachmentMap.put(idAtt, getAttachment(idAtt));
+        }
+        return realAttachmentMap;
     }
 
     /**
@@ -333,12 +351,12 @@ public class MessageImpl implements Message {
             headers = null;
         }
         if (!msg.getAttachments().isEmpty()) {
-            attachments = new HashMap<String, Object>();
+            
             for (Map.Entry<String, Object> e : msg.getAttachments().entrySet()) {
-                attachments.put(e.getKey(), e.getValue());
+                addAttachment(e.getKey(), e.getValue());
             }
         } else {
-            attachments = null;
+            //attachments = null;
         }
     }
 
@@ -389,4 +407,30 @@ public class MessageImpl implements Message {
         setBody(xml, String.class);
     }
 
+    public String _encodeAttachments(){
+    	if (_internalAttachments == null)
+    		return null;
+    	StringBuffer sb = new StringBuffer();
+    	Iterator<String> it = _internalAttachments.keySet().iterator();
+    	while (it.hasNext()){
+    		String id = it.next();
+    		sb.append(id +","+_internalAttachments.get(id));
+    		if (it.hasNext())
+    			sb.append(";");
+    	}
+    	return sb.toString();
+    }
+    
+    public void _decodeAttachments(String encodedAttachments){
+    	if (encodedAttachments == null)
+    		return;
+    	if (_internalAttachments == null)
+    		_internalAttachments = new HashMap<String, Long>();
+    	String[] attachmentTokens = encodedAttachments.split(";");
+    	String[] keyValuePair = null;
+    	for (String token : attachmentTokens){
+    		keyValuePair = token.split(",");
+    		_internalAttachments.put(keyValuePair[0], new Long(keyValuePair[1]));
+    	}	
+    }
 }

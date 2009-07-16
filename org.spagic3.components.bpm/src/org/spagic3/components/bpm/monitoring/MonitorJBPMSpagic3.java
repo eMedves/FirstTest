@@ -20,7 +20,7 @@ import org.spagic.monitoring.jbpm.MonitorServiceJBPM;
 import org.spagic.workflow.api.jbpm.ProcessEngine;
 import org.spagic3.components.bpm.BPMComponent;
 import org.spagic3.components.bpm.BPMContextSingleton;
-import org.spagic3.core.SpagicConstants;
+import org.spagic3.constants.SpagicConstants;
 
 public class MonitorJBPMSpagic3 extends MonitorServiceJBPM {
 

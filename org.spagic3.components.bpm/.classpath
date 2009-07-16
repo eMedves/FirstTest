@@ -4,7 +4,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/spagic-monitor-core-2.5.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spagic-monitor-workflow-2.5.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spagic-workflow-api-2.5.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/spagic-workflow-jbpm-2.5.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spagic-workflow-jbpm-2.5.1.jar" sourcepath="/SpagicWorkflowJBPM"/>
 	<classpathentry exported="true" kind="lib" path="lib/jta.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activation.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr.jar"/>
@@ -14,10 +14,10 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-collections.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/dom4j.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/hibernate.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/hibernate.jar" sourcepath="C:/tmp/hibernate-3.2.6.ga/hibernate-3.2/src"/>
 	<classpathentry exported="true" kind="lib" path="lib/hsqldb.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm-identity.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jbpm-jpdl.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jbpm-jpdl.jar" sourcepath="C:/jbpm-3.3.0.GA/src/jbpm-jpdl-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/junit.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/log4j.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mail-1.4.jar"/>

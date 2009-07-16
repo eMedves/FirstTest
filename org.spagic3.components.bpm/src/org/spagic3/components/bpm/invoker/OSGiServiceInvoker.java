@@ -8,8 +8,8 @@ import org.jbpm.graph.exe.Token;
 import org.spagic.workflow.api.Variable;
 import org.spagic.workflow.api.jbpm.ProcessEngine;
 import org.spagic3.components.bpm.BPMContextSingleton;
+import org.spagic3.constants.SpagicConstants;
 import org.spagic3.core.AbstractSpagicService;
-import org.spagic3.core.SpagicConstants;
 import org.spagic3.integration.api.IExchangeProvider;
 import org.spagic3.integration.api.IWorkflowContextUpdater;
 

@@ -1,8 +1,9 @@
 <jbpm-configuration>
   <jbpm-context>
-    <service name="persistence" factory="org.spagic3.components.bpm.OSGiAwarePersistenceFactory"/>
-
-	<!--  
+   
+   <service name="persistence" factory="org.jbpm.persistence.db.DbPersistenceServiceFactory" />
+	<!--
+	 <service name="persistence" factory="org.spagic3.components.bpm.OSGiAwarePersistenceFactory"/>  
     <service name="persistence">
       <factory>
         <bean class="org.spagic3.components.bpm.OSGiAwarePersistenceFactory">

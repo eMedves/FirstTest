@@ -8,7 +8,7 @@ import org.apache.servicemix.nmr.api.Exchange;
 import org.spagic.workflow.api.Variable;
 import org.spagic.workflow.api.jbpm.ProcessEngine;
 import org.spagic3.components.bpm.BPMContextSingleton;
-import org.spagic3.core.SpagicConstants;
+import org.spagic3.constants.SpagicConstants;
 import org.spagic3.integration.api.IWorkflowContextUpdater;
 
 public class SetVariableAndContinueProcessUpdater implements IWorkflowContextUpdater {

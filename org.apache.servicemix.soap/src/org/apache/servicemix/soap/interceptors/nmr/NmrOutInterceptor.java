@@ -39,7 +39,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.DocumentSource;
-import org.spagic3.core.SpagicConstants;
+import org.spagic3.constants.SpagicConstants;
 import org.w3c.dom.DocumentFragment;
 
 /**

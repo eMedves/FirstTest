@@ -25,7 +25,7 @@ import org.apache.servicemix.common.util.DOM4JUtils;
 import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.bindings.soap.SoapFault;
 import org.apache.servicemix.soap.core.AbstractInterceptor;
-import org.spagic3.core.SpagicConstants;
+import org.spagic3.constants.SpagicConstants;
 
 /**
  * @author <a href="mailto:gnodet [at] gmail.com">Guillaume Nodet</a>

@@ -46,7 +46,7 @@ import org.apache.servicemix.soap.bindings.soap.impl.Wsdl1SoapOperationImpl;
 import org.apache.servicemix.soap.bindings.soap.impl.Wsdl1SoapPartImpl;
 import org.apache.servicemix.soap.bindings.soap.model.wsdl1.Wsdl1SoapBinding;
 import org.apache.servicemix.soap.bindings.soap.model.wsdl1.Wsdl1SoapBinding.Style;
-import org.spagic3.core.SpagicConstants;
+import org.spagic3.constants.SpagicConstants;
 
 public class Wsdl1Soap12BindingFactory {
 
