@@ -31,9 +31,9 @@ import org.spagic3.connectors.http.adapters.IHTTPInputProtocolAdapter;
 import org.spagic3.connectors.http.adapters.PlainHTTPInputProtocolAdapter;
 import org.spagic3.connectors.http.adapters.SOAPInputProtocolAdapter;
 import org.spagic3.connectors.http.ssl.SslParameters;
+import org.spagic3.constants.SpagicConstants;
 import org.spagic3.core.AbstractSpagicConnector;
 import org.spagic3.core.PropertyConfigurator;
-import org.spagic3.core.SpagicConstants;
 import org.spagic3.core.SpagicUtils;
 import org.spagic3.core.resources.IResource;
 

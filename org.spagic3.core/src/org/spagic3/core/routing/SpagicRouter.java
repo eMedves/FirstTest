@@ -4,9 +4,9 @@ import org.apache.servicemix.nmr.api.Exchange;
 import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spagic3.constants.SpagicConstants;
 import org.spagic3.core.AbstractSpagicConnector;
 import org.spagic3.core.ExchangeUtils;
-import org.spagic3.core.SpagicConstants;
 
 public class SpagicRouter implements IMessageRouter {
 	
@@ -41,7 +41,7 @@ public class SpagicRouter implements IMessageRouter {
 		
 
 
-	
+	/*
 	public boolean sendSync(Exchange exchange) throws Exception {
 		String sender = (String)exchange.getProperties().get(SpagicConstants.SPAGIC_SENDER);
 		// Target Configuration
@@ -50,10 +50,10 @@ public class SpagicRouter implements IMessageRouter {
 		// If target is not configured as a properties of the exchange
 		// Se if there's a connector routing map
 		
-		/*
+		
 		if (target == null)
 			target = connectorRoutingService.getTarget(sender);
-		*/
+		
 		if (target == null)
 			throw new Exception(" No Target Configured ");
 		if (this.ea != null){
@@ -62,6 +62,7 @@ public class SpagicRouter implements IMessageRouter {
 		}
 		return false;
 	}
+*/
 	
 	public void bind(EventAdmin ea){
 		this.ea = ea;

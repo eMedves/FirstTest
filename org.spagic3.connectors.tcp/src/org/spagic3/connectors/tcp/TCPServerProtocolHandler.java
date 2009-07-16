@@ -29,7 +29,7 @@ import org.apache.mina.transport.socket.nio.SocketSessionConfig;
 import org.apache.mina.util.SessionLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spagic3.core.SpagicConstants;
+import org.spagic3.constants.SpagicConstants;
 
 /**
  * This component should decouple MINA interation with JBI one.

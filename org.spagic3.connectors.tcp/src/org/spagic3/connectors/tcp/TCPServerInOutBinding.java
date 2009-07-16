@@ -29,8 +29,8 @@ import org.apache.servicemix.nmr.api.Pattern;
 import org.apache.servicemix.nmr.api.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spagic3.constants.SpagicConstants;
 import org.spagic3.core.ExchangeUtils;
-import org.spagic3.core.SpagicConstants;
 
 public class TCPServerInOutBinding  {
 	
@@ -85,19 +85,7 @@ public class TCPServerInOutBinding  {
 
             	server.getMessageRouter().send(exchange);
 	            server.process(exchange);
-            } else {
-            	boolean result = server.getMessageRouter().sendSync(exchange);
-            	
-	            if (result) {
-	            	if (exchange.getStatus() == Status.Error) {
-	            		if (exchange.getError() != null) {
-	            			// comunicate a specific error?
-	            		} else {
-	            			// comunicate a generic error
-	            		}
-	            	}
-	            }
-            }
+            } 
            
 	    }
 	    finally {
@@ -105,10 +93,5 @@ public class TCPServerInOutBinding  {
 	    }		
 	}
 	
-	/*
-	private void configureExchangeTarget(MessageExchange exchange) {
-		System.out.println(" Configure Exchange Target on Exchange ");
 	
-	}
-	*/
 }

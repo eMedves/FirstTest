@@ -33,8 +33,8 @@ import org.slf4j.LoggerFactory;
 import org.spagic3.connectors.tcp.codec.TCPMsgCodecFactory;
 import org.spagic3.connectors.tcp.codec.util.NMUtils;
 import org.spagic3.connectors.tcp.ssl.TCPBCSSLContextFactory;
+import org.spagic3.constants.SpagicConstants;
 import org.spagic3.core.AbstractSpagicConnector;
-import org.spagic3.core.SpagicConstants;
 
 public class TCPServer extends AbstractSpagicConnector {
 	

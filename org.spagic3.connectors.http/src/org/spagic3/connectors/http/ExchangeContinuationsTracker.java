@@ -9,7 +9,7 @@ import org.apache.servicemix.nmr.api.Exchange;
 import org.apache.servicemix.nmr.api.Message;
 import org.apache.servicemix.nmr.api.Status;
 import org.mortbay.util.ajax.Continuation;
-import org.spagic3.core.SpagicConstants;
+import org.spagic3.constants.SpagicConstants;
 
 public class ExchangeContinuationsTracker {
 

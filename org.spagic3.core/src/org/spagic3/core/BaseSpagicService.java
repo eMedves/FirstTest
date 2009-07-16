@@ -5,6 +5,7 @@ import org.apache.servicemix.nmr.api.Message;
 import org.apache.servicemix.nmr.api.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spagic3.constants.SpagicConstants;
 
 public abstract class BaseSpagicService extends AbstractSpagicService {
 	

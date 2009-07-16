@@ -16,8 +16,8 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.spagic3.constants.SpagicConstants;
 import org.spagic3.core.ExchangeUtils;
-import org.spagic3.core.SpagicConstants;
 
 public class PlainHTTPInputProtocolAdapter implements IHTTPInputProtocolAdapter {
 

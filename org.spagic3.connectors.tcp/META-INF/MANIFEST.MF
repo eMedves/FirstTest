@@ -11,7 +11,8 @@ Import-Package: org.osgi.framework;version="1.3.0",
  org.spagic3.connectors.tcp,
  org.spagic3.connectors.tcp.codec,
  org.spagic3.connectors.tcp.codec.util,
- org.spagic3.connectors.tcp.ssl
+ org.spagic3.connectors.tcp.ssl,
+ org.spagic3.constants
 Require-Bundle: org.apache.commons.collections;bundle-version="3.2.1",
  org.apache.servicemix.bundles.commons-codec;bundle-version="1.2.0",
  org.spagic3.core;bundle-version="1.0.0",

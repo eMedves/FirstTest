@@ -14,7 +14,7 @@ import org.dom4j.io.SAXReader;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spagic3.core.SpagicConstants;
+import org.spagic3.constants.SpagicConstants;
 import org.spagic3.deployer.IDeploymentService;
 
 public class DirWatcherService {

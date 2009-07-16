@@ -57,7 +57,8 @@ Import-Package: javax.servlet;version="2.4.0",
  org.spagic3.connectors.http,
  org.spagic3.connectors.http.handlers,
  org.spagic3.connectors.http.servlet,
- org.spagic3.connectors.http.ssl
+ org.spagic3.connectors.http.ssl,
+ org.spagic3.constants
 Require-Bundle: org.apache.commons.collections;bundle-version="3.2.1",
  org.apache.servicemix.bundles.commons-codec;bundle-version="1.2.0",
  org.spagic3.core;bundle-version="1.0.0",

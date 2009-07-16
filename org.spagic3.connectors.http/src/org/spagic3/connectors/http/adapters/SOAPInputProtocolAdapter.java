@@ -19,7 +19,7 @@ import org.apache.servicemix.soap.api.model.Binding;
 import org.apache.servicemix.soap.bindings.http.HttpConstants;
 import org.apache.servicemix.soap.bindings.soap.SoapFault;
 import org.apache.servicemix.soap.bindings.soap.SoapVersion;
-import org.spagic3.core.SpagicConstants;
+import org.spagic3.constants.SpagicConstants;
 
 public class SOAPInputProtocolAdapter implements IHTTPInputProtocolAdapter {
 	

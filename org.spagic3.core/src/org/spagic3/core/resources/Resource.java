@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spagic3.core.SpagicConstants;
+import org.spagic3.constants.SpagicConstants;
 
 public class Resource implements IResource {
 

@@ -9,6 +9,7 @@ import org.apache.servicemix.nmr.api.Pattern;
 import org.apache.servicemix.nmr.api.Status;
 import org.apache.servicemix.nmr.core.ExchangeImpl;
 import org.osgi.service.event.Event;
+import org.spagic3.constants.SpagicConstants;
 
 public class ExchangeUtils {
 	

@@ -24,7 +24,8 @@ Import-Package: org.dom4j;version="1.6.1",
  org.osgi.service.component;version="1.1.0",
  org.osgi.service.event,
  org.osgi.service.framework;version="1.0.0",
- org.slf4j;version="1.5.6"
+ org.slf4j;version="1.5.6",
+ org.spagic3.constants
 Require-Bundle: org.apache.servicemix.bundles.commons-codec;bundle-version="1.2.0",
  org.apache.servicemix.nmr.api;bundle-version="1.0.0",
  org.spagic3.nmr.core;bundle-version="1.0.0"

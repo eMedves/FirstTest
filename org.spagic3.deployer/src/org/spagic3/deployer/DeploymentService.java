@@ -11,7 +11,7 @@ import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.event.EventConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spagic3.core.SpagicConstants;
+import org.spagic3.constants.SpagicConstants;
 import org.spagic3.core.SpagicUtils;
 
 public class DeploymentService implements IDeploymentService {
