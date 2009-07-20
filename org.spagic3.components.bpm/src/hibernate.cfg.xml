@@ -29,7 +29,10 @@
        
 	    <property name="SetBigStringTryClob">true</property>
 	    <property name="batch_size">0</property>
-       <mapping resource="org/spagic/metadb/model/PoolType.hbm.xml" />
+	     <!-- Automatic schema creation (begin) -->
+    	
+       	
+       	<mapping resource="org/spagic/metadb/model/PoolType.hbm.xml" />
         <mapping resource="org/spagic/metadb/model/Process.hbm.xml" />
         <mapping resource="org/spagic/metadb/model/Cscheme.hbm.xml" />
         <mapping resource="org/spagic/metadb/model/ProcessDiagram.hbm.xml" />
