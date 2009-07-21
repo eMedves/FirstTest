@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.h2.tools.Console;
 import org.h2.util.JdbcUtils;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -26,10 +25,8 @@ public class H2DatabaseActivator implements BundleActivator {
 	 * 
 	 */
 	public void start(BundleContext context) throws Exception {
-		Thread th = new Thread(new H2Starter());
-		th.run();
 		
-		/*
+		
 		String spagicDbUrl = "jdbc:h2:tcp://localhost/~/spagic";
 		String jbpmDbUrl = "jdbc:h2:tcp://localhost/~/jbpm";
 		
@@ -53,7 +50,7 @@ public class H2DatabaseActivator implements BundleActivator {
 		
 		script  = tmpSetupSQLFile.getCanonicalPath();
 		runScript(spagicDbUrl, "spagic", "spagic", script);
-		*/
+		
 	}
 
 
@@ -103,8 +100,9 @@ public class H2DatabaseActivator implements BundleActivator {
 		 	Connection conn = null;
 	        java.sql.Statement stat = null;
 	        try {
-	            conn = DriverManager.getConnection(url, user, password);
-	            stat = conn.createStatement();
+	        	
+	        	Connection connection = DriverManager.getConnection(url, user, password);
+	            stat = connection.createStatement();
 	           
 	            stat.execute(sql);
 	        }catch (Throwable t) {
