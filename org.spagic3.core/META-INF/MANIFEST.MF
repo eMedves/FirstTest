@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.spagic3.core
 Bundle-Version: 1.0.0
 Bundle-Vendor: Engineering Ing. Informatica
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.dom4j;version="1.6.1",
+Import-Package: com.thoughtworks.xstream,
+ org.dom4j;version="1.6.1",
  org.dom4j.bean;version="1.6.1",
  org.dom4j.datatype;version="1.6.1",
  org.dom4j.dom;version="1.6.1",

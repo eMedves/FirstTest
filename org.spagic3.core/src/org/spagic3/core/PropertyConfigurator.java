@@ -3,18 +3,36 @@ package org.spagic3.core;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.spagic3.core.resources.IResource;
 import org.spagic3.core.resources.Resource;
 
+import com.thoughtworks.xstream.XStream;
+
 public class PropertyConfigurator {
 	
-	private Dictionary<String, String> properties;
+	//private Dictionary<String, String> properties;
 
-	public PropertyConfigurator(Dictionary<String, String> properties) {
-		super();
+	
+	private Properties properties;
+	
+	public PropertyConfigurator(Properties properties) {
 		this.properties = properties;
+	}
+	
+	public PropertyConfigurator(Dictionary<String, String> propertiesDictionary) {
+		super();
+		this.properties = new Properties();
+		
+		Enumeration<String> keysOfDictionary = propertiesDictionary.keys();
+		String key = null;
+		while (keysOfDictionary.hasMoreElements()){
+			this.properties.put(key, propertiesDictionary.get(key));
+		}
+		
 	}
 	
 	public Integer getInteger(String propertyName) throws MandatoryPropertyNotFoundException {
@@ -80,19 +98,12 @@ public class PropertyConfigurator {
 	
 	
 	protected String getPropertyGeneric(String propertyName){
-		return properties.get(propertyName);
+		return properties.getProperty(propertyName);
 	}
 	
 	public Properties asProperties(){
-		Properties prop = new Properties();
-		Enumeration<String> eKeys = properties.keys();
-		String key = null;
-		while (eKeys.hasMoreElements()){
-			key = eKeys.nextElement();
-			prop.put(key, properties.get(key));
-			
-		}
-		return prop;
+		
+		return properties;
 	}
 	
 	public  IResource getResource(String propertyName){
@@ -115,4 +126,28 @@ public class PropertyConfigurator {
 			return null;
 	}
 	
+	
+	public Map<String, Properties> getXMapProperty(String propertyName){
+		String o = getPropertyGeneric(propertyName);
+		
+		if (o == null){
+			throw new MandatoryPropertyNotFoundException(propertyName);
+		}else {
+			XStream xStream = new XStream();
+			return (Map<String, Properties>) xStream.fromXML(o);
+		}
+	}
+	
+	
+	
+	public List<Properties> getXListProperty(String propertyName){
+		String o = getPropertyGeneric(propertyName);
+		
+		if (o == null){
+			throw new MandatoryPropertyNotFoundException(propertyName);
+		}else {
+			XStream xStream = new XStream();
+			return (List<Properties>) xStream.fromXML(o);
+		}
+	}
 }
