@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +28,8 @@ import org.spagic3.components.jdbc.config.JDBCQueryConfig;
 import org.spagic3.components.jdbc.config.QueryParameterConfig;
 import org.spagic3.components.jdbc.config.XmlResultSetHandler;
 import org.spagic3.core.BaseSpagicService;
+import org.spagic3.core.routing.IMessageRouter;
+import org.spagic3.datasource.IDataSourceManager;
 
 
 public class JDBCComponent extends BaseSpagicService {
@@ -36,8 +39,53 @@ public class JDBCComponent extends BaseSpagicService {
 	protected JDBCQueryConfig queryConfig = null;
 	protected DataSource ds = null;
 	
+	protected final AtomicReference<IDataSourceManager> datasourceManager = new AtomicReference<IDataSourceManager>(null); 
 	
+	public IDataSourceManager getDataSourceManager() {
+		return this.datasourceManager.get();
+	}
+
 	
+	public void unsetMessageRouter(IDataSourceManager dsManager) {
+		this.datasourceManager.compareAndSet(dsManager, null);
+	}
+	
+	@Override
+	public void init() {
+		
+		try{
+			JDBCQueryConfig queryConfig = new JDBCQueryConfig();
+			
+			queryConfig.setQuery(propertyConfigurator.getString("query"));
+			String dsIdentifier = propertyConfigurator.getString("datasource");
+			this.ds = getDataSourceManager().getDataSource(dsIdentifier);
+			queryConfig.setColumnNameAsAttribute(propertyConfigurator.getBoolean("result.columnAsAttribute", false));
+			queryConfig.setRowsXmlEnvelope(propertyConfigurator.getString("result.rowsXmlEnvelope", "rows"));
+			queryConfig.setRowXmlEnvelope(propertyConfigurator.getString("result.rowsXmlEnvelope", "row"));
+			queryConfig.setEnrichMessage(propertyConfigurator.getBoolean("result.enrichInputMessage", false));
+			queryConfig.setValueAsAttribute(propertyConfigurator.getBoolean("result.valueAsAttribute", false));
+			queryConfig.setXmlEnvelope(propertyConfigurator.getString("result.xmlEnvelope", ""));
+			queryConfig.setFaultManagement(propertyConfigurator.getString("faultManagement", JDBCQueryConfig.FAULT_SYSTEM));
+
+			
+			
+			
+//
+//			<property label="SqlQueryParameters" 
+//				  name="SqlQueryParameters" 
+//				  propertyEditor="map" 
+//				  mapKey="ParameterName" 
+//				  mapFields="ParameterName,ParameterType,XPathExpression"
+//				  mapFieldsEditors="ParameterType=combo(ParameterTypeComboProvider)"  
+//				  editable="true"/>	
+//
+		}catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+
+
+	}
+
 	public JDBCQueryConfig getQueryConfig() {
 		return queryConfig;
 	}
@@ -181,12 +229,12 @@ public class JDBCComponent extends BaseSpagicService {
 
 
 
-	public List<String> getStringParameterNames(String propertyValue,
-			String matchRegexp) {
-		Pattern pattern = Pattern.compile(matchRegexp);
-		Matcher matcher = pattern.matcher(propertyValue);
-		String placeHolder;
-		List<String> toReturn = new ArrayList<String>();
+	public List<String> getStringParameterNames(String propertyValue, String matchRegexp) {
+        Pattern pattern = Pattern.compile(matchRegexp);
+        Matcher matcher = 
+        	pattern.matcher(propertyValue);
+        String placeHolder;
+        List<String> toReturn = new ArrayList<String>();
 		for (int idx = 1; matcher.find(); idx++) {
 			placeHolder = matcher.group();
 			placeHolder = placeHolder.substring(1);
@@ -204,8 +252,9 @@ public class JDBCComponent extends BaseSpagicService {
 		return mapParamConfig;
 	}
 
-	private boolean isValidStr(String s) {
+	protected boolean isValidStr(String s) {
 		return s != null && s.trim().length() > 0;
 	}
 
+	
 }

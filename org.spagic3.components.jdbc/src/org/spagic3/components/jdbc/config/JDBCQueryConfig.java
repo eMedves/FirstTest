@@ -37,7 +37,7 @@ public class JDBCQueryConfig {
 	private static final Logger log = LoggerFactory.getLogger(JDBCQueryConfig.class);
 	
 	public static final String FAULT_FLOW = "FAULT_FLOW".intern();
-	public static final String FAULT_JBI = "FAULT_JBI".intern();
+	public static final String FAULT_SYSTEM = "FAULT_SYSTEM".intern();
 	/**
 	 * Regular expression used to match placeHolder into the query string.
 	 * <br/><br/>

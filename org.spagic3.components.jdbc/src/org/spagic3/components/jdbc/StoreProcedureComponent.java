@@ -24,8 +24,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.servicemix.nmr.api.Exchange;
@@ -56,9 +54,6 @@ import org.spagic3.components.jdbc.config.XmlResultSetHandler;
 public class StoreProcedureComponent extends JDBCComponent {
 	
 	private static final Logger log = LoggerFactory.getLogger(StoreProcedureComponent.class);
-
-
-	private List<String> orderedParameterNameList;
 
 	public boolean run(Exchange exchange, Message in, Message out)
 	throws Exception {
@@ -130,10 +125,10 @@ public class StoreProcedureComponent extends JDBCComponent {
 			
 			if (queryConfig.isEnrichMessage() &&  results.length < 2) {
 				Element tmpResult = DocumentHelper.createElement("tmpResults");
-				getResultsNodes(results, tmpResult);
+				getResultsNodes(results, tmpResult, orderedParameterNameList);
 				((Element)contentEnvelop).appendContent( tmpResult );
 			} else {
-				getResultsNodes(results, (Element)contentEnvelop);
+				getResultsNodes(results, (Element)contentEnvelop, orderedParameterNameList);
 			}
 			out.setBody(docContent.asXML());
 		} if (queryConfig.isEnrichMessage() && (contentEnvelop == null)) {
@@ -145,7 +140,7 @@ public class StoreProcedureComponent extends JDBCComponent {
 				resultEnvelop = "ENVELOPE";
 			}
 			docContent.setRootElement(DocumentHelper.createElement(resultEnvelop));
-			getResultsNodes(results, docContent.getRootElement());
+			getResultsNodes(results, docContent.getRootElement(), orderedParameterNameList);
 			out.setBody(docContent.asXML());
 		}
 		
@@ -162,9 +157,9 @@ public class StoreProcedureComponent extends JDBCComponent {
 	 * @param results
 	 * @param parent
 	 */
-	private void getResultsNodes(Object[] results, Element parent) {
+	private void getResultsNodes(Object[] results, Element parent, List<String> orderedParameterNameList) {
 		Object elemObj = null;
-		List<String> output = setOutputParameterNameList();
+		List<String> output = setOutputParameterNameList(orderedParameterNameList);
 		for (int i = 0; i < results.length; i++) {
 			elemObj = results[i];
 			if (elemObj instanceof Element) {
@@ -179,7 +174,7 @@ public class StoreProcedureComponent extends JDBCComponent {
 	
 	
 	
-	private List<String> setOutputParameterNameList(){
+	private List<String> setOutputParameterNameList(List<String> orderedParameterNameList){
 		List<String> orderedOutputParameterNameList = new ArrayList<String>();
 		String paramName;
 		for(int i=0; i < orderedParameterNameList.size(); i++){
@@ -191,30 +186,6 @@ public class StoreProcedureComponent extends JDBCComponent {
 				}				
 		}
 		return orderedOutputParameterNameList;
-	}
-	
-	
-
-	
-
-	
-
-	public List<String> getStringParameterNames(String propertyValue, String matchRegexp) {
-        Pattern pattern = Pattern.compile(matchRegexp);
-        Matcher matcher = 
-        	pattern.matcher(propertyValue);
-        String placeHolder;
-        List<String> toReturn = new ArrayList<String>();
-		for (int idx = 1; matcher.find(); idx++) {
-			placeHolder = matcher.group();
-			placeHolder = placeHolder.substring(1);
-			toReturn.add(placeHolder);
-		}
-		return toReturn;
-	}
-	
-	private boolean isValidStr(String s){
-		return s != null && s.trim().length() > 0;
 	}
 
 }
