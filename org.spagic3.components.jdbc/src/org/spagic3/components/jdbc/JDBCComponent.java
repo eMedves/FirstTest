@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,7 +29,7 @@ import org.spagic3.components.jdbc.config.JDBCQueryConfig;
 import org.spagic3.components.jdbc.config.QueryParameterConfig;
 import org.spagic3.components.jdbc.config.XmlResultSetHandler;
 import org.spagic3.core.BaseSpagicService;
-import org.spagic3.core.routing.IMessageRouter;
+import org.spagic3.core.PropertyConfigurator;
 import org.spagic3.datasource.IDataSourceManager;
 
 
@@ -54,7 +55,7 @@ public class JDBCComponent extends BaseSpagicService {
 	public void init() {
 		
 		try{
-			JDBCQueryConfig queryConfig = new JDBCQueryConfig();
+			this.queryConfig = new JDBCQueryConfig();
 			
 			queryConfig.setQuery(propertyConfigurator.getString("query"));
 			String dsIdentifier = propertyConfigurator.getString("datasource");
@@ -67,18 +68,28 @@ public class JDBCComponent extends BaseSpagicService {
 			queryConfig.setXmlEnvelope(propertyConfigurator.getString("result.xmlEnvelope", ""));
 			queryConfig.setFaultManagement(propertyConfigurator.getString("faultManagement", JDBCQueryConfig.FAULT_SYSTEM));
 
+			Map<String, Properties> queryParamsMap = (Map<String, Properties>)propertyConfigurator.getXMapProperty("queryParametersMap");
+			Properties pOfParam = null;
+			PropertyConfigurator pConfigOfParam = null;
 			
+			QueryParameterConfig qpConfig = null;
+			ArrayList<QueryParameterConfig> paramList = new ArrayList<QueryParameterConfig>();
 			
+			for ( String key : queryParamsMap.keySet()){
+				pOfParam = queryParamsMap.get(key);
+				pConfigOfParam = new PropertyConfigurator(pOfParam);
+				
+				qpConfig = new QueryParameterConfig(
+								pConfigOfParam.getString("parameterName"), 
+								pConfigOfParam.getString("xPathExpression"), 
+								pConfigOfParam.getString("parameterType"));
+				qpConfig.setOutputParam(pConfigOfParam.getBoolean("outputParam",false));
+				paramList.add(qpConfig);
+			}
 			
-//
-//			<property label="SqlQueryParameters" 
-//				  name="SqlQueryParameters" 
-//				  propertyEditor="map" 
-//				  mapKey="ParameterName" 
-//				  mapFields="ParameterName,ParameterType,XPathExpression"
-//				  mapFieldsEditors="ParameterType=combo(ParameterTypeComboProvider)"  
-//				  editable="true"/>	
-//
+			queryConfig.setQueryParams(paramList);
+
+
 		}catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}

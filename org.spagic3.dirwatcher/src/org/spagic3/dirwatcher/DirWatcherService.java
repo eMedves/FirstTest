@@ -3,12 +3,14 @@ package org.spagic3.dirwatcher;
 import java.io.File;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.dom4j.Document;
+import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.osgi.service.component.ComponentContext;
@@ -23,6 +25,7 @@ public class DirWatcherService {
 	private ConcurrentHashMap<String, String> servicesFileToIdMap = new ConcurrentHashMap<String, String>();
 	private ConcurrentHashMap<String, String> connectorsFileToIdMap = new ConcurrentHashMap<String, String>();
 	private ConcurrentHashMap<String, String> datasourcesFileToIdMap = new ConcurrentHashMap<String, String>();
+	
 	
 	protected void activate(ComponentContext componentContext){
 		final IDeploymentService deploymentService = (IDeploymentService)componentContext.locateService("deploymentService");
@@ -64,12 +67,23 @@ public class DirWatcherService {
 							String factoryName =  n.valueOf("@factory.name");
 							
 							List<Node> propertiesNode = doc.selectNodes("/spagic:component/spagic:property");
+							List<Node>  xpropertiesNode = doc.selectNodes("/spagic:component/spagic:xproperty");
 							
 							Hashtable<String, String> properties = new Hashtable<String, String>();
 							properties.put("spagic.id", spagicId);
 							properties.put("factory.name", factoryName);
 							for (Node pn : propertiesNode){
 								properties.put(pn.valueOf("@name"), pn.valueOf("@value"));
+							}
+							
+							for (Node pn : xpropertiesNode){
+								Iterator<Element> elIterator = ((Element)pn).elementIterator();
+								if (elIterator.hasNext()){
+									String value = elIterator.next().asXML();
+									properties.put(pn.valueOf("@name"), value);
+								}else{
+									throw new IllegalStateException("XProperties error - an XProperty Must Have a Child Element");
+								}
 							}
 							
 							deploymentService.deployService(spagicId, factoryName, properties);
@@ -113,12 +127,23 @@ public class DirWatcherService {
 							String factoryName =  n.valueOf("@factory.name");
 							
 							List<Node> propertiesNode = doc.selectNodes("/spagic:component/spagic:property");
+							List<Node>  xpropertiesNode = doc.selectNodes("/spagic:component/spagic:xproperty");
 							
 							Hashtable<String, String> properties = new Hashtable<String, String>();
 							properties.put("spagic.id", spagicId);
 							properties.put("factory.name", factoryName);
 							for (Node pn : propertiesNode){
 								properties.put(pn.valueOf("@name"), pn.valueOf("@value"));
+							}
+							
+							for (Node pn : xpropertiesNode){
+								Iterator<Element> elIterator = ((Element)pn).elementIterator();
+								if (elIterator.hasNext()){
+									String value = elIterator.next().asXML();
+									properties.put(pn.valueOf("@name"), value);
+								}else{
+									throw new IllegalStateException("XProperties error - an XProperty Must Have a Child Element");
+								}
 							}
 							
 							deploymentService.deployConnector(spagicId, factoryName, properties);
