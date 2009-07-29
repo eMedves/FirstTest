@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scrappy>
+	<!--  This element will be visualized when we choose File, New, Spagic3 -->
+	<connectors>
+		<connector label="HTTP Server" name="HTTPServer" factory=""/>
+		<connector label="HTTP Client" name="HTTPClient" factory=""/>
+		<connector label="File System Poller" name="FileSystemPoller" factory=""/>
+		<connector label="File System Writer" name="FileSystemWriter" factory=""/>
+		<connector label="TCP/IP Server" name="TCPServer" factory=""/>	
+	</connectors>
+	<services>
+		<service label="Script" name="ScriptService" factory=""/>
+		<service label="Schema Validator" name="SchemaValidatorService" factory=""/>
+		<service label="XLST Transformer" name="XSLTTransformerService" factory=""/>
+		<service label="SQL/JDBC" name="JBDCService" factory=""/>
+		<service label="StoredProcedure" name="StoredProcedureService" factory=""/>
+		<service label="Console" name="ConsoleService" factory=""/>
+	</services>
+	
+	<definitions>
+		<!--  By default if editor field is not specified it's a text field 
+			  editor attribute on property could be 
+			  
+			  editor="combo" ( there's another attribute comboprovider );
+			  editor="password";
+			  editor="largeText" ( TextArea )
+		-->
+		<def name="HTTPServer">
+			<property name="locationURI" label="URI" type="string"/>
+			<property name="mep" label="Server Type" type="string"/>
+			<property name="isSoap" label="Is Soap" type="boolean" combo="TrueFalseComboProvider"/> 	
+			<property name="isSSL" lable="Enable SSL" type="boolean" combo="TrueFalseComboProvider"/>
+			
+			<when expr="true(isSoap)" action="handleProperty">
+				<property name="wsdl" label="WSDL" type="string" droptarget="*.wsdl"/>
+			</when>	
+			
+			<when expr="true(isSSL)" action="handleProperty">
+				<property name="clientAuthentication" label="Client Authentication" type="boolean" />
+				<property name="keystore" label="Keystore" type="boolean" />
+				<property name="keystorePassword" label="Keystore Password" type="password" />
+				<property name="keystoreType" label="Keystore Type" type="string" />
+			</when>
+			
+			<when expr="and(true(isSsl),oneOf(clientAuthentication,[OptionalClientAuthentication;MandatoryClientAuthentication]))" action="handleProperty">
+				<property name="truststore" label="Keystore" type="boolean" />
+				<property name="truststorePassword" label="Keystore Password" type="password" />
+				<property name="truststoreType" label="Keystore Type" type="string" />
+			</when>
+			
+			
+		</def>
+		
+		
+		
+		<def name="JBDCService">
+		
+			<property name="query" label="Query" type="string"/>
+			<property name="datasource" label="Datasource" type="string"/>
+			
+			<property name="result.columnAsAttribute" label="Column As Attribute" default="false"/>
+			<property name="result.rowsXmlEnvelope" label="Rows XML Envelope" default="rows"/>
+			<property name="result.rowXmlEnvelope" label="Row XML Envelope" default="row"/>
+			<property name="result.enrichInputMessage" editor="combo" combo="TrueFalseComboProvider" default="false"/>
+			<property name="result.valueAsAttribute" editor="combo" combo="TrueFalseComboProvider" default="false"/>
+			<property name="result.xmlEnvelope" label="XML Envelope" default=""/> 
+			<property name="faultManagement" editor="combo" combo="FaultManagementComboProvider"/>
+
+			<when expr="true()" action="handleKeyMap" map="queryParametersMap" extractFromProperty="query">
+				<!--                                        -->
+				<!--  The map key is the placeholder        -->
+				<!--  This  are the fields of the map entry -->
+				<!--                                        -->
+				<property name="parameterName" label="Paramenter Name"/>
+				<property name="xPathExpression" label="XPath Expression"/> 
+				<property name="parameterType" label="Parameter Type"/>   
+			
+			</when> 	
+		</def>
+		
+	</definitions>
+	<combo-providers>
+		<combo-provider name="MarshallerMailComboProvider" type="StaticComboProvider">
+          <combo-provider-parameter name="comboValues" value="MailMarshaller; MailAdvancedMarshaller"/>
+      	</combo-provider>
+	
+		<combo-provider name="FileExtensionsComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="*;xml;pdf;doc;txt;xls;ppt;pps"/>
+		</combo-provider>
+		
+		<combo-provider name="TrueFalseComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="true;false"/>
+		</combo-provider>
+		
+	
+		<combo-provider name="BindingTypeComboProvider" type="StaticComboProvider">
+   			<combo-provider-parameter name="comboValues" value="Static;Dynamic"/>
+   		</combo-provider>
+   		
+   		<combo-provider name="VersionComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="Latest;Specific"/>
+		</combo-provider>
+		
+		<combo-provider name="SoapVersionComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="1.1;1.2"/>
+		</combo-provider>
+		
+		<combo-provider name="ClientAuthenticationTypeComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="NoClientAuthentication;OptionalClientAuthentication;MandatoryClientAuthentication"/>
+		</combo-provider>
+		<combo-provider name="KeyStoreTypeComboProvider" type="StaticComboProvider">
+   			<combo-provider-parameter name="comboValues" value="JKS;PKCS12"/>
+   		</combo-provider>	
+		
+		<combo-provider name="FileMarshallerComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="DefaultFileMarshaller;BinaryFileMarshaller"/>
+		</combo-provider>
+		
+		<combo-provider name="ErrorHandlingPolicyComboProvider" type="org.eclipse.stp.im.runtime.comboproviders.StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="FLOW;JBI"/>
+		</combo-provider>
+		
+		<combo-provider name="DatabaseTypeComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="MySQL;MS_SQL;Sysbase;Oracle;DB2;Postgres;JDBC_Generic"/>
+		</combo-provider>
+		
+		<combo-provider name="ParameterTypeComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" 
+				value="Input(java.lang.String);
+					   Input(java.lang.Integer);
+					   Input(java.util.Date);
+					   Input(java.lang.Double);
+					   Input(java.lang.Float);
+					   Input(java.lang.Long);
+					   Input(java.lang.Short);
+					   Input(BINARY_BASE64_TYPE);
+					   Input(java.sql.Blob);
+					   Output(BIT);
+					   Output(TINYINT);
+					   Output(SMALLINT);
+					   Output(INTEGER);
+					   Output(BIGINT);
+					   Output(FLOAT);
+					   Output(REAL);
+					   Output(DOUBLE);
+					   Output(NUMERIC);
+					   Output(DECIMAL);
+					   Output(CHAR);
+					   Output(VARCHAR);
+					   Output(LONGVARCHAR);
+					   Output(DATE);
+					   Output(TIME);
+					   Output(TIMESTAMP);
+					   Output(BINARY);
+					   Output(VARBINARY);
+					   Output(LONGVARBINARY);
+					   Output(NULL);
+					   Output(OTHER);
+					   Output(JAVA_OBJECT);
+					   Output(DISTINCT);
+					   Output(STRUCT);
+					   Output(ARRAY);
+					   Output(BLOB);
+					   Output(CLOB);
+					   Output(REF);
+					   Output(DATALINK);
+					   Output(BOOLEAN);
+					   Output(ORA.TIMESTAMPNS);
+					   Output(ORA.TIMESTAMPTZ);
+					   Output(ORA.TIMESTAMPLTZ);
+					   Output(ORA.INTERVALYM);
+					   Output(ORA.INTERVALDS);
+					   Output(ORA.ROWID);
+					   Output(ORA.CURSOR);
+					   Output(ORA.BFILE);
+					   Output(ORA.OPAQUE);
+					   Output(ORA.JAVA_STRUCT);
+					   Output(ORA.PLSQL_INDEX_TABLE);
+					   Output(ORA.BINARY_FLOAT);
+					   Output(ORA.BINARY_DOUBLE);
+					   Output(ORA.NUMBER);
+					   Output(ORA.RAW);
+					   Output(ORA.FIXED_CHAR)"/>
+		</combo-provider>
+		
+		<combo-provider name="DataSourcesComboProvider" type="">
+		</combo-provider>
+		
+		<combo-provider name="InputOutputComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="INPUT;OUTPUT"/>
+		</combo-provider>
+		
+		<combo-provider name="ConnectionPointTypeComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="POINT_TYPE_SERVER;POINT_TYPE_CLIENT"/>
+		</combo-provider>
+		
+		<combo-provider name="ConnectionPointModeComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="OPERATION_MODE_BIDIRECTIONAL;OPERATION_MODE_OUT_IN;OPERATION_MODE_IN_OUT;OPERATION_MODE_IN;OPERATION_MODE_OUT"/>
+		</combo-provider>
+		
+		<combo-provider name="FailActionComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="FAIL_ACTION_CLOSE_CONN;FAIL_ACTION_MSG_TO_QUEUE;FAIL_ACTION_MSG_TO_QUEUE_CLOSE_CONNECTION"/>
+		</combo-provider>
+		
+		<combo-provider name="RetryTypeComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="RETRY_TYPE_NO_RETRY;RETRY_TYPE_IMMEDIATE;RETRY_TYPE_LINEAR;RETRY_TYPE_EXPONENTIAL"/>
+		</combo-provider>
+		
+		<combo-provider name="WrapperComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="WRAPPER_USER;WRAPPER_MINIMAL"/>
+		</combo-provider>
+		
+		<combo-provider name="EndiannessComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="BIG_ENDIAN;LITTLE_ENDIAN"/>
+		</combo-provider>
+		
+		<combo-provider name="ConnectionModeComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="CONN_MODE_MANTAIN;CONN_MODE_DISCONNECT"/>
+		</combo-provider>
+		
+		<combo-provider name="JmsDestinationTypeComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="queue;topic"/>
+		</combo-provider>
+		
+		<combo-provider name="TriggerTypeComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="simple;cron"/>
+		</combo-provider>
+		
+		<combo-provider name="PropertyComparisonTypeComboProvider" type="StaticComboProvider">
+           <combo-provider-parameter name="comboValues" value="equals;different"/>
+       </combo-provider> 
+       
+       <combo-provider name="IntervalTimeUnitComboProvider" type="StaticComboProvider">
+           <combo-provider-parameter name="comboValues" value="day;month;year;hour;minute;second"/>
+       </combo-provider> 
+		
+		<combo-provider name="ExpirationActionComboProvider" type="StaticComboProvider">
+           <combo-provider-parameter name="comboValues" value="ResumeProcess;KillProcess"/>
+       </combo-provider>
+       
+       <combo-provider name="ExpirationPolicyComboProvider" type="StaticComboProvider">
+           <combo-provider-parameter name="comboValues" value="NeverExpire;AtFixedDateTime;AfterTimeInterval"/>
+       </combo-provider>
+ 	   
+ 	   <combo-provider name="MergerOutputTypeComboProvider" type="StaticComboProvider">	 
+	   		<combo-provider-parameter name="comboValues" value="InMessageHeader;InMessageContent"/>
+       </combo-provider>
+	   
+		<combo-provider name="MailProtocolComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="pop3;imap"/>
+		</combo-provider>
+		
+		<combo-provider name="AdvancedMailMarshalerComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="DefaultMailMarshaler;GenericTextMailMarshaler;PECMailMarshaler"/>
+		</combo-provider>
+		
+		<combo-provider name="JmsTransactionTypeComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="none;xa;jms"/>
+		</combo-provider>
+		
+		<combo-provider name="FaultsToTargetTypeComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="false;true"/>
+		</combo-provider>
+		
+		<combo-provider name="ServiceRegistryComboProvider" type="StaticComboProvider">
+			<combo-provider-parameter name="comboValues" value="uddi;ebXML"/>
+		</combo-provider>
+		
+	</combo-providers>
+</scrappy>
