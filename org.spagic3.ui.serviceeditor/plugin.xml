@@ -9,8 +9,8 @@
             extensions="service"
             icon="icons/sample.gif"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            class="org.spagic.ui.service.editor.editors.ServiceEditor"
-            id="org.spagic.ui.service.editor.editors.ServiceEditor">
+            class="org.spagic3.ui.serviceeditor.editors.ServiceEditor"
+            id="org.spagic3.ui.serviceeditor.editors.ServiceEditor">
       </editor>
    </extension>
 

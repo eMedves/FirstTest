@@ -1,11 +1,12 @@
 package org.spagic3.ui.serviceeditor.editors;
 
-import org.dom4j.VisitorSupport;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -18,6 +19,9 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.spagic3.ui.serviceeditor.Activator;
+import org.spagic3.ui.serviceeditor.model.IServiceModel;
+import org.spagic3.ui.serviceeditor.model.ServiceModelBuilder;
 
 public class ServiceEditor extends MultiPageEditorPart implements IResourceChangeListener {
 
@@ -25,6 +29,8 @@ public class ServiceEditor extends MultiPageEditorPart implements IResourceChang
 	private FormEditor formEditor;
 	private int xmlEditorPageIndex;
 	private int formEditorPageIndex;
+	
+	private IServiceModel model;
 
 	public ServiceEditor() {
 		super();
@@ -86,10 +92,20 @@ public class ServiceEditor extends MultiPageEditorPart implements IResourceChang
 		String xmlEditorText =
 				xmlEditor.getDocumentProvider()
 						.getDocument(xmlEditor.getEditorInput()).get();
+		
 		//parse xml and create model
-		VisitorSupport modelBuilderVisitor = new VisitorSupport() {
-			
-		};
+		try {
+			ServiceModelBuilder builder = new ServiceModelBuilder();
+			model = builder.createModel(xmlEditorText);
+		} catch (Exception e) {
+			ErrorDialog.openError(
+					getSite().getShell(),
+					"Error creating nested text editor",
+					null,
+					new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+							IStatus.ERROR, e.getMessage(), null));
+		}
+
 		//create form from model
 		
 		

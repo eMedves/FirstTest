@@ -1,8 +1,6 @@
 package org.spagic3.ui.serviceeditor.expression;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.codehaus.janino.ExpressionEvaluator;

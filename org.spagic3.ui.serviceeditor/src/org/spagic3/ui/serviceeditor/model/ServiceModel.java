@@ -1,6 +1,5 @@
 package org.spagic3.ui.serviceeditor.model;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -8,18 +7,47 @@ import java.util.Properties;
 
 public class ServiceModel implements IServiceModel {
 	
+	private String spagicId;
+	private String factoryName;
 	private Properties properties = null;
 	private Map<String, Map<String, Properties>> mapProperties = null;
+
 	
-	public ServiceModel(){
+	public ServiceModel() {
 		properties = new Properties();
 		mapProperties = new LinkedHashMap<String, Map<String,Properties>>();
 	}
+
+	
+	@Override
+	public String getSpagicId() {
+		return spagicId;
+	}
+
+	
+	@Override
+	public void setSpagicId(String spagicId) {
+		this.spagicId = spagicId;
+	}
+
+
+	@Override
+	public String getFactoryName() {
+		return factoryName;
+	}
+
+
+	@Override
+	public void setFactoryName(String factoryName) {
+		this.factoryName = factoryName;
+	}
+	
 	
 	@Override
 	public String get(String propertyName) {
 		return (String)properties.get(propertyName);
 	}
+	
 	
 	//
 	// Handling simple Properties 
@@ -27,15 +55,15 @@ public class ServiceModel implements IServiceModel {
 	@Override
 	public void addProperty(String propertyName, String propertyValue) {
 		this.properties.put(propertyName, propertyValue);
-		
 	}
+	
 	
 	@Override
 	public void removeProperty(String propertyName) {
 		this.properties.remove(propertyName);
-		
 	}
 
+	
 	//
 	// Handling Map Properties
 	// !!!! ATTENTION - CREATING A MAP PROPERTY DOES NOT IMPLY TO HAVE ENTRIES 
@@ -46,11 +74,12 @@ public class ServiceModel implements IServiceModel {
 			mapProperties.put(mapPropertyName, new LinkedHashMap<String, Properties>());
 	}
 	
+	
 	@Override
 	public void removePropertyMap(String mapPropertyName) {
 		mapProperties.remove(mapPropertyName);
-		
 	}
+	
 	
 	@Override
 	public void addEntryToPropertyMap(String mapPropertyName, String key,
@@ -59,6 +88,7 @@ public class ServiceModel implements IServiceModel {
 		toUpdate.put(key, props);	
 	}
 	
+	
 	@Override
 	public void removeEntryFromPropertyMap(String mapPropertyName, String key) {
 		Map<String, Properties> toUpdate = mapProperties.get(mapPropertyName);
@@ -66,28 +96,22 @@ public class ServiceModel implements IServiceModel {
 	}
 
 	
-	
-
 	@Override
 	public Properties getEntryForPropertyMap(String mapPropertyName, String key) {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, Properties> mapProperty = mapProperties.get(mapPropertyName);
+		return mapProperty == null ? null : mapProperty.get(key);
 	}
 
+	
 	@Override
 	public Map<String, Map<String, Properties>> getMapProperties() {
 		return mapProperties;
 	}
 
+	
 	@Override
 	public Properties getProperties() {
 		return properties;
 	}
-
-	
-
-	
-
-	
 	
 }

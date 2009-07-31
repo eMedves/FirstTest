@@ -5,7 +5,12 @@ import java.util.Properties;
 
 public interface IServiceModel {
 	
-	
+
+	public String getSpagicId();
+	public void setSpagicId(String spagicId);
+	public String getFactoryName();
+	public void setFactoryName(String factoryName);
+
 	public Properties getProperties();
 	public Map<String, Map<String, Properties>> getMapProperties();
 	
