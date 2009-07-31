@@ -42,7 +42,7 @@ public class DirWatcherService {
 		String servicesHome = spagicHome + File.separator + SpagicConstants.SERVICES_FOLDER;
 		String connectorsHome = spagicHome + File.separator + SpagicConstants.CONNECTORS_FOLDER;
 		String dsHome = spagicHome + File.separator + SpagicConstants.DATASOURCES_FOLDER;
-
+		String routesHome = spagicHome + File.separator + SpagicConstants.ROUTES_FOLDER;
 		
 		TimerTask servicePollingTask = new DirWatcher(servicesHome, SpagicConstants.SERVICE_DEPLOYMENTS_EXTENSIONS ) {
 			protected void onChange(File file, String action) {
@@ -212,7 +212,7 @@ public class DirWatcherService {
 			}
 		};
 		
-		TimerTask routesPollingTask = new DirWatcher(servicesHome, SpagicConstants.ROUTES_FOLDER ) {
+		TimerTask routesPollingTask = new DirWatcher(routesHome, SpagicConstants.ROUTES_DEPLOYMENTS_EXTENSIONS ) {
 			protected void onChange(File file, String action) {
 				try{
 					String filePath = file.getCanonicalPath();

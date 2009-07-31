@@ -58,6 +58,7 @@ public class SpagicConstants {
 	public static final String[] SERVICE_DEPLOYMENTS_EXTENSIONS = {"service","scrappy"};
 	public static final String[] CONNECTOR_DEPLOYMENTS_EXTENSIONS = {"connector","service","scrappy"};
 	public static final String[] DATASOURCE_DEPLOYMENTS_EXTENSIONS = {"datasource","ds","scrappy"};
+	public static final String[] ROUTES_DEPLOYMENTS_EXTENSIONS = {"route","doo"};
 	
 	
 	
