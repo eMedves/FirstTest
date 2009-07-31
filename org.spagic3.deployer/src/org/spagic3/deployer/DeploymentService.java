@@ -170,6 +170,11 @@ public class DeploymentService implements IDeploymentService {
 
 	public void unbindDynamicRouter(IDynamicRouter dynRouter) {
 		this.dynamicRouter.compareAndSet(dynRouter, null);
+		
 	}
+
+
+	
+	
 	
 }
