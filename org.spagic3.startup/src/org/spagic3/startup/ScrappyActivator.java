@@ -79,7 +79,9 @@ public class ScrappyActivator implements BundleActivator {
 		System.out.println("Scrappy Startup --> RESOURCE FOLDER ["+resourceFolder+"]");
 		checkOrCreateFolder(resourceFolder);
 		
-		
+		String routesFolder = home + File.separator + SpagicConstants.ROUTES_FOLDER;
+		System.out.println("Scrappy Startup --> ROUTES FOLDER ["+resourceFolder+"]");
+		checkOrCreateFolder(resourceFolder);
 		
 		
 	}
