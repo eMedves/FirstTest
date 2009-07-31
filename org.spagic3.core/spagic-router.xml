@@ -12,5 +12,13 @@
    		name="EventAdmin" 
    		policy="static" 
    		unbind="unbind"/>
-   
+   		
+    <reference 
+   		bind="bindDynamicRouter" 
+   		cardinality="1..1" 
+   		interface="org.spagic3.core.routing.IDynamicRouter" 
+   		name="DynamicRouter" 
+   		policy="static" 
+   		unbind="unbindDynamicRouter"/>
+   		
 </scr:component>

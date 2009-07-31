@@ -13,7 +13,7 @@ public class SpagicRouter implements IMessageRouter {
 	private static Logger logger = LoggerFactory.getLogger(SpagicRouter.class);
 	
 	private EventAdmin ea = null;
-	//private IConnectorRoutingService connectorRoutingService = null;
+	private IDynamicRouter dynamicRouter = null;
 	
 	
 	
@@ -70,5 +70,13 @@ public class SpagicRouter implements IMessageRouter {
 
 	public void unbind(EventAdmin ea){
 		this.ea = null;
+	}
+	
+	public void bindDynamicRouter(IDynamicRouter dr){
+		this.dynamicRouter = dr;
+	}
+
+	public void unbindDynamicRouter(IDynamicRouter dr){
+		this.dynamicRouter = null;
 	}
 }
