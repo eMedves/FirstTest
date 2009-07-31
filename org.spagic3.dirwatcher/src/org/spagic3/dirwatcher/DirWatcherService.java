@@ -259,6 +259,9 @@ public class DirWatcherService {
 		
 		Timer timerDataSources = new Timer();
 		timerDataSources.schedule(dataSourcesPollingTask, new Date(), 5000);
+		
+		Timer timerRouterService = new Timer();
+		timerRouterService.schedule(routesPollingTask, new Date(), 5000);
 	}
 	
 	protected void deactivate(ComponentContext componentContext){
