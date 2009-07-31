@@ -52,6 +52,7 @@ public class SpagicConstants {
 	public static final String SERVICES_FOLDER="services";
 	public static final String DATASOURCES_FOLDER="datasources";
 	public static final String RESOURCES_FOLDER="resources";
+	public static final String ROUTES_FOLDER="routes";
 	public static final String LOG_BACK_FILE_SYS_PROP = "logback.configurationFile";
 	
 	public static final String[] SERVICE_DEPLOYMENTS_EXTENSIONS = {"service","scrappy"};
