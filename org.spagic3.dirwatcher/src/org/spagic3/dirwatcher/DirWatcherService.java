@@ -1,6 +1,7 @@
 package org.spagic3.dirwatcher;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -25,6 +26,7 @@ public class DirWatcherService {
 	private ConcurrentHashMap<String, String> servicesFileToIdMap = new ConcurrentHashMap<String, String>();
 	private ConcurrentHashMap<String, String> connectorsFileToIdMap = new ConcurrentHashMap<String, String>();
 	private ConcurrentHashMap<String, String> datasourcesFileToIdMap = new ConcurrentHashMap<String, String>();
+	private ConcurrentHashMap<String, List<String>> routesForFileMap = new ConcurrentHashMap<String, List<String>>();
 	
 	
 	protected void activate(ComponentContext componentContext){
@@ -203,6 +205,45 @@ public class DirWatcherService {
 							logger.warn("DirWatcher DataSource action ["+action+"] not supported");
 						}else{
 							logger.warn("DirWatcher DataSource action ["+action+"] unknown");
+						}
+				}catch(Exception e){
+					logger.error(e.getMessage(), e);
+				}		
+			}
+		};
+		
+		TimerTask routesPollingTask = new DirWatcher(servicesHome, SpagicConstants.ROUTES_FOLDER ) {
+			protected void onChange(File file, String action) {
+				try{
+					String filePath = file.getCanonicalPath();
+					logger.info("DirWatcher Routes File ["+filePath+"] --> Action ["+action+"]");
+			
+						if (action.equalsIgnoreCase("delete")){
+							
+							List<String> routesForFile = routesForFileMap.get(filePath);
+							deploymentService.deployRoutes(null, routesForFile);
+							routesForFileMap.remove(filePath);
+							
+						}else {
+							SAXReader reader = new SAXReader();
+							Document doc = reader.read(file);
+							
+							List<Node> routesNode  = doc.selectNodes("/spagic:routes/spagic:route");
+							
+							
+							List<String> updateRoutesForFile = new ArrayList<String>();
+							for (Node pn : routesNode){
+								updateRoutesForFile.add(pn.valueOf("@from")+";"+ pn.valueOf("@to"));
+							}
+							if (action.equalsIgnoreCase("add")){
+								deploymentService.deployRoutes(updateRoutesForFile, null);
+							} else if (action.equalsIgnoreCase("modify")){
+								List<String> oldRoutes = routesForFileMap.get(filePath);
+								deploymentService.deployRoutes(updateRoutesForFile, oldRoutes);
+							}
+							routesForFileMap.put(filePath, updateRoutesForFile);
+							
+							logger.warn("DirWatcher Service action ["+action+"] unknown");
 						}
 				}catch(Exception e){
 					logger.error(e.getMessage(), e);

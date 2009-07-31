@@ -2,7 +2,10 @@ package org.spagic3.deployer;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -13,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spagic3.constants.SpagicConstants;
 import org.spagic3.core.SpagicUtils;
+import org.spagic3.core.routing.IDynamicRouter;
+import org.spagic3.core.routing.IMessageRouter;
 
 public class DeploymentService implements IDeploymentService {
 
@@ -24,6 +29,7 @@ public class DeploymentService implements IDeploymentService {
 	private ConcurrentHashMap<String, HashMap<String, Hashtable>> pendingDeployments = new ConcurrentHashMap<String, HashMap<String,Hashtable>>();
 	
 	private ComponentContext componentContext = null;
+	private AtomicReference<IDynamicRouter> dynamicRouter = null;
 
 	protected void activate(ComponentContext componentContext) {
 		logger.info(" Deployment Service - ACTIVATED");
@@ -146,4 +152,24 @@ public class DeploymentService implements IDeploymentService {
 		internalUndeploy(spagicId);
 		
 	}
+
+	@Override
+	public void deployRoutes(List<String> updateRoutes, List<String> oldRoutes) {
+		getDynamicRouter().updateRoutes(updateRoutes,oldRoutes);	
+	}
+	
+	public IDynamicRouter getDynamicRouter() {
+		return this.dynamicRouter.get();
+	}
+
+	
+	public void unsetMessageRouter(IDynamicRouter dynRouter) {
+		this.dynamicRouter.compareAndSet(dynRouter, null);
+	}
+
+	public void setMessageRouter(IDynamicRouter dynRouter) {
+		this.dynamicRouter.set(dynRouter);
+		
+	}
+	
 }

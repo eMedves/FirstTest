@@ -1,9 +1,7 @@
 package org.spagic3.deployer;
 
-import java.io.File;
 import java.util.Hashtable;
-
-import org.osgi.service.component.ComponentFactory;
+import java.util.List;
 
 public interface IDeploymentService {
 	
@@ -22,5 +20,6 @@ public interface IDeploymentService {
 	public void deployDatasource(String dataSourceID, Hashtable properties);
 	public void undeployDatasource(String dataSourceID);
 	
+	public void deployRoutes(List<String> updateRoutes, List<String> oldRoutes);
 	
 }
