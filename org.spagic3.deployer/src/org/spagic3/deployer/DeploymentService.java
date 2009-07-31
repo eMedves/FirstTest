@@ -29,7 +29,7 @@ public class DeploymentService implements IDeploymentService {
 	private ConcurrentHashMap<String, HashMap<String, Hashtable>> pendingDeployments = new ConcurrentHashMap<String, HashMap<String,Hashtable>>();
 	
 	private ComponentContext componentContext = null;
-	private AtomicReference<IDynamicRouter> dynamicRouter = null;
+	private AtomicReference<IDynamicRouter> dynamicRouter = new AtomicReference<IDynamicRouter>();
 
 	protected void activate(ComponentContext componentContext) {
 		logger.info(" Deployment Service - ACTIVATED");
@@ -163,13 +163,13 @@ public class DeploymentService implements IDeploymentService {
 	}
 
 	
-	public void unsetMessageRouter(IDynamicRouter dynRouter) {
-		this.dynamicRouter.compareAndSet(dynRouter, null);
-	}
-
-	public void setMessageRouter(IDynamicRouter dynRouter) {
+	public void bindDynamicRouter(IDynamicRouter dynRouter) {
 		this.dynamicRouter.set(dynRouter);
 		
+	}
+
+	public void unbindDynamicRouter(IDynamicRouter dynRouter) {
+		this.dynamicRouter.compareAndSet(dynRouter, null);
 	}
 	
 }
