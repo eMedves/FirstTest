@@ -243,7 +243,7 @@ public class DirWatcherService {
 							}
 							routesForFileMap.put(filePath, updateRoutesForFile);
 							
-							logger.warn("DirWatcher Service action ["+action+"] unknown");
+							logger.warn("DirWatcher Service action ["+action+"] ");
 						}
 				}catch(Exception e){
 					logger.error(e.getMessage(), e);

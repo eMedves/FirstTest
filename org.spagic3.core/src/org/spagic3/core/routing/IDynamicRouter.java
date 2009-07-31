@@ -6,7 +6,6 @@ public interface IDynamicRouter {
 
 	public String getTarget(String source);
 	
-	
 	public void updateRoutes(List<String> routes, List<String> oldRoutes);
 	
 	

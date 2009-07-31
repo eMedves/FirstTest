@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
+	name="org.spagic3.core.routing.DynamicRouter">
+   <implementation class="org.spagic3.core.routing.DynamicRouter"/>
+   <service>
+      <provide interface="org.spagic3.core.routing.IDynamicRouter"/>
+   </service>
+   		
+   		
+</scr:component>

@@ -26,12 +26,12 @@ public class SpagicRouter implements IMessageRouter {
 		// If target is not configured as a properties of the exchange
 		// Se if there's a connector routing map
 		
-		/*
+		
 		if (target == null){
-			target = connectorRoutingService.getTarget(sender);
+			target = dynamicRouter.getTarget(sender);
 			exchange.setProperty(SpagicConstants.SPAGIC_TARGET, target);
 		}
-		*/	
+		
 		if (target == null)
 			throw new Exception(" No Target Configured ");
 		if (this.ea != null){

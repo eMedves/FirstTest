@@ -27,10 +27,13 @@ public class PropertyConfigurator {
 		super();
 		this.properties = new Properties();
 		
-		Enumeration<String> keysOfDictionary = propertiesDictionary.keys();
-		String key = null;
-		while (keysOfDictionary.hasMoreElements()){
-			this.properties.put(key, propertiesDictionary.get(key));
+		if (propertiesDictionary != null && propertiesDictionary.size() > 0){
+			Enumeration<String> keysOfDictionary = propertiesDictionary.keys();
+			String key = null;
+			while (keysOfDictionary.hasMoreElements()){
+				key = keysOfDictionary.nextElement();
+				this.properties.put(key, propertiesDictionary.get(key));
+			}
 		}
 		
 	}
