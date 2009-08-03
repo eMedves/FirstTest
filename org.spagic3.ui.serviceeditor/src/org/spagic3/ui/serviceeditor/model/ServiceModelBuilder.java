@@ -1,7 +1,6 @@
 package org.spagic3.ui.serviceeditor.model;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +43,7 @@ public class ServiceModelBuilder {
 		
 		applyRules(document, model);
 		
-		return null;
+		return model;
 	}
 	
 	private void copyProperties(Document document, ServiceModel model) {
@@ -81,9 +80,7 @@ public class ServiceModelBuilder {
 
 	private void applyRules(Document document, ServiceModel model) {
 		// TODO Auto-generated method stub
-		
 	}
-
 
 	private String evalXPathAsString(String xml, String xpath) {
 		try {

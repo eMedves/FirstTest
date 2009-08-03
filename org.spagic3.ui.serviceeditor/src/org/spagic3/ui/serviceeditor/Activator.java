@@ -8,6 +8,8 @@ import java.util.Collections;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -22,6 +24,8 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
+
+	private FormColors formColors;
 	
 	/**
 	 * The constructor
@@ -80,6 +84,15 @@ public class Activator extends AbstractUIPlugin {
 		}
 		return new File(fileUrl.getPath());
 	}
+	
+	public FormColors getFormColors(Display display) {
+		if (formColors == null) {
+			formColors = new FormColors(display);
+			formColors.markShared();
+		}
+		return formColors;
+	}
+
 
 
 }

@@ -16,19 +16,19 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.ui.part.MultiPageEditorPart;
 import org.spagic3.ui.serviceeditor.Activator;
 import org.spagic3.ui.serviceeditor.model.IServiceModel;
 import org.spagic3.ui.serviceeditor.model.ServiceModelBuilder;
 
-public class ServiceEditor extends MultiPageEditorPart implements IResourceChangeListener {
+public class ServiceEditor extends FormEditor implements IResourceChangeListener {
 
 	private XMLEditor xmlEditor;
-	private FormEditor formEditor;
+//	private FormEditor formEditor;
 	private int xmlEditorPageIndex;
-	private int formEditorPageIndex;
+	private int formPageIndex;
 	
 	private IServiceModel model;
 
@@ -47,6 +47,12 @@ public class ServiceEditor extends MultiPageEditorPart implements IResourceChang
 	public void dispose() {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 		super.dispose();
+	}
+	
+	protected FormToolkit createToolkit(Display display) {
+		// Create a toolkit that shares colors between editors.
+		return new FormToolkit(Activator.getDefault().getFormColors(
+				display));
 	}
 	
 	public boolean isSaveAsAllowed() {
@@ -69,7 +75,7 @@ public class ServiceEditor extends MultiPageEditorPart implements IResourceChang
 		IDE.gotoMarker(getEditor(xmlEditorPageIndex), marker);
 	}
 
-	protected void createPages() {
+	protected void addPages() {
 		createXMLEditorPage();
 		createFormEditorPage();
 	}
@@ -78,36 +84,45 @@ public class ServiceEditor extends MultiPageEditorPart implements IResourceChang
 		try {
 			xmlEditor = new XMLEditor();
 			xmlEditorPageIndex = addPage(xmlEditor, getEditorInput());
-			setPageText(xmlEditorPageIndex, xmlEditor.getTitle());
+			setPageText(xmlEditorPageIndex, "XML");
 		} catch (PartInitException e) {
 			ErrorDialog.openError(
 				getSite().getShell(),
-				"Error creating nested text editor",
+				"Error creating nested xml editor",
 				null,
 				e.getStatus());
 		}
 	}
 	
 	private void createFormEditorPage() {
-		String xmlEditorText =
+		try {
+			String xmlEditorText =
 				xmlEditor.getDocumentProvider()
 						.getDocument(xmlEditor.getEditorInput()).get();
-		
-		//parse xml and create model
-		try {
+
+			//parse xml and create model
 			ServiceModelBuilder builder = new ServiceModelBuilder();
 			model = builder.createModel(xmlEditorText);
+			
+			//create form from model
+
+			formPageIndex = addPage(new FormModelPage(this, model));
+			setPageText(formPageIndex, "Form");
+		} catch (PartInitException e) {
+			ErrorDialog.openError(
+					getSite().getShell(),
+					"Error creating nested form editor",
+					null,
+					e.getStatus());
 		} catch (Exception e) {
 			ErrorDialog.openError(
 					getSite().getShell(),
-					"Error creating nested text editor",
+					"Error creating nested form editor model",
 					null,
 					new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-							IStatus.ERROR, e.getMessage(), null));
+							IStatus.ERROR, e.getMessage(), e));
 		}
 
-		//create form from model
-		
 		
 		
 	}
@@ -116,7 +131,7 @@ public class ServiceEditor extends MultiPageEditorPart implements IResourceChang
 		super.pageChange(pageIndex);
 		if (pageIndex == xmlEditorPageIndex) {
 //			sortWords();
-		} else if (pageIndex == formEditorPageIndex) {
+		} else if (pageIndex == formPageIndex) {
 			
 		}
 	}
