@@ -1,6 +1,8 @@
 package org.spagic3.ui.serviceeditor.expression;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.codehaus.janino.ExpressionEvaluator;
@@ -21,7 +23,7 @@ public class ScrappyEvaluator {
 		janinoExpr = resolve(expr);
 	}
 	
-	public boolean eval(){
+	public boolean eval(IServiceModel serviceModel){
 		try{
 			 ExpressionEvaluator ee = new ExpressionEvaluator(
 					 janinoExpr,
@@ -29,9 +31,6 @@ public class ScrappyEvaluator {
 					 new String[] {"model"},
 					 new Class[] {IServiceModel.class});
 			 
-			 IServiceModel serviceModel = new ServiceModel();
-			 serviceModel.addProperty("isSsl", "true");
-			 serviceModel.addProperty("clientAuthentication", "ccc");
 			 
 			 return (Boolean)ee.evaluate(new Object[]{serviceModel});
 		}catch (Exception e) {
@@ -128,27 +127,21 @@ public class ScrappyEvaluator {
 		}
 	}
 	
-	/*
+
 	public static void main(String[] args) {
-		ScrappyEvaluator evaluatorTest = new ScrappyEvaluator(ss);
-		String resolved = evaluatorTest.resolve("and(true(isSsl),oneOf(clientAuthentication,[OptionalClientAuthentication;MandatoryClientAuthentication]))");
-		System.out.println(resolved);
+		ScrappyEvaluator evaluatorTest = new ScrappyEvaluator("true(isSoap)");
 		
-		try{
-			 ExpressionEvaluator ee = new ExpressionEvaluator(
-					 resolved,
-					 boolean.class,
-					 new String[] {"model"},
-					 new Class[] {IServiceModel.class});
-			 
+		//String resolved = evaluatorTest.resolve("and(true(isSsl),oneOf(clientAuthentication,[OptionalClientAuthentication;MandatoryClientAuthentication]))");
+		//System.out.println(resolved);
+		
+		
 			 IServiceModel serviceModel = new ServiceModel();
-			 serviceModel.addProperty("isSsl", "true");
+			 serviceModel.addProperty("isSoap", "false");
 			 serviceModel.addProperty("clientAuthentication", "ccc");
 			 
-			 System.out.println(ee.evaluate(new Object[]{serviceModel}));
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
+			 System.out.println(evaluatorTest.eval(serviceModel));
+		
+	}
 		/*
 		try{
 			
@@ -167,6 +160,7 @@ public class ScrappyEvaluator {
 		}
 	}
 	*/
+
 
 
 }
