@@ -21,7 +21,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.spagic3.ui.serviceeditor.Activator;
 import org.spagic3.ui.serviceeditor.model.IServiceModel;
-import org.spagic3.ui.serviceeditor.model.ServiceModelBuilder;
+import org.spagic3.ui.serviceeditor.model.ServiceModelHelper;
 
 public class ServiceEditor extends FormEditor implements IResourceChangeListener {
 
@@ -30,6 +30,7 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 	private int xmlEditorPageIndex;
 	private int formPageIndex;
 	
+	private ServiceModelHelper helper;
 	private IServiceModel model;
 
 	public ServiceEditor() {
@@ -94,6 +95,20 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 		}
 	}
 	
+	void refreshFromModel() {
+		helper.applyRules(model);
+		xmlEditor.getDocumentProvider()
+			.getDocument(xmlEditor.getEditorInput()).set(helper.asXML(model));
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				removePage(formPageIndex);
+				createFormEditorPage();
+				setActivePage(formPageIndex);
+			}
+		});
+
+	}
+	
 	private void createFormEditorPage() {
 		try {
 			String xmlEditorText =
@@ -101,11 +116,10 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 						.getDocument(xmlEditor.getEditorInput()).get();
 
 			//parse xml and create model
-			ServiceModelBuilder builder = new ServiceModelBuilder();
-			model = builder.createModel(xmlEditorText);
+			helper = new ServiceModelHelper();
+			model = helper.createModel(xmlEditorText);
 			
 			//create form from model
-
 			formPageIndex = addPage(new FormModelPage(this, model));
 			setPageText(formPageIndex, "Form");
 		} catch (PartInitException e) {
@@ -122,15 +136,13 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 					new Status(IStatus.ERROR, Activator.PLUGIN_ID,
 							IStatus.ERROR, e.getMessage(), e));
 		}
-
-		
-		
 	}
 	
 	protected void pageChange(int pageIndex) {
 		super.pageChange(pageIndex);
 		if (pageIndex == xmlEditorPageIndex) {
-//			sortWords();
+//			xmlEditor.getDocumentProvider()
+//				.getDocument(xmlEditor.getEditorInput()).set(helper.asXML(model));
 		} else if (pageIndex == formPageIndex) {
 			
 		}

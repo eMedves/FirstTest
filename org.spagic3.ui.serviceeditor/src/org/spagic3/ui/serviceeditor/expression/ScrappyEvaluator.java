@@ -1,13 +1,10 @@
 package org.spagic3.ui.serviceeditor.expression;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.codehaus.janino.ExpressionEvaluator;
 import org.spagic3.ui.serviceeditor.model.IServiceModel;
-import org.spagic3.ui.serviceeditor.model.ServiceModel;
 
 
 /**
@@ -24,26 +21,21 @@ public class ScrappyEvaluator {
 	}
 	
 	public boolean eval(IServiceModel serviceModel){
-		try{
-			 ExpressionEvaluator ee = new ExpressionEvaluator(
-					 janinoExpr,
-					 boolean.class,
-					 new String[] {"model"},
-					 new Class[] {IServiceModel.class});
+		try {
+			ExpressionEvaluator ee = new ExpressionEvaluator(
+				janinoExpr,
+				boolean.class,
+				new String[] {"model"},
+				new Class[] {IServiceModel.class});
 			 
-			 
-			 return (Boolean)ee.evaluate(new Object[]{serviceModel});
-		}catch (Exception e) {
+			return (Boolean)ee.evaluate(new Object[]{serviceModel});
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
 	
-	
-	
-	//and(true(isSsl),oneOf(clientAuthentication,[OptionalClientAuthentication;MandatoryClientAuthentication]))
-	
-	public String[] getTokens(String expr){
+	public String[] getTokens(String expr) {
 		List<String> tokenList = new ArrayList<String>();
 		int level=0;
 		
@@ -71,8 +63,7 @@ public class ScrappyEvaluator {
 	}
 	
 	
-	public String resolve(String expr){
-		
+	public String resolve(String expr) {
 		if ((expr.startsWith("and")) || (expr.startsWith("or"))) {
 			String predicate =  expr.substring(0,expr.indexOf("("));
 			String predicateArgument = expr.substring(expr.indexOf("(") + 1, expr.lastIndexOf(")"));
@@ -91,21 +82,21 @@ public class ScrappyEvaluator {
 		}
 	}
 	
-	public String predicateResolve(String predicate){
+	public String predicateResolve(String predicate) {
 		if (predicate.equalsIgnoreCase("true()")){
 			return new String(" ( 1 == 1 ) ");
 		}else if (predicate.equalsIgnoreCase("false()")){
 			return new String(" ( 1 == 2 ) ");
 		}else if (predicate.startsWith("true(")){
 			String pName = predicate.substring(predicate.indexOf("(")+1, predicate.lastIndexOf(")"));
-			return new String(" ( model.get(\""+pName+"\") == \"true\" )");
+			return new String(" (  \"true\".equals(model.get(\""+pName+"\")) ) ");
 		}else if (predicate.startsWith("false(")){
 			String pName = predicate.substring(predicate.indexOf("(")+1, predicate.lastIndexOf(")"));
-			return new String(" ( model.get(\""+pName+"\") == \"false\" )");
+			return new String(" ( \"false\".equals(model.get(\""+pName+"\")) ) ");
 		}else if (predicate.startsWith("is(")){
 			String pName = predicate.substring(predicate.indexOf("(")+1, predicate.indexOf(","));
 			String pValue = predicate.substring(predicate.indexOf(",")+1, predicate.lastIndexOf(")"));
-			return new String(" ( model.get(\""+pName+"\") == \""+pValue+"\" )");
+			return new String(" ( \""+pValue+"\".equals(model.get(\""+pName+"\")) ) ");
 		}else if (predicate.startsWith("oneOf(")){
 			String pName = predicate.substring(predicate.indexOf("(")+1, predicate.indexOf(","));
 			String candidateTokens = predicate.substring(predicate.indexOf("[")+1, predicate.indexOf("]"));
@@ -115,7 +106,7 @@ public class ScrappyEvaluator {
 			janinoBuffer.append("( ");
 			for (int i=0; i < cTokens.length; i++){
 				
-				janinoBuffer.append("( model.get(\""+pName+"\") == \""+cTokens[i]+"\" )");
+				janinoBuffer.append("( \""+cTokens[i]+"\".equals(model.get(\""+pName+"\")) )");
 				if (i < (cTokens.length - 1) ){
 					janinoBuffer.append ( " || ");
 				}
@@ -126,41 +117,5 @@ public class ScrappyEvaluator {
 			return predicate;
 		}
 	}
-	
-
-	public static void main(String[] args) {
-		ScrappyEvaluator evaluatorTest = new ScrappyEvaluator("true(isSoap)");
-		
-		//String resolved = evaluatorTest.resolve("and(true(isSsl),oneOf(clientAuthentication,[OptionalClientAuthentication;MandatoryClientAuthentication]))");
-		//System.out.println(resolved);
-		
-		
-			 IServiceModel serviceModel = new ServiceModel();
-			 serviceModel.addProperty("isSoap", "false");
-			 serviceModel.addProperty("clientAuthentication", "ccc");
-			 
-			 System.out.println(evaluatorTest.eval(serviceModel));
-		
-	}
-		/*
-		try{
-			
-			String expr = "isSsl==\"true\" && ( isClientAuthentication ==\"Optional\" || isClientAuthentication==\"Mandatory\")";
-			// Compile the expression once; relatively slow.
-			
-		    ExpressionEvaluator ee = new ExpressionEvaluator(
-		          expr,                     							// expression
-		          boolean.class,                            			// expressionType
-		          new String[] { "isSsl", "isClientAuthentication", "pippo", "pelliccio" },           // parameterNames
-		          new Class[] { String.class, String.class, String.class, String.class   });	
-			Boolean flag = (Boolean)ee.evaluate(new Object[]{"true", "Mandatory", "Ciccio", "Pelliccio"});
-			System.out.println(flag);
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	*/
-
-
 
 }

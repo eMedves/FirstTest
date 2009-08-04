@@ -113,5 +113,5 @@ public class ServiceModel implements IServiceModel {
 	public Properties getProperties() {
 		return properties;
 	}
-	
+
 }

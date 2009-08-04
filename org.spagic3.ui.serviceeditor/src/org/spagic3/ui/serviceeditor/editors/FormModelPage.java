@@ -1,13 +1,10 @@
 package org.spagic3.ui.serviceeditor.editors;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
@@ -15,18 +12,17 @@ import org.eclipse.ui.forms.widgets.ColumnLayout;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.spagic3.ui.serviceeditor.model.IPropertyModifier;
 import org.spagic3.ui.serviceeditor.model.IServiceModel;
 import org.spagic3.ui.serviceeditor.model.PropertyModifier;
 
 public class FormModelPage extends FormPage {
 	
-	private final static String MODIFIER = "modifier";
-	
+	private ServiceEditor editor;
 	private IServiceModel model;
 	
-	public FormModelPage(FormEditor editor, IServiceModel model) {
+	public FormModelPage(ServiceEditor editor, IServiceModel model) {
 		super(editor, "FormServiceEditor", "Form Service Editor");
+		this.editor = editor;
 		this.model = model;
 	}
 	
@@ -63,18 +59,13 @@ public class FormModelPage extends FormPage {
 					(String) model.getProperties().get(name), 
 					SWT.SINGLE);
 			GridData gd = new GridData();
-			gd.widthHint = 250;
+			gd.widthHint = 200;
 			text.setLayoutData(gd);
-			text.setData(MODIFIER, new PropertyModifier(model, name));
-			text.addModifyListener(new ModifyListener() {
-				@Override
-				public void modifyText(ModifyEvent e) {
-					Text control = (Text) e.getSource();
-					IPropertyModifier modifier 
-						= (IPropertyModifier) control.getData(MODIFIER);
-					modifier.setValue(control.getText());
-				}
-			});
+			ListenerHelper listener
+				= new ListenerHelper(editor, model, 
+						new PropertyModifier(model, name));
+			text.addFocusListener(listener);
+			text.addKeyListener(listener);
 			//toolkit.paintBordersFor(client);
 		}
 	}

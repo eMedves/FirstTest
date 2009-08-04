@@ -2,7 +2,7 @@
 <scrappy>
 	<!--  This element will be visualized when we choose File, New, Spagic3 -->
 	<connectors>
-		<connector label="HTTP Server" name="HTTPServer" factory=""/>
+		<connector label="HTTP Server" name="HTTPServer" factory="spagic3.httpserverfactory"/>
 		<connector label="HTTP Client" name="HTTPClient" factory=""/>
 		<connector label="File System Poller" name="FileSystemPoller" factory=""/>
 		<connector label="File System Writer" name="FileSystemWriter" factory=""/>
@@ -25,7 +25,7 @@
 			  editor="password";
 			  editor="largeText" ( TextArea )
 		-->
-		<def name="HTTPServer">
+		<def name="HTTPServer" factory="spagic3.httpserverfactory">
 			<property name="locationURI" label="URI" type="string"/>
 			<property name="mep" label="Server Type" type="string"/>
 			<property name="isSoap" label="Is Soap" type="boolean" combo="TrueFalseComboProvider"/> 	
