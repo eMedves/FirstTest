@@ -9,7 +9,7 @@ public class OSGiSideClientActivator implements BundleActivator {
 
 	Client client = null;
 	public void start(BundleContext context) throws Exception {
-		client = new OSGiClientImpl();
+		client = new OSGiClientImpl(context);
 		SpagicServlet.registerSpagicClient(client);
 	}
 
