@@ -42,7 +42,7 @@
 				<property name="keystoreType" label="Keystore Type" type="string" />
 			</when>
 			
-			<when expr="and(true(isSsl),oneOf(clientAuthentication,[OptionalClientAuthentication;MandatoryClientAuthentication]))" action="handleProperty">
+			<when expr="and(true(isSSL),oneOf(clientAuthentication,[OptionalClientAuthentication;MandatoryClientAuthentication]))" action="handleProperty">
 				<property name="truststore" label="Keystore" type="boolean" />
 				<property name="truststorePassword" label="Keystore Password" type="password" />
 				<property name="truststoreType" label="Keystore Type" type="string" />
@@ -81,7 +81,7 @@
 	</definitions>
 	<combo-providers>
 		<combo-provider name="MarshallerMailComboProvider" type="StaticComboProvider">
-          <combo-provider-parameter name="comboValues" value="MailMarshaller; MailAdvancedMarshaller"/>
+          <combo-provider-parameter name="comboValues" value="MailMarshaller;MailAdvancedMarshaller"/>
       	</combo-provider>
 	
 		<combo-provider name="FileExtensionsComboProvider" type="StaticComboProvider">

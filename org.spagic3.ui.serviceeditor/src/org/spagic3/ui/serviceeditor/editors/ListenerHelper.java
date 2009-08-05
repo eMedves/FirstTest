@@ -29,7 +29,7 @@ public class ListenerHelper implements FocusListener, KeyListener {
 		if (e.getSource() instanceof Text) {
 			Text text = (Text) e.getSource();
 			modifier.setValue(text.getText());
-			editor.refreshFromModel();
+			editor.refreshModel();
 		}
 	}
 
@@ -42,7 +42,7 @@ public class ListenerHelper implements FocusListener, KeyListener {
 			if (e.getSource() instanceof Text) {
 				Text text = (Text) e.getSource();
 				modifier.setValue(text.getText());
-				editor.refreshFromModel();
+				editor.refreshModel();
 			}
 		}
 	}

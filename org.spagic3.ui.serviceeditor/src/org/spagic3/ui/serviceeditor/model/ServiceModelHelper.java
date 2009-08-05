@@ -82,31 +82,33 @@ public class ServiceModelHelper {
 
 	public void applyRules(IServiceModel model) {
 		List<Node> condictionsList = evalXPathAsNodes(scappyDefDocument, "/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when");
-        for (Node condictionNode : condictionsList) {
-        	final String condictionXML = condictionNode.asXML();
-        	final String expr = evalXPathAsString(condictionXML, "/when/@expr");
-        	final String action = evalXPathAsString(condictionXML, "/when/@action");
-        	ScrappyEvaluator evaluator = new ScrappyEvaluator(expr);
-        	if (evaluator.eval(model)) {
-	        	if ("handleProperty".equals(action)) {
-	        		List<Node> propertyList = evalXPathAsNodes(condictionXML, "/when/property");
-	        		for (Node propertyNode : propertyList) {
-	        			final String propertyXML = propertyNode.asXML();
-	                    final String name = evalXPathAsString(propertyXML, "/property/@name");
-	                    if (model.getProperties().get(name) == null) {
-		                    final String value = evalXPathAsString(propertyXML, "/property/@default");
-	                    	model.addProperty(name, value);
-	                    }
-	        		}
-	        	} else if ("handleKeyMap".equals(action)) {
-	            	final String mapName = evalXPathAsString(condictionXML, "/when/@map");
-	            	final String variable = evalXPathAsString(condictionXML, "/when/@extractFromProperty");
-	        		
-	        	} else if ("handleNumberedMap".equals(action)) {
-	            	final String mapName = evalXPathAsString(condictionXML, "/when/@map");
-	            	final String variable = evalXPathAsString(condictionXML, "/when/@extractFromProperty");
-	        		
-	        	}
+		for (Node condictionNode : condictionsList) {
+			final String condictionXML = condictionNode.asXML();
+			final String expr = evalXPathAsString(condictionXML, "/when/@expr");
+			final String action = evalXPathAsString(condictionXML, "/when/@action");
+			ScrappyEvaluator evaluator = new ScrappyEvaluator(expr);
+        	boolean condiction = evaluator.eval(model);
+        	if ("handleProperty".equals(action)) {
+        		List<Node> propertyList = evalXPathAsNodes(condictionXML, "/when/property");
+        		for (Node propertyNode : propertyList) {
+					final String propertyXML = propertyNode.asXML();
+					final String name = evalXPathAsString(propertyXML, "/property/@name");
+					if (condiction && model.getProperties().get(name) == null) {
+                    	final String value = evalXPathAsString(propertyXML, "/property/@default");
+	                    model.addProperty(name, value);
+                    }
+					if (!condiction && model.getProperties().get(name) != null) {
+						model.removeProperty(name);
+					}
+        		}
+        	} else if ("handleKeyMap".equals(action)) {
+            	final String mapName = evalXPathAsString(condictionXML, "/when/@map");
+            	final String variable = evalXPathAsString(condictionXML, "/when/@extractFromProperty");
+        		
+        	} else if ("handleNumberedMap".equals(action)) {
+            	final String mapName = evalXPathAsString(condictionXML, "/when/@map");
+            	final String variable = evalXPathAsString(condictionXML, "/when/@extractFromProperty");
+        		
         	}
         }
 	}

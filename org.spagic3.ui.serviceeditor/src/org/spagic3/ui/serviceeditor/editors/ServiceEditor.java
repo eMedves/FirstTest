@@ -18,6 +18,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.internal.forms.widgets.FormImages;
 import org.eclipse.ui.part.FileEditorInput;
 import org.spagic3.ui.serviceeditor.Activator;
 import org.spagic3.ui.serviceeditor.model.IServiceModel;
@@ -97,7 +98,7 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 		}
 	}
 	
-	void refreshFromModel() {
+	void refreshModel() {
 		helper.applyRules(model);
 		refreshXML();
 //		formPage.removeFocusListeners();
@@ -123,7 +124,7 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 		if (!xmlFromModel.equals(actualXML)) {
 			xmlEditor.getDocumentProvider()
 					.getDocument(xmlEditor.getEditorInput())
-					.set(xmlFromModel);
+							.set(xmlFromModel);
 		}
 	}
 	
@@ -142,6 +143,7 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 			formPage = new FormModelPage(this, model);
 			formPageIndex = addPage(formPage);
 			setPageText(formPageIndex, "Form");
+			setActivePage(formPageIndex);
 		} catch (PartInitException e) {
 			ErrorDialog.openError(
 					getSite().getShell(),
