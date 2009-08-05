@@ -39,13 +39,10 @@ public class BPMComponent extends BaseSpagicService  {
 	}
 
 	
-	
-	
 	public void init(){
 		try{
 			this.process = propertyConfigurator.getString("process");
 			BPMContextSingleton.getInstance().register(this);
-			
 		}catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw new RuntimeException(" Cannot instantiate BPM Component", e);

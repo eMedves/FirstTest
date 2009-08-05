@@ -1,16 +1,11 @@
 package org.spagic3.components.bpm.invoker;
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.servicemix.nmr.api.Exchange;
-import org.jbpm.graph.exe.Token;
-import org.spagic.workflow.api.Variable;
-import org.spagic.workflow.api.jbpm.ProcessEngine;
 import org.spagic3.components.bpm.BPMContextSingleton;
 import org.spagic3.constants.SpagicConstants;
 import org.spagic3.core.AbstractSpagicService;
-import org.spagic3.integration.api.IExchangeProvider;
 import org.spagic3.integration.api.IWorkflowContextUpdater;
 
 public class OSGiServiceInvoker extends AbstractSpagicService implements IServiceInvoker{
@@ -31,8 +26,8 @@ public class OSGiServiceInvoker extends AbstractSpagicService implements IServic
 	}
 
 	@Override
-	public void process(Exchange responseExchange) throws Exception {
-			
+	public void process(Exchange responseExchange) {
+		try{
 			System.out.println("============== ["+ responseExchange.getProperty(SpagicConstants.SPAGIC_SENDER) + "] -> ["+responseExchange.getProperty(SpagicConstants.SPAGIC_TARGET) +"]");
 			String id  = responseExchange.getId();
 			System.out.println(" Removing ["+responseExchange.getId()+"]");
@@ -44,6 +39,14 @@ public class OSGiServiceInvoker extends AbstractSpagicService implements IServic
 			
 			IWorkflowContextUpdater updater = (IWorkflowContextUpdater)Class.forName(workflowContextUpdaterClass).newInstance();;
 			updater.updateWorkflowContext(null, responseExchange);
+			
+		}catch (ClassNotFoundException cnfe) {
+				throw new IllegalStateException(cnfe.getMessage(), cnfe);
+		}catch (IllegalAccessException iae) {
+				throw new IllegalStateException(iae.getMessage(), iae);
+		}catch (InstantiationException ie) {
+			throw new IllegalStateException(ie.getMessage(), ie);
+		}
 	} 
 	
 	
