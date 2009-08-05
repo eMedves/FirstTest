@@ -221,7 +221,7 @@ public class HTTPClient extends AbstractSpagicConnector{
 		
 	}
 	@Override
-	public void process(Exchange exchange) throws Exception {
+	public void process(Exchange exchange) {
 		if (exchange.getStatus() == Status.Active) { 
 			if (isPipeline && exchange.getPattern() != Pattern.InOnly){
 				throw new RuntimeException("If isPipeline flag is true exchange must be an InOnly Exchange");
@@ -235,8 +235,12 @@ public class HTTPClient extends AbstractSpagicConnector{
 	            
 	        SpagicJettyHTTPExchange spagicJettyHTTPExchange = new NMREchangeAwareSpagicJettyExchange(exchange);
 	        protocolAdapter.fillJettyExchange(exchange, spagicJettyHTTPExchange);
-	            
-	        this.jettyClient.send(spagicJettyHTTPExchange);
+	        
+	        try{
+	        	this.jettyClient.send(spagicJettyHTTPExchange);
+	        }catch (IOException e) {
+				throw new IllegalStateException(e.getMessage(), e);
+			}
 	    }
 
 		

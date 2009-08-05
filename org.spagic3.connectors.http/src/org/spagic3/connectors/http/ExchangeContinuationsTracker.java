@@ -83,18 +83,18 @@ public class ExchangeContinuationsTracker {
 			  
 	}
 	
-	public void exchangeArrived(Exchange exchange) throws Exception {
+	public void exchangeArrived(Exchange exchange) {
 
 		synchronized (this) {
 			Continuation continuationForExchange = continuationsForExchange
 					.get(exchange.getId());
 			if (continuationForExchange == null)
-				throw new Exception("HTTP request has timed out for exchange: "
+				throw new IllegalStateException("HTTP request has timed out for exchange: "
 						+ exchange.getId());
 
 			synchronized (continuationForExchange) {
 				if (continuationsForExchange.remove(exchange.getId()) == null) {
-					throw new Exception(
+					throw new IllegalStateException(
 							"HTTP request has timed out for exchange: "
 									+ exchange.getId());
 				}
@@ -103,7 +103,7 @@ public class ExchangeContinuationsTracker {
 				continuationForExchange.resume();
 
 				if (!continuationForExchange.isResumed()) {
-					throw new Exception(
+					throw new IllegalStateException(
 							"Cannot Resume Continuation for Exchange "
 									+ exchange.getId());
 				}

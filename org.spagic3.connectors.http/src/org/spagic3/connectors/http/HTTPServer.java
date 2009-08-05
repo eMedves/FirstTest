@@ -268,7 +268,7 @@ public class HTTPServer extends AbstractSpagicConnector {
 	}
 
 	@Override
-	public void process(Exchange exchange) throws Exception {
+	public void process(Exchange exchange) {
 		exchangeContinuationsTracker.exchangeArrived(exchange);
 	}
 	
