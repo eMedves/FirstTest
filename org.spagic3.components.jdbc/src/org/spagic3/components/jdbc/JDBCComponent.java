@@ -45,9 +45,11 @@ public class JDBCComponent extends BaseSpagicService {
 	public IDataSourceManager getDataSourceManager() {
 		return this.datasourceManager.get();
 	}
-
+	public void setDataSourceManager(IDataSourceManager dsm) {
+		this.datasourceManager.set(dsm);
+	}
 	
-	public void unsetMessageRouter(IDataSourceManager dsManager) {
+	public void unsetDataSourceManager(IDataSourceManager dsManager) {
 		this.datasourceManager.compareAndSet(dsManager, null);
 	}
 	

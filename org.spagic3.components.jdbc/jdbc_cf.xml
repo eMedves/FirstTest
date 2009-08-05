@@ -8,6 +8,10 @@
    		interface="org.spagic3.core.routing.IMessageRouter" 
    		name="IMessageRouter" 
    		policy="dynamic" unbind="unsetMessageRouter"/>
+   <reference bind="setDataSourceManager" cardinality="1..1" 
+   		interface="org.spagic3.datasource.IDataSourceManager" 
+   		name="IDataSourceManager" 
+   		policy="dynamic" unbind="unsetDataSourceManager"/>
    <service>
       <provide interface="org.spagic3.core.ISpagicService"/>
       <provide interface="org.osgi.service.event.EventHandler"/>
