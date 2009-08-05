@@ -59,7 +59,7 @@ public class FileSystemWriterConnector extends AbstractSpagicConnector {
     }	
 
 	@Override
-	public void process(Exchange exchange) throws Exception {
+	public void process(Exchange exchange) {
 			BufferedWriter bw = null;
 	        File newFile = null;
 	        boolean success = false;
@@ -81,7 +81,12 @@ public class FileSystemWriterConnector extends AbstractSpagicConnector {
 	            adapter.writeMessage(exchange, in, bw);
 	            success = true;
 	            done(exchange);
-	        } finally {
+	        }catch (IOException e) {
+				throw new IllegalStateException(e.getMessage(), e);
+	        }catch (Exception genericException) {
+	        	throw new IllegalStateException(genericException.getMessage(), genericException);
+
+			} finally {
 	            if (bw != null) {
 	                try {
 	                	bw.close();
@@ -91,12 +96,14 @@ public class FileSystemWriterConnector extends AbstractSpagicConnector {
 	            }
 	            //cleaning up incomplete files after things went wrong
 	            if (!success) {
-	                logger.debug("An error occurred while writing file " + newFile.getCanonicalPath() + ", deleting the invalid file");
-	                if (!newFile.delete()) {
-	                    logger.warn("Unable to delete the file " + newFile.getCanonicalPath() + " after an error had occurred");
-	                }
+	            	try {
+	            		logger.debug("An error occurred while writing file " + newFile.getCanonicalPath() + ", deleting the invalid file");
+	            		if (!newFile.delete())
+	            			logger.warn("Unable to delete the file " + newFile.getCanonicalPath() + " after an error had occurred");
+	            	} catch (IOException e) {
+		                    logger.error("Caught exception while closing stream on error: " + e, e);
+		            }
 	            }
-
 	    }
 		
 	}

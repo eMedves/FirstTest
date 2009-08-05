@@ -66,23 +66,28 @@ public class FileSystemPollerConnector extends AbstractSpagicConnector{
 			
 		}
 		
-		public void process(Exchange exchange) throws Exception {
+		public void process(Exchange exchange) {
 			String exchangeId = exchange.getId();
 			
 			InputStream is = openedStream.remove(exchangeId);
 			if (is == null){
-				throw new Exception("Cannot Get The Opened File For Stream for Exchange" + exchangeId);
+				throw new Error("Cannot Get The Opened File For Stream for Exchange" + exchangeId);
 			}
-			is.close();
+			try{
+				is.close();
+			}catch (Exception e) {
+				throw new IllegalStateException(e.getMessage(), e);
+			}
+			
 			
 			File f = openedFiles.remove(exchangeId);
 			
 			if (f == null)
-				throw new Exception("Cannot Get The Opened file Stream for Exchange" + exchangeId);
+				throw new IllegalStateException("Cannot Get The Opened file Stream for Exchange" + exchangeId);
 			
 			if (deleteFile){
 				if (!f.delete()){
-					  throw new IOException("Could not delete file " + f);
+					  throw new IllegalStateException("Could not delete file " + f);
 				}
 			}
 			
