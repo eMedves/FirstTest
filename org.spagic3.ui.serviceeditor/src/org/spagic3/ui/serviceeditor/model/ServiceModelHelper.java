@@ -116,12 +116,34 @@ public class ServiceModelHelper {
 		xml.append("<spagic:component\n");
 		xml.append("\t\txmlns:spagic=\"urn:org:spagic3\"\n");
 		xml.append("\t\txmlns=\"urn:org:spagic3\"\n");
-		xml.append("\t\tspagic.id=\"" + model.getSpagicId() + "\"\n");
-		xml.append("\t\tfactory.name=\"" + model.getFactoryName() + "\">\n");
+		xml.append("\t\tspagic.id=\"").append(model.getSpagicId()).append("\"\n");
+		xml.append("\t\tfactory.name=\"").append(model.getFactoryName()).append("\">\n");
 		
 		for(Object nameObj : model.getProperties().keySet()) {
 			final String name = (String) nameObj;
-			xml.append("\t<property name=\"" + name + "\" value=\"" + (String) model.getProperties().get(name) + "\"/>\n");
+			xml.append("\t<property name=\"").append(name).append("\" value=\"")
+					.append((String) model.getProperties().get(name))
+					.append("\"/>\n");
+		}
+		for (String mapName : model.getMapProperties().keySet()) {
+			xml.append("\t<xproperty name=\"").append(mapName).append("\">\n");
+			xml.append("\t\t<map>\n");
+			for(Object keyObj : model.getMapProperties().get(mapName).keySet()) {
+				final String key = (String) keyObj;
+				xml.append("\t\t\t<entry>\n");
+				xml.append("\t\t\t\t<string>").append(key).append("</string>\n");
+				xml.append("\t\t\t\t<properties>\n");
+				for (Object nameObj : model.getEntryForPropertyMap(mapName, key).keySet()) {
+					final String name = (String) nameObj;
+					xml.append("\t\t\t\t\t<property name=\"").append(name).append("\" value=\"")
+							.append((String) model.getEntryForPropertyMap(mapName, key).get(name))
+							.append("\"/>\n");
+				}
+				xml.append("\t\t\t\t</properties>\n");
+				xml.append("\t\t\t</entry>\n");
+			}
+			xml.append("\t\t</map>\n");
+			xml.append("\t</xproperty>\n");
 		}
 		xml.append("</spagic:component>");
 		return xml.toString();

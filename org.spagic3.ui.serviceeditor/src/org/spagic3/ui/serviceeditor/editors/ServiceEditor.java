@@ -99,21 +99,31 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 	
 	void refreshFromModel() {
 		helper.applyRules(model);
-		xmlEditor.getDocumentProvider()
-			.getDocument(xmlEditor.getEditorInput())
-					.set(helper.asXML(model));
-		formPage.removeFocusListeners();
+		refreshXML();
+//		formPage.removeFocusListeners();
 		try {
+			removePage(formPageIndex);
 			formPage = new FormModelPage(this, model);
 			addPage(formPageIndex, formPage);
 			setPageText(formPageIndex, "Form");
-			removePage(formPageIndex + 1);
+			setActivePage(formPageIndex);
 		} catch (PartInitException e) {
 			ErrorDialog.openError(
 				getSite().getShell(),
 				"Error creating nested form editor",
 				null,
 				e.getStatus());
+		}
+	}
+	
+	private void refreshXML() {
+		String xmlFromModel = helper.asXML(model);
+		String actualXML = xmlEditor.getDocumentProvider()
+				.getDocument(xmlEditor.getEditorInput()).get();
+		if (!xmlFromModel.equals(actualXML)) {
+			xmlEditor.getDocumentProvider()
+					.getDocument(xmlEditor.getEditorInput())
+					.set(xmlFromModel);
 		}
 	}
 	
@@ -151,8 +161,7 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 	protected void pageChange(int pageIndex) {
 		super.pageChange(pageIndex);
 		if (pageIndex == xmlEditorPageIndex) {
-			xmlEditor.getDocumentProvider()
-				.getDocument(xmlEditor.getEditorInput()).set(helper.asXML(model));
+			refreshXML();
 		} else if (pageIndex == formPageIndex) {
 		}
 	}

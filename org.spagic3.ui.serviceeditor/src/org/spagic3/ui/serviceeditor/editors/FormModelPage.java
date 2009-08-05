@@ -4,7 +4,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
@@ -16,6 +15,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.spagic3.ui.serviceeditor.model.IServiceModel;
+import org.spagic3.ui.serviceeditor.model.MapPropertyModifier;
 import org.spagic3.ui.serviceeditor.model.PropertyModifier;
 
 public class FormModelPage extends FormPage {
@@ -81,27 +81,50 @@ public class FormModelPage extends FormPage {
 					(String) model.getProperties().get(name), 
 					SWT.SINGLE);
 			GridData gd = new GridData();
-			gd.widthHint = 200;
+			gd.widthHint = 150;
 			text.setLayoutData(gd);
 			ListenerHelper listener
 				= new ListenerHelper(editor, model, 
 						new PropertyModifier(model, name));
-			text.addFocusListener(listener);
+//			text.addFocusListener(listener);
 			text.addKeyListener(listener);
 			//toolkit.paintBordersFor(client);
 		}
 	}
 	
 	private void createMapPropertySections(IManagedForm mform) {
-		
+		FormToolkit toolkit = mform.getToolkit();
+		for (String mapName : model.getMapProperties().keySet()) {
+			final Composite client = createSection(mform, mapName, "", 1);
+			for(Object keyObj : model.getMapProperties().get(mapName).keySet()) {
+				final String key = (String) keyObj;
+				final Composite subClient = createSubSection(mform, client, key, "", 2);
+				for (Object nameObj : model.getEntryForPropertyMap(mapName, key).keySet()) {
+					final String name = (String) nameObj;
+					toolkit.createLabel(subClient, name);
+					Text text = toolkit.createText(subClient, 
+							(String) model.getEntryForPropertyMap(mapName, key).get(name), 
+							SWT.SINGLE);
+					GridData gd = new GridData();
+					gd.widthHint = 150;
+					text.setLayoutData(gd);
+					ListenerHelper listener
+						= new ListenerHelper(editor, model, 
+								new MapPropertyModifier(model, mapName, key, name));
+//					text.addFocusListener(listener);
+					text.addKeyListener(listener);
+					//toolkit.paintBordersFor(client);
+				}
+			}
+		}
 	}
 	
 	private Composite createSection(IManagedForm mform, String title,
 			String desc, int numColumns) {
 		final ScrolledForm form = mform.getForm();
 		FormToolkit toolkit = mform.getToolkit();
-		Section section = toolkit.createSection(form.getBody(), Section.TWISTIE
-				| Section.TITLE_BAR | Section.DESCRIPTION | Section.EXPANDED);
+		Section section = toolkit.createSection(form.getBody(), 
+				Section.TITLE_BAR | Section.TWISTIE | Section.DESCRIPTION | Section.EXPANDED);
 		section.setText(title);
 		section.setDescription(desc);
 		//toolkit.createCompositeSeparator(section);
@@ -118,4 +141,28 @@ public class FormModelPage extends FormPage {
 		});
 		return client;
 	}
+	
+	private Composite createSubSection(IManagedForm mform, Composite parent, String title,
+			String desc, int numColumns) {
+		final ScrolledForm form = mform.getForm();
+		FormToolkit toolkit = mform.getToolkit();
+		Section section = toolkit.createSection(parent, 
+				Section.TWISTIE | Section.DESCRIPTION | Section.EXPANDED);
+		section.setText(title);
+		section.setDescription(desc);
+		//toolkit.createCompositeSeparator(section);
+		Composite client = toolkit.createComposite(section);
+		GridLayout layout = new GridLayout();
+		layout.marginWidth = layout.marginHeight = 0;
+		layout.numColumns = numColumns;
+		client.setLayout(layout);
+		section.setClient(client);
+		section.addExpansionListener(new ExpansionAdapter() {
+			public void expansionStateChanged(ExpansionEvent e) {
+				form.reflow(false);
+			}
+		});
+		return client;
+	}
+
 }
