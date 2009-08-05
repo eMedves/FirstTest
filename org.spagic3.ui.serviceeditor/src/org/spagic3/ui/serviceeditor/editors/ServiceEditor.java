@@ -26,7 +26,7 @@ import org.spagic3.ui.serviceeditor.model.ServiceModelHelper;
 public class ServiceEditor extends FormEditor implements IResourceChangeListener {
 
 	private XMLEditor xmlEditor;
-//	private FormEditor formEditor;
+	private FormModelPage formPage;
 	private int xmlEditorPageIndex;
 	private int formPageIndex;
 	
@@ -69,16 +69,18 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 		editor.doSaveAs();
 		setPageText(xmlEditorPageIndex, editor.getTitle());
 		setInput(editor.getEditorInput());
+		updateTitle();
 	}
 
 	public void gotoMarker(IMarker marker) {
 		setActivePage(xmlEditorPageIndex);
 		IDE.gotoMarker(getEditor(xmlEditorPageIndex), marker);
 	}
-
+	
 	protected void addPages() {
 		createXMLEditorPage();
 		createFormEditorPage();
+		updateTitle();
 	}
 	
 	private void createXMLEditorPage() {
@@ -98,29 +100,37 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 	void refreshFromModel() {
 		helper.applyRules(model);
 		xmlEditor.getDocumentProvider()
-			.getDocument(xmlEditor.getEditorInput()).set(helper.asXML(model));
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				removePage(formPageIndex);
-				createFormEditorPage();
-				setActivePage(formPageIndex);
-			}
-		});
-
+			.getDocument(xmlEditor.getEditorInput())
+					.set(helper.asXML(model));
+		formPage.removeFocusListeners();
+		try {
+			formPage = new FormModelPage(this, model);
+			addPage(formPageIndex, formPage);
+			setPageText(formPageIndex, "Form");
+			removePage(formPageIndex + 1);
+		} catch (PartInitException e) {
+			ErrorDialog.openError(
+				getSite().getShell(),
+				"Error creating nested form editor",
+				null,
+				e.getStatus());
+		}
 	}
 	
 	private void createFormEditorPage() {
 		try {
 			String xmlEditorText =
 				xmlEditor.getDocumentProvider()
-						.getDocument(xmlEditor.getEditorInput()).get();
+						.getDocument(xmlEditor.getEditorInput())
+								.get();
 
 			//parse xml and create model
 			helper = new ServiceModelHelper();
 			model = helper.createModel(xmlEditorText);
 			
 			//create form from model
-			formPageIndex = addPage(new FormModelPage(this, model));
+			formPage = new FormModelPage(this, model);
+			formPageIndex = addPage(formPage);
 			setPageText(formPageIndex, "Form");
 		} catch (PartInitException e) {
 			ErrorDialog.openError(
@@ -141,11 +151,25 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 	protected void pageChange(int pageIndex) {
 		super.pageChange(pageIndex);
 		if (pageIndex == xmlEditorPageIndex) {
-//			xmlEditor.getDocumentProvider()
-//				.getDocument(xmlEditor.getEditorInput()).set(helper.asXML(model));
+			xmlEditor.getDocumentProvider()
+				.getDocument(xmlEditor.getEditorInput()).set(helper.asXML(model));
 		} else if (pageIndex == formPageIndex) {
-			
 		}
+	}
+	
+	public void setFocus() {
+		int active = getActivePage();
+		if (active == xmlEditorPageIndex) {
+			xmlEditor.setFocus();
+		} else if (active == formPageIndex) {
+			formPage.setFocus();
+		}
+	}
+	
+	void updateTitle() {
+		IEditorInput input = getEditorInput();
+		setPartName(input.getName());
+		setTitleToolTip(input.getToolTipText());
 	}
 	
 	public void resourceChanged(final IResourceChangeEvent event) {

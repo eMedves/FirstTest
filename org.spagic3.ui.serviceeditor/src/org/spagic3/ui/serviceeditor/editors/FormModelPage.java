@@ -3,6 +3,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -20,13 +23,32 @@ public class FormModelPage extends FormPage {
 	private ServiceEditor editor;
 	private IServiceModel model;
 	
+	private IManagedForm managedForm;
+	
 	public FormModelPage(ServiceEditor editor, IServiceModel model) {
 		super(editor, "FormServiceEditor", "Form Service Editor");
 		this.editor = editor;
 		this.model = model;
 	}
 	
+	public void removeFocusListeners() {
+		removeFocusListeners(managedForm.getForm().getBody());
+	}
+	
+	private void removeFocusListeners(Control control) {
+		for (Listener listener : control.getListeners(SWT.FocusOut)) {
+			control.removeListener(SWT.FocusOut, listener);
+		}
+		if (control instanceof Composite) {
+			for (Control child : ((Composite) control).getChildren()) {
+				removeFocusListeners(child);
+			}
+		}
+	}
+	
 	protected void createFormContent(IManagedForm managedForm) {
+		this.managedForm = managedForm;
+		
 		ScrolledForm form = managedForm.getForm();
 		form.setText("Service Editor");
 		
