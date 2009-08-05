@@ -37,6 +37,7 @@
 package org.spagic3.connectors.tcp;
 
 import java.net.InetSocketAddress;
+import java.security.GeneralSecurityException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.mina.common.ByteBuffer;
@@ -95,7 +96,7 @@ public class TCPClient extends AbstractSpagicConnector {
 	}
 
 	@Override
-	public void process(Exchange exchange) throws Exception {
+	public void process(Exchange exchange) {
 		if (exchange.getPattern() == Pattern.InOnly){
 			processInOnly(exchange, exchange.getIn());
 		}else{
@@ -103,7 +104,7 @@ public class TCPClient extends AbstractSpagicConnector {
 		}	
 	}
 	
-	protected void processInOnly(Exchange exchange, Message in) throws Exception {
+	protected void processInOnly(Exchange exchange, Message in) {
 	
 		processInOut(exchange, in, null);
 	}
@@ -111,7 +112,7 @@ public class TCPClient extends AbstractSpagicConnector {
 	/**
 	 * Use MINA to open a comunication to a TCPServer end.
 	 */
-	protected void processInOut(Exchange exchange, Message in, Message out) throws Exception {
+	protected void processInOut(Exchange exchange, Message in, Message out) {
 
 		log.debug(getEndpoint()+ "processInOut->start");
 
@@ -124,7 +125,11 @@ public class TCPClient extends AbstractSpagicConnector {
 
 		if (config.isUseSSL()) {
 			log.debug("processInOut->SSL Supporr Required configure SSL In Chain");
-			addSSLSupport(chain);
+			try{
+				addSSLSupport(chain);
+			}catch (GeneralSecurityException e) {
+				log.error(e.getMessage(), e);
+			}
 		}
 		log.debug(getEndpoint() + "processInOut-> Add The Codec Protocol Filter ");
 		chain.addLast("codec", new ProtocolCodecFilter(new org.spagic3.connectors.tcp.codec.TCPMsgCodecFactory(config)));
@@ -234,8 +239,8 @@ public class TCPClient extends AbstractSpagicConnector {
 	}
 
 	private void sendTCPMessage(IoConnector connector, Exchange exchange, Message in, 
-			Message out) throws Exception {
-
+			Message out) {
+		try{
 		log.debug(getEndpoint() + "sendTCPMessage(connector,exchange,in,out)");
 		// connect to the TCPServer using Retry policies
 		ConnectFuture connectFuture = getConnection(connector, in);
@@ -361,6 +366,9 @@ public class TCPClient extends AbstractSpagicConnector {
 			}
 		} else {
 			log.warn("sendTCPMessage::Session not created!");
+		}
+		}catch (Exception e) {
+			throw new IllegalStateException(e.getMessage(), e);
 		}
 
 	}
@@ -521,12 +529,12 @@ public class TCPClient extends AbstractSpagicConnector {
 		return -1;
 	}
 
-	private void addSSLSupport(DefaultIoFilterChainBuilder chain)
-			throws Exception {
-		// TODO check if you can use always the same SSLFilter
-		SSLFilter sslFilter = new SSLFilter(TCPBCSSLContextFactory.getInstance(config));
-		sslFilter.setUseClientMode(true);
-		chain.addLast("SSL", sslFilter);
+	private void addSSLSupport(DefaultIoFilterChainBuilder chain) throws GeneralSecurityException {
+		
+			SSLFilter sslFilter = new SSLFilter(TCPBCSSLContextFactory.getInstance(config));
+			sslFilter.setUseClientMode(true);
+			chain.addLast("SSL", sslFilter);
+		
 		log.info("SSL ON");
 	}
 
@@ -538,7 +546,7 @@ public class TCPClient extends AbstractSpagicConnector {
 		this.config = config;
 	}
 
-	private void addLogger(DefaultIoFilterChainBuilder chain) throws Exception {
+	private void addLogger(DefaultIoFilterChainBuilder chain)  {
 		// we have to log CONNECTION and DATA.
 		// TODO CHECK If the logger is added after the codec it receives data
 		// already

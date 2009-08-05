@@ -193,7 +193,7 @@ public class TCPServer extends AbstractSpagicConnector {
     	log.debug("Acceptor managing socket? "+acceptor.isManaged(socketAddress));
     }
 
-    public void process(Exchange exchange) throws Exception {
+    public void process(Exchange exchange)  {
         // As we act as a consumer (we just send JBI exchanges)
         // we will receive responses or DONE / ERROR status here
     	log.debug("Received ME: ", exchange);
@@ -219,7 +219,7 @@ public class TCPServer extends AbstractSpagicConnector {
 	            	}
 	    	    	IoSession session = correlatedSessions.get(correlationId);
 	    	    	if (session == null) {
-	    	    		throw new IOException("CorrelationID ["+correlationId+"] does not identify any TCP session");
+	    	    		throw new IllegalStateException("CorrelationID ["+correlationId+"] does not identify any TCP session");
 	    	    	}
 	    	    	if (!session.isConnected()) {
 	    	    		log.warn("The tcp session is not connected The client will not receive response. " +
@@ -265,6 +265,8 @@ public class TCPServer extends AbstractSpagicConnector {
 						log.warn("Received an unexpected state: no response is produced");
 						return;
 					}
+	    		}catch (Exception e) {
+	    			throw new IllegalStateException(e.getMessage(),e);
 				} finally {
 			    	// terminate the exchange
 			    	exchange.setStatus(Status.Done);

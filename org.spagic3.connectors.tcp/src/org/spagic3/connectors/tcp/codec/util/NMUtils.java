@@ -38,7 +38,7 @@ public class NMUtils {
     
     	String nmEnvelope = xPath.valueOf(doc);
     	if (nmEnvelope == null) {
-    		throw new Exception("Normalize message envelope ("+xpathString+") not found in Input NM");
+    		throw new IllegalStateException("Normalize message envelope ("+xpathString+") not found in Input NM");
     	}
     	return nmEnvelope.getBytes();
 
