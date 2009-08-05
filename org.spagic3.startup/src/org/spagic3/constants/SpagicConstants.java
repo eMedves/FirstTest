@@ -5,6 +5,8 @@ import java.net.URI;
 public class SpagicConstants {
 	public final static String CORRELATION_ID = "SPAGIC.CORRELATION_ID";
 	
+	public final static String SPAGIC_ID_PROPERTY = "spagic.id";
+	
 	public final static String SPAGIC_SENDER = "SPAGIC_SENDER";
 	
 	public final static String SPAGIC_TARGET = "SPAGIC_TARGET";	
@@ -81,5 +83,7 @@ public class SpagicConstants {
     // If this property id valorized when the Workflow Process Instance is end the result is not porpagated to
     // the target connectors of orchestration service
     public final static String WF_IS_PROCESS_TERMINATED = "WF_IS_PROCESS_TERMINATED";
+
+	public static final String SYNC_EXCHANGE = "SYNC_EXCHANGE";
     
 }

@@ -15,7 +15,7 @@ public interface ISpagicService {
 	 * @param Exchange exchange
 	 * @throws Exception
 	 */
-	public void process(Exchange exchange) throws Exception; 
+	public void process(Exchange exchange); 
 	
 	/**
 	 * Methods to bind with the Message Router Service
