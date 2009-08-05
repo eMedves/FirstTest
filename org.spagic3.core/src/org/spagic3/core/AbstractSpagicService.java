@@ -10,6 +10,7 @@ import org.apache.servicemix.nmr.api.Exchange;
 import org.apache.servicemix.nmr.api.Message;
 import org.apache.servicemix.nmr.api.Pattern;
 import org.apache.servicemix.nmr.api.Status;
+import org.apache.servicemix.nmr.core.ExchangeImpl;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
@@ -79,17 +80,27 @@ public  abstract class AbstractSpagicService implements ISpagicService, EventHan
 		logger.info("Service["+getSpagicId()+"] -> Received Exchange ["+exchange.getId()+"] ["+exchange.getStatus()+"]" );
 		try{
 			process(exchange);
-		}catch (Exception e) {
-			e.printStackTrace();
+		}catch (Throwable e) {
+			logger.error("Exception Processing Exchange ");
+			logger.error(e.getMessage(), e);
 		}
 	}
 	
 	
+	
 	public void send(Exchange exchange){
+		if (!ExchangeUtils.isSync(exchange)){
+			asyncSend(exchange);
+		}
+		
+	}
+	
+	protected void asyncSend(Exchange exchange){
 		try{
 			getMessageRouter().send(exchange);
 		}catch (Throwable e) {
-			logger.error("Exception sending exchange ["+exchange+"]", e);
+			logger.error("Exception Sending Exchange ");
+			logger.error(e.getMessage(), e);
 		}
 	}
 	

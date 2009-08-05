@@ -198,4 +198,12 @@ public class ExchangeUtils {
 		
 		return ev;
     }
+    
+    public static boolean isSync(Exchange exchange){
+    	Object syncExchange = (String)exchange.getProperty(SpagicConstants.SYNC_EXCHANGE);
+    	
+    	if (syncExchange != null)
+    		return Boolean.valueOf((String)syncExchange);
+    	return false;
+    }
 }
