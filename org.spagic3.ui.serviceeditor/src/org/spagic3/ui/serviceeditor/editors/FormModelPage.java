@@ -1,7 +1,6 @@
 package org.spagic3.ui.serviceeditor.editors;
 import java.util.List;
 
-import org.dom4j.Node;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -17,10 +16,10 @@ import org.eclipse.ui.forms.widgets.ColumnLayout;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.spagic3.ui.serviceeditor.model.IPropertyModifier;
 import org.spagic3.ui.serviceeditor.model.IServiceModel;
 import org.spagic3.ui.serviceeditor.model.MapPropertyModifier;
 import org.spagic3.ui.serviceeditor.model.PropertyModifier;
-import org.spagic3.ui.serviceeditor.model.ServiceModel;
 import org.spagic3.ui.serviceeditor.model.ServiceModelHelper;
 import org.spagic3.ui.serviceeditor.model.ServiceModelHelper.PropertyHelper;
 
@@ -58,7 +57,7 @@ public class FormModelPage extends FormPage {
 		this.managedForm = managedForm;
 		
 		ScrolledForm form = managedForm.getForm();
-		form.setText("Service Editor");
+		form.setText(helper.getComponentName(model) + " : " + model.getSpagicId());
 		
 		ColumnLayout layout = new ColumnLayout();
 		layout.topMargin = 0;
@@ -67,7 +66,7 @@ public class FormModelPage extends FormPage {
 		layout.rightMargin = 10;
 		layout.horizontalSpacing = 10;
 		layout.verticalSpacing = 10;
-		layout.maxNumColumns = 3;
+		layout.maxNumColumns = 1;
 		layout.minNumColumns = 1;
 		form.getBody().setLayout(layout);
 		
@@ -75,6 +74,48 @@ public class FormModelPage extends FormPage {
 	}
 	
 	private void createModelForm(IManagedForm mform) {
+		FormToolkit toolkit = mform.getToolkit();
+		
+		Composite client = toolkit.createComposite(mform.getForm().getBody());
+		GridLayout layout = new GridLayout();
+		layout.marginWidth = layout.marginHeight = 0;
+		layout.numColumns = 2;
+		client.setLayout(layout);
+		
+		//ID
+		toolkit.createLabel(client, "ID");
+		Text text = toolkit.createText(client, 
+				model.getSpagicId(), 
+				SWT.SINGLE);
+		GridData gd = new GridData();
+		gd.widthHint = 150;
+		text.setLayoutData(gd);
+		ListenerHelper listener
+			= new ListenerHelper(editor, model, 
+					new IPropertyModifier() {
+						@Override
+						public void setValue(String value) {
+							model.setSpagicId(value);
+						}});
+//		text.addFocusListener(listener);
+		text.addKeyListener(listener);
+
+		//target
+		if (model.getProperties().containsKey("target")) {
+			toolkit.createLabel(client, "target");
+			text = toolkit.createText(client, 
+					(String) model.getProperties().get("target"), 
+					SWT.SINGLE);
+			gd = new GridData();
+			gd.widthHint = 150;
+			text.setLayoutData(gd);
+			listener
+			= new ListenerHelper(editor, model, 
+					new PropertyModifier(model, "target"));
+//			text.addFocusListener(listener);
+			text.addKeyListener(listener);
+		}
+		
 		createPropertySection(mform);
 		createMapPropertySections(mform);
 	}

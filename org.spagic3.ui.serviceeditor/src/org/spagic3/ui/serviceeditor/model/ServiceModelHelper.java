@@ -124,6 +124,13 @@ public class ServiceModelHelper {
 		return defProperties;
 	}
 	
+	public String getComponentName(IServiceModel model) {
+		return evalXPathAsString(scappyDefDocument, 
+				"(/scrappy/definitions/def[@factory=\"" + 
+				model.getFactoryName() + 
+				"\"]/@name)");
+	}
+	
 	public String asXML(IServiceModel model) {
 		StringBuffer xml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		xml.append("<spagic:component\n");
