@@ -1,6 +1,7 @@
 package org.spagic3.ui.serviceeditor.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,11 +94,11 @@ public class ServiceModelHelper {
         		for (Node propertyNode : propertyList) {
 					final String propertyXML = propertyNode.asXML();
 					final String name = evalXPathAsString(propertyXML, "/property/@name");
-					if (condiction && model.getProperties().get(name) == null) {
+					if (condiction && !model.getProperties().containsKey(name)) {
                     	final String value = evalXPathAsString(propertyXML, "/property/@default");
 	                    model.addProperty(name, value);
                     }
-					if (!condiction && model.getProperties().get(name) != null) {
+					if (!condiction && model.getProperties().containsKey(name)) {
 						model.removeProperty(name);
 					}
         		}
@@ -111,6 +112,16 @@ public class ServiceModelHelper {
         		
         	}
         }
+	}
+	
+	public List<PropertyHelper> getDefProperties(IServiceModel model) {
+		List<Node> defPropertyNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/property)" +
+				" | (/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when/property)");
+		List<PropertyHelper> defProperties = new ArrayList<PropertyHelper>();
+		for (Node defPropertyNode : defPropertyNodes) {
+			defProperties.add(new PropertyHelper(defPropertyNode.asXML()));
+		}
+		return defProperties;
 	}
 	
 	public String asXML(IServiceModel model) {
@@ -151,7 +162,7 @@ public class ServiceModelHelper {
 		return xml.toString();
 	}
 	
-	private String evalXPathAsString(String xml, String xpath) {
+	public String evalXPathAsString(String xml, String xpath) {
 		try {
 	        Document document = DocumentHelper.parseText(xml);
 			return evalXPathAsString(document, xpath);
@@ -160,7 +171,7 @@ public class ServiceModelHelper {
 		}
 	}
 	
-	private String evalXPathAsString(Document document, String xpath) {
+	public String evalXPathAsString(Document document, String xpath) {
 		try {
 			org.dom4j.XPath xPath = new DefaultXPath(xpath);
 			xPath.setNamespaceURIs(namespaceMap);
@@ -170,7 +181,7 @@ public class ServiceModelHelper {
 		}
 	}
 
-	private List<Node> evalXPathAsNodes(String xml, String xpath) {
+	public List<Node> evalXPathAsNodes(String xml, String xpath) {
 		try {
 	        Document document = DocumentHelper.parseText(xml);
 			return evalXPathAsNodes(document, xpath);
@@ -179,7 +190,7 @@ public class ServiceModelHelper {
 		}
 	}
 	
-	private List<Node> evalXPathAsNodes(Document document, String xpath) {
+	public List<Node> evalXPathAsNodes(Document document, String xpath) {
 		try {
 //	        Document document = DocumentHelper.parseText(xml);
 			org.dom4j.XPath xPath = new DefaultXPath(xpath);
@@ -188,6 +199,26 @@ public class ServiceModelHelper {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+	
+	public class PropertyHelper {
+		
+		private Document propertyDoc;
+		
+		public PropertyHelper(String propertyXML) {
+			try {
+				propertyDoc = DocumentHelper.parseText(propertyXML);
+			} catch (DocumentException de) {}
+		}
+		
+		public String getName() {
+			return evalXPathAsString(propertyDoc, "/property/@name");
+		}
+
+		public String getLabel() {
+			return evalXPathAsString(propertyDoc, "/property/@label");
+		}
+
 	}
 
 }

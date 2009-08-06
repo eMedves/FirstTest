@@ -1,4 +1,7 @@
 package org.spagic3.ui.serviceeditor.editors;
+import java.util.List;
+
+import org.dom4j.Node;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -17,17 +20,22 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.spagic3.ui.serviceeditor.model.IServiceModel;
 import org.spagic3.ui.serviceeditor.model.MapPropertyModifier;
 import org.spagic3.ui.serviceeditor.model.PropertyModifier;
+import org.spagic3.ui.serviceeditor.model.ServiceModel;
+import org.spagic3.ui.serviceeditor.model.ServiceModelHelper;
+import org.spagic3.ui.serviceeditor.model.ServiceModelHelper.PropertyHelper;
 
 public class FormModelPage extends FormPage {
 	
 	private ServiceEditor editor;
+	private ServiceModelHelper helper;
 	private IServiceModel model;
 	
 	private IManagedForm managedForm;
 	
-	public FormModelPage(ServiceEditor editor, IServiceModel model) {
+	public FormModelPage(ServiceEditor editor, ServiceModelHelper helper, IServiceModel model) {
 		super(editor, "FormServiceEditor", "Form Service Editor");
 		this.editor = editor;
+		this.helper = helper;
 		this.model = model;
 	}
 	
@@ -74,22 +82,43 @@ public class FormModelPage extends FormPage {
 	private void createPropertySection(IManagedForm mform) {
 		Composite client = createSection(mform, "Root Properties", "", 2);
 		FormToolkit toolkit = mform.getToolkit();
-		for(Object nameObj : model.getProperties().keySet()) {
-			final String name = (String) nameObj;
-			toolkit.createLabel(client, name);
-			Text text = toolkit.createText(client, 
-					(String) model.getProperties().get(name), 
-					SWT.SINGLE);
-			GridData gd = new GridData();
-			gd.widthHint = 150;
-			text.setLayoutData(gd);
-			ListenerHelper listener
-				= new ListenerHelper(editor, model, 
-						new PropertyModifier(model, name));
-//			text.addFocusListener(listener);
-			text.addKeyListener(listener);
-			//toolkit.paintBordersFor(client);
+		List<PropertyHelper> defProperties = helper.getDefProperties(model);
+		for (PropertyHelper propertyHelper : defProperties) {
+			final String name = propertyHelper.getName();
+			final String label = propertyHelper.getLabel();
+			if (model.getProperties().containsKey(name)) {
+				toolkit.createLabel(client, (label == null || "".equals(label)) ? name : label);
+				Text text = toolkit.createText(client, 
+						(String) model.getProperties().get(name), 
+						SWT.SINGLE);
+				GridData gd = new GridData();
+				gd.widthHint = 150;
+				text.setLayoutData(gd);
+				ListenerHelper listener
+					= new ListenerHelper(editor, model, 
+							new PropertyModifier(model, name));
+//				text.addFocusListener(listener);
+				text.addKeyListener(listener);
+				//toolkit.paintBordersFor(client);
+			}
 		}
+		
+//		for(Object nameObj : model.getProperties().keySet()) {
+//			final String name = (String) nameObj;
+//			toolkit.createLabel(client, name);
+//			Text text = toolkit.createText(client, 
+//					(String) model.getProperties().get(name), 
+//					SWT.SINGLE);
+//			GridData gd = new GridData();
+//			gd.widthHint = 150;
+//			text.setLayoutData(gd);
+//			ListenerHelper listener
+//				= new ListenerHelper(editor, model, 
+//						new PropertyModifier(model, name));
+////			text.addFocusListener(listener);
+//			text.addKeyListener(listener);
+//			//toolkit.paintBordersFor(client);
+//		}
 	}
 	
 	private void createMapPropertySections(IManagedForm mform) {

@@ -29,7 +29,7 @@
 			<property name="locationURI" label="URI" type="string"/>
 			<property name="mep" label="Server Type" type="string"/>
 			<property name="isSoap" label="Is Soap" type="boolean" combo="TrueFalseComboProvider"/> 	
-			<property name="isSSL" lable="Enable SSL" type="boolean" combo="TrueFalseComboProvider"/>
+			<property name="isSSL" label="Enable SSL" type="boolean" combo="TrueFalseComboProvider"/>
 			
 			<when expr="true(isSoap)" action="handleProperty">
 				<property name="wsdl" label="WSDL" type="string" droptarget="*.wsdl"/>

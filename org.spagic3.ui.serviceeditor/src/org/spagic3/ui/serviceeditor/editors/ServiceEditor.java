@@ -18,7 +18,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.internal.forms.widgets.FormImages;
 import org.eclipse.ui.part.FileEditorInput;
 import org.spagic3.ui.serviceeditor.Activator;
 import org.spagic3.ui.serviceeditor.model.IServiceModel;
@@ -104,7 +103,7 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 //		formPage.removeFocusListeners();
 		try {
 			removePage(formPageIndex);
-			formPage = new FormModelPage(this, model);
+			formPage = new FormModelPage(this, helper, model);
 			addPage(formPageIndex, formPage);
 			setPageText(formPageIndex, "Form");
 			setActivePage(formPageIndex);
@@ -140,7 +139,7 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 			model = helper.createModel(xmlEditorText);
 			
 			//create form from model
-			formPage = new FormModelPage(this, model);
+			formPage = new FormModelPage(this, helper, model);
 			formPageIndex = addPage(formPage);
 			setPageText(formPageIndex, "Form");
 			setActivePage(formPageIndex);
