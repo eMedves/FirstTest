@@ -3,9 +3,14 @@ package org.spagic3.ui.serviceeditor.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -26,6 +31,8 @@ public class ServiceModelHelper {
 	}
 	
 	private Document scappyDefDocument;
+	
+	private Pattern parameterPattern = Pattern.compile("$[a-zA-Z0-9_]+");
 	
 	public ServiceModelHelper() throws Exception {
 		File scrappyDefFile = Activator.getFileFromPlugin("conf/scrappy-def.xml");
@@ -104,8 +111,39 @@ public class ServiceModelHelper {
         		}
         	} else if ("handleKeyMap".equals(action)) {
             	final String mapName = evalXPathAsString(condictionXML, "/when/@map");
-            	final String variable = evalXPathAsString(condictionXML, "/when/@extractFromProperty");
-        		
+    			final boolean mapExists = model.getMapProperties().containsKey(mapName);
+    			if (!condiction) {
+    				if (mapExists) {
+    					model.removePropertyMap(mapName);
+    				}
+    			} else {
+	            	final String variableName = evalXPathAsString(condictionXML, "/when/@extractFromProperty");
+	        		final String variable = model.getProperties().getProperty(variableName);
+	        		Set<String> keys = new LinkedHashSet<String>();
+	        		if (variable != null) {
+	        			Matcher matcher = parameterPattern.matcher(variable);
+	        			while (matcher.find()) {
+	        				keys.add(matcher.group().substring(1));
+	        			}
+	        		}
+	        		List<Node> propertyList = evalXPathAsNodes(condictionXML, "/when/property");
+	        		Map<String, Properties> oldMap = model.getMapProperties().get(mapName);
+	        		model.addPropertyMap(mapName);
+	        		for (String key : keys) {
+	        			final boolean keyExists = mapExists && oldMap.containsKey(key);
+						if (keyExists) {
+							model.addEntryToPropertyMap(mapName, key, oldMap.get(key));
+						} else {
+	 						model.addEntryToPropertyMap(mapName, key, new Properties());
+	                 		for (Node propertyNode : propertyList) {
+	        					final String propertyXML = propertyNode.asXML();
+	        					final String name = evalXPathAsString(propertyXML, "/property/@name");
+	                        	final String value = evalXPathAsString(propertyXML, "/property/@default");
+	    	                    model.getEntryForPropertyMap(mapName, key).put(name, value);
+	                		}
+	                    }
+	        		}
+    			}
         	} else if ("handleNumberedMap".equals(action)) {
             	final String mapName = evalXPathAsString(condictionXML, "/when/@map");
             	final String variable = evalXPathAsString(condictionXML, "/when/@extractFromProperty");
@@ -123,7 +161,16 @@ public class ServiceModelHelper {
 		}
 		return defProperties;
 	}
-	
+
+	public List<MapPropertyHelper> getDefMapProperties(IServiceModel model) {
+		List<Node> defMapPropertyNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when[(@action=\"handleKeyMap\") or (@action=\"handleNumberedMap\")])");
+		List<MapPropertyHelper> defMapProperties = new ArrayList<MapPropertyHelper>();
+		for (Node defMapPropertyNode : defMapPropertyNodes) {
+			defMapProperties.add(new MapPropertyHelper(defMapPropertyNode.asXML()));
+		}
+		return defMapProperties;
+	}
+
 	public String getComponentName(IServiceModel model) {
 		return evalXPathAsString(scappyDefDocument, 
 				"(/scrappy/definitions/def[@factory=\"" + 
@@ -224,6 +271,31 @@ public class ServiceModelHelper {
 
 		public String getLabel() {
 			return evalXPathAsString(propertyDoc, "/property/@label");
+		}
+
+	}
+
+	public class MapPropertyHelper {
+		
+		private Document mapPropertyDoc;
+		
+		public MapPropertyHelper(String mapPropertyXML) {
+			try {
+				mapPropertyDoc = DocumentHelper.parseText(mapPropertyXML);
+			} catch (DocumentException de) {}
+		}
+		
+		public String getMapName() {
+			return evalXPathAsString(mapPropertyDoc, "/when/@map");
+		}
+
+		public List<PropertyHelper> getDefProperties() {
+			List<Node> defPropertyNodes = evalXPathAsNodes(mapPropertyDoc, "(/when/property)");
+			List<PropertyHelper> defProperties = new ArrayList<PropertyHelper>();
+			for (Node defPropertyNode : defPropertyNodes) {
+				defProperties.add(new PropertyHelper(defPropertyNode.asXML()));
+			}
+			return defProperties;
 		}
 
 	}

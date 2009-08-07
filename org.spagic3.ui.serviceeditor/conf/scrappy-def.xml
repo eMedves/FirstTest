@@ -12,7 +12,7 @@
 		<service label="Script" name="ScriptService" factory=""/>
 		<service label="Schema Validator" name="SchemaValidatorService" factory=""/>
 		<service label="XLST Transformer" name="XSLTTransformerService" factory=""/>
-		<service label="SQL/JDBC" name="JBDCService" factory=""/>
+		<service label="SQL/JDBC" name="JBDCService" factory="spagic3.jdbcservice"/>
 		<service label="StoredProcedure" name="StoredProcedureService" factory=""/>
 		<service label="Console" name="ConsoleService" factory=""/>
 	</services>
@@ -47,13 +47,23 @@
 				<property name="truststorePassword" label="Keystore Password" type="password" />
 				<property name="truststoreType" label="Keystore Type" type="string" />
 			</when>
+
+			<when expr="true()" action="handleKeyMap" map="uriParametersMap" extractFromProperty="locationURI">
+				<!--                                        -->
+				<!--  The map key is the placeholder        -->
+				<!--  This  are the fields of the map entry -->
+				<!--                                        -->
+				<property name="parameterName" label="Paramenter Name"/>
+				<property name="xPathExpression" label="XPath Expression"/> 
+				<property name="parameterType" label="Parameter Type"/>   
+			</when> 	
 			
 			
 		</def>
 		
 		
 		
-		<def name="JBDCService">
+		<def name="JBDCService" factory="spagic3.jdbcfactory">
 		
 			<property name="query" label="Query" type="string"/>
 			<property name="datasource" label="Datasource" type="string"/>
@@ -61,10 +71,10 @@
 			<property name="result.columnAsAttribute" label="Column As Attribute" default="false"/>
 			<property name="result.rowsXmlEnvelope" label="Rows XML Envelope" default="rows"/>
 			<property name="result.rowXmlEnvelope" label="Row XML Envelope" default="row"/>
-			<property name="result.enrichInputMessage" editor="combo" combo="TrueFalseComboProvider" default="false"/>
-			<property name="result.valueAsAttribute" editor="combo" combo="TrueFalseComboProvider" default="false"/>
+			<property name="result.enrichInputMessage" label="Enrich Input Message" editor="combo" combo="TrueFalseComboProvider" default="false"/>
+			<property name="result.valueAsAttribute" label="Value As Attribute" editor="combo" combo="TrueFalseComboProvider" default="false"/>
 			<property name="result.xmlEnvelope" label="XML Envelope" default=""/> 
-			<property name="faultManagement" editor="combo" combo="FaultManagementComboProvider"/>
+			<property name="faultManagement" label="Fault Management" editor="combo" combo="FaultManagementComboProvider"/>
 
 			<when expr="true()" action="handleKeyMap" map="queryParametersMap" extractFromProperty="query">
 				<!--                                        -->

@@ -6,7 +6,7 @@
          point="org.eclipse.ui.editors">
       <editor
             name="Service Editor"
-            extensions="service"
+            extensions="connector,service,scrappy"
             icon="icons/sample.gif"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             class="org.spagic3.ui.serviceeditor.editors.ServiceEditor"

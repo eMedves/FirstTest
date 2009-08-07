@@ -21,6 +21,7 @@ import org.spagic3.ui.serviceeditor.model.IServiceModel;
 import org.spagic3.ui.serviceeditor.model.MapPropertyModifier;
 import org.spagic3.ui.serviceeditor.model.PropertyModifier;
 import org.spagic3.ui.serviceeditor.model.ServiceModelHelper;
+import org.spagic3.ui.serviceeditor.model.ServiceModelHelper.MapPropertyHelper;
 import org.spagic3.ui.serviceeditor.model.ServiceModelHelper.PropertyHelper;
 
 public class FormModelPage extends FormPage {
@@ -97,7 +98,6 @@ public class FormModelPage extends FormPage {
 						public void setValue(String value) {
 							model.setSpagicId(value);
 						}});
-//		text.addFocusListener(listener);
 		text.addKeyListener(listener);
 
 		//target
@@ -112,7 +112,6 @@ public class FormModelPage extends FormPage {
 			listener
 			= new ListenerHelper(editor, model, 
 					new PropertyModifier(model, "target"));
-//			text.addFocusListener(listener);
 			text.addKeyListener(listener);
 		}
 		
@@ -138,9 +137,7 @@ public class FormModelPage extends FormPage {
 				ListenerHelper listener
 					= new ListenerHelper(editor, model, 
 							new PropertyModifier(model, name));
-//				text.addFocusListener(listener);
 				text.addKeyListener(listener);
-				//toolkit.paintBordersFor(client);
 			}
 		}
 		
@@ -164,29 +161,58 @@ public class FormModelPage extends FormPage {
 	
 	private void createMapPropertySections(IManagedForm mform) {
 		FormToolkit toolkit = mform.getToolkit();
-		for (String mapName : model.getMapProperties().keySet()) {
-			final Composite client = createSection(mform, mapName, "", 1);
-			for(Object keyObj : model.getMapProperties().get(mapName).keySet()) {
-				final String key = (String) keyObj;
-				final Composite subClient = createSubSection(mform, client, key, "", 2);
-				for (Object nameObj : model.getEntryForPropertyMap(mapName, key).keySet()) {
-					final String name = (String) nameObj;
-					toolkit.createLabel(subClient, name);
-					Text text = toolkit.createText(subClient, 
-							(String) model.getEntryForPropertyMap(mapName, key).get(name), 
-							SWT.SINGLE);
-					GridData gd = new GridData();
-					gd.widthHint = 150;
-					text.setLayoutData(gd);
-					ListenerHelper listener
-						= new ListenerHelper(editor, model, 
-								new MapPropertyModifier(model, mapName, key, name));
-//					text.addFocusListener(listener);
-					text.addKeyListener(listener);
-					//toolkit.paintBordersFor(client);
+		
+		List<MapPropertyHelper> defMapProperties = helper.getDefMapProperties(model);
+		for (MapPropertyHelper mapPropertyHelper : defMapProperties) {
+			final String mapName = mapPropertyHelper.getMapName();
+			if (model.getMapProperties().containsKey(mapName)) {
+				final Composite client = createSection(mform, mapName, "", 1);
+				for(Object keyObj : model.getMapProperties().get(mapName).keySet()) {
+					final String key = (String) keyObj;
+					final Composite subClient = createSubSection(mform, client, key, "", 2);
+					List<PropertyHelper> defProperties = mapPropertyHelper.getDefProperties();
+					for (PropertyHelper propertyHelper : defProperties) {
+						final String name = propertyHelper.getName();
+						final String label = propertyHelper.getLabel();
+						if (model.getEntryForPropertyMap(mapName, key).containsKey(name)) {
+							toolkit.createLabel(subClient, (label == null || "".equals(label)) ? name : label);
+							Text text = toolkit.createText(subClient, 
+									(String) model.getEntryForPropertyMap(mapName, key).get(name), 
+									SWT.SINGLE);
+							GridData gd = new GridData();
+							gd.widthHint = 150;
+							text.setLayoutData(gd);
+							ListenerHelper listener
+								= new ListenerHelper(editor, model, 
+										new MapPropertyModifier(model, mapName, key, name));
+							text.addKeyListener(listener);
+						}
+					}
 				}
 			}
 		}
+		
+//		for (String mapName : model.getMapProperties().keySet()) {
+//			final Composite client = createSection(mform, mapName, "", 1);
+//			for(Object keyObj : model.getMapProperties().get(mapName).keySet()) {
+//				final String key = (String) keyObj;
+//				final Composite subClient = createSubSection(mform, client, key, "", 2);
+//				for (Object nameObj : model.getEntryForPropertyMap(mapName, key).keySet()) {
+//					final String name = (String) nameObj;
+//					toolkit.createLabel(subClient, name);
+//					Text text = toolkit.createText(subClient, 
+//							(String) model.getEntryForPropertyMap(mapName, key).get(name), 
+//							SWT.SINGLE);
+//					GridData gd = new GridData();
+//					gd.widthHint = 150;
+//					text.setLayoutData(gd);
+//					ListenerHelper listener
+//						= new ListenerHelper(editor, model, 
+//								new MapPropertyModifier(model, mapName, key, name));
+//					text.addKeyListener(listener);
+//				}
+//			}
+//		}
 	}
 	
 	private Composite createSection(IManagedForm mform, String title,
