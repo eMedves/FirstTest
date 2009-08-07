@@ -11,6 +11,7 @@ import org.spagic3.core.resources.IResource;
 import org.spagic3.core.resources.Resource;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.Dom4JDriver;
 
 public class PropertyConfigurator {
 	
@@ -136,7 +137,7 @@ public class PropertyConfigurator {
 		if (o == null){
 			throw new MandatoryPropertyNotFoundException(propertyName);
 		}else {
-			XStream xStream = new XStream();
+			XStream xStream = new XStream(new Dom4JDriver());
 			return (Map<String, Properties>) xStream.fromXML(o);
 		}
 	}
