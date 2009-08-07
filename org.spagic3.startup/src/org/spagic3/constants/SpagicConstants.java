@@ -85,5 +85,18 @@ public class SpagicConstants {
     public final static String WF_IS_PROCESS_TERMINATED = "WF_IS_PROCESS_TERMINATED";
 
 	public static final String SYNC_EXCHANGE = "SYNC_EXCHANGE";
-    
+
+	
+	
+	public static final String 	_IS_INTERNAL_EVENT = "_IS_INTERNAL_EVENT";
+	
+	public static final String 	_INTERNAL_EVENT_TYPE = "_INTERNAL_EVENT_TYPE";
+	public static final String  _INTERNAL_EVENT_DS_DEPLOYED = "_INTERNAL_EVENT_DS_DEPLOYED";
+	public static final String  _INTERNAL_EVENT_DS_UNDEPLOYED = "_INTERNAL_EVENT_DS_UNDEPLOYED";
+	public static final String  _INTERNAL_EVENT_REFERRING_ID = "_INTERNAL_EVENT_REFERRING_ID";
+	
+	public static final String  _INTERNAL_EVENT_CONNECTOR_PAUSED = "_INTERNAL_EVENT_CONNECTOR_PAUSED";
+	public static final String  _INTERNAL_EVENT_CONNECTOR_STARTED = "_INTERNAL_EVENT_CONNECTOR_STARTED";
+	public static final String  _INTERNAL_EVENT_CONNECTOR_STOPPED = "_INTERNAL_EVENT_CONNECTOR_STOPPED";
+	
 }
