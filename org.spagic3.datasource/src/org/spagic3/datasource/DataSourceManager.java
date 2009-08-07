@@ -88,7 +88,7 @@ public class DataSourceManager implements IDataSourceManager {
 		internalEventProperties.put(SpagicConstants._IS_INTERNAL_EVENT, true);
 		internalEventProperties.put(SpagicConstants._INTERNAL_EVENT_TYPE, eventType);
 		internalEventProperties.put(SpagicConstants._INTERNAL_EVENT_REFERRING_ID, id);
-		Event ev = new Event(SpagicConstants.SPAGIC_BASE_TOPIC, internalEventProperties);
+		Event ev = new Event(SpagicConstants.SPAGIC_BASE_TOPIC+"*", internalEventProperties);
 		if (this.ea != null){
 			ea.postEvent(ev);
 		}
