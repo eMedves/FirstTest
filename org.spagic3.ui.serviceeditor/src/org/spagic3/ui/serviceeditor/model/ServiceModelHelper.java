@@ -32,7 +32,7 @@ public class ServiceModelHelper {
 	
 	private Document scappyDefDocument;
 	
-	private Pattern parameterPattern = Pattern.compile("$[a-zA-Z0-9_]+");
+	private Pattern parameterPattern = Pattern.compile("\\$\\w+");
 	
 	public ServiceModelHelper() throws Exception {
 		File scrappyDefFile = Activator.getFileFromPlugin("conf/scrappy-def.xml");
