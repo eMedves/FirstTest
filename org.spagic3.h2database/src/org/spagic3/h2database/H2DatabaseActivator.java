@@ -3,12 +3,14 @@ package org.spagic3.h2database;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import org.h2.util.JdbcUtils;
 import org.osgi.framework.BundleActivator;
@@ -16,7 +18,7 @@ import org.osgi.framework.BundleContext;
 
 public class H2DatabaseActivator implements BundleActivator {
 
-
+	
 	
 	private static final String DDL_NAME = "spagic-metadb-h2.ddl";
 	private static final String SETUP_SQL_NAME = "setup-h2.sql";
@@ -26,31 +28,33 @@ public class H2DatabaseActivator implements BundleActivator {
 	 */
 	public void start(BundleContext context) throws Exception {
 		
+		try{
+			String spagicDbUrl = "jdbc:h2:tcp://localhost/~/spagic";
+			String jbpmDbUrl = "jdbc:h2:tcp://localhost/~/jbpm";
 		
-		String spagicDbUrl = "jdbc:h2:tcp://localhost/~/spagic";
-		String jbpmDbUrl = "jdbc:h2:tcp://localhost/~/jbpm";
-		
-		System.out.println(" Creating Spagic User ");
-		executeSQL(spagicDbUrl, "sa", "", "CREATE USER IF NOT EXISTS  spagic PASSWORD 'spagic'");
-		executeSQL(spagicDbUrl, "sa", "", "ALTER USER spagic ADMIN TRUE");
-		System.out.println(" User Spagic Created ");
+			System.out.println(" Creating Spagic User ");
+			executeSQL(spagicDbUrl, "sa", "", "CREATE USER IF NOT EXISTS  spagic PASSWORD 'spagic'");
+			executeSQL(spagicDbUrl, "sa", "", "ALTER USER spagic ADMIN TRUE");
+			System.out.println(" User Spagic Created ");
 		
 		
-		executeSQL(jbpmDbUrl, "sa", "", "CREATE USER IF NOT EXISTS  jbpm PASSWORD 'jbpm'");
-		executeSQL(jbpmDbUrl, "sa", "", "ALTER USER jbpm ADMIN TRUE");
+			executeSQL(jbpmDbUrl, "sa", "", "CREATE USER IF NOT EXISTS  jbpm PASSWORD 'jbpm'");
+			executeSQL(jbpmDbUrl, "sa", "", "ALTER USER jbpm ADMIN TRUE");
 		
-		prepareSpagicScripts(context);
-		String tmpFolder = System.getProperty("java.io.tmpdir");
+			prepareSpagicScripts(context);
+			String tmpFolder = System.getProperty("java.io.tmpdir");
 		
-		File tmpDDLFile = new File(tmpFolder + File.separator + DDL_NAME);
-		File tmpSetupSQLFile = new File(tmpFolder + File.separator + SETUP_SQL_NAME);
+			File tmpDDLFile = new File(tmpFolder + File.separator + DDL_NAME);
+			File tmpSetupSQLFile = new File(tmpFolder + File.separator + SETUP_SQL_NAME);
 		
-		String script  = tmpDDLFile.getCanonicalPath();
-		runScript(spagicDbUrl, "spagic", "spagic", script);
+			String script  = tmpDDLFile.getCanonicalPath();
+			runScript(spagicDbUrl, "spagic", "spagic", script);
 		
-		script  = tmpSetupSQLFile.getCanonicalPath();
-		runScript(spagicDbUrl, "spagic", "spagic", script);
-		
+			script  = tmpSetupSQLFile.getCanonicalPath();
+			runScript(spagicDbUrl, "spagic", "spagic", script);
+		}catch (Throwable e) {
+			System.out.println(" Warning has Occured in H2database Activator" + e.getMessage());
+		}
 	}
 
 
@@ -58,8 +62,10 @@ public class H2DatabaseActivator implements BundleActivator {
   
   
 	
-	private void prepareSpagicScripts(BundleContext context) {
-		try{
+	private void prepareSpagicScripts(BundleContext context) throws IOException {
+		BufferedReader reader = null;
+		PrintWriter writer = null;
+		
 			String tmpFolder = System.getProperty("java.io.tmpdir");
 			URL ddlEntry = context.getBundle().getEntry("/"+DDL_NAME);
 			URL setupSQLEntry = context.getBundle().getEntry("/"+SETUP_SQL_NAME);
@@ -67,8 +73,8 @@ public class H2DatabaseActivator implements BundleActivator {
 			File tmpDDLFile = new File(tmpFolder + File.separator + DDL_NAME);
 			File tmpSetupSQLFile = new File(tmpFolder + File.separator + SETUP_SQL_NAME);
 		
-			BufferedReader reader = new BufferedReader(new InputStreamReader(ddlEntry.openStream()));
-			PrintWriter writer = new PrintWriter(new FileWriter(tmpDDLFile));
+			reader = new BufferedReader(new InputStreamReader(ddlEntry.openStream()));
+			writer = new PrintWriter(new FileWriter(tmpDDLFile));
 			String line = null;
 			while ( (line = reader.readLine()) != null){
 				writer.println(line);
@@ -84,9 +90,7 @@ public class H2DatabaseActivator implements BundleActivator {
 			}
 			writer.flush();
 			writer.close();
-		}catch (Throwable e) {
-			e.printStackTrace();
-		}
+		
 	}
 	
 	
@@ -99,19 +103,19 @@ public class H2DatabaseActivator implements BundleActivator {
 	private static void executeSQL(String url, String user, String password, String sql) throws SQLException {
 		 	Connection conn = null;
 	        java.sql.Statement stat = null;
-	        try {
-	        	
+	       
+	        try{
 	        	Connection connection = DriverManager.getConnection(url, user, password);
 	            stat = connection.createStatement();
 	           
 	            stat.execute(sql);
-	        }catch (Throwable t) {
-	        	t.printStackTrace();
-				
+	      
+			
 	        } finally {
 	            JdbcUtils.closeSilently(stat);
 	            JdbcUtils.closeSilently(conn);
 	        }
+	       
 	}
 
 
