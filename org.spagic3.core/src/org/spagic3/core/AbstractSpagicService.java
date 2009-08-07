@@ -73,8 +73,22 @@ public  abstract class AbstractSpagicService implements ISpagicService, EventHan
 		
 	}
 
+	public boolean isSpagicInternalEvent(Event event){
+	
+		return ( event.getProperty("SPAGIC.INTERNAL_EVENT") != null 
+					? (Boolean)event.getProperty("SPAGIC.INTERNAL_EVENT") 
+							: false );
+	}
+	
+	public void handleInternalEvent(Event event){
+		// Do Nothing
+		// Must be handled by components
+	}
 	
 	public void handleEvent(Event event) {
+		if (isSpagicInternalEvent(event)){
+			handleInternalEvent(event);
+		}
 		logger.info("Service["+getSpagicId()+"] -> Received Event " + event);
 		Exchange exchange = ExchangeUtils.fromEvent(event);
 		logger.info("Service["+getSpagicId()+"] -> Received Exchange ["+exchange.getId()+"] ["+exchange.getStatus()+"]" );
