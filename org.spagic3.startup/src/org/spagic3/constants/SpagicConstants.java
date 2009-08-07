@@ -12,6 +12,7 @@ public class SpagicConstants {
 	public final static String SPAGIC_TARGET = "SPAGIC_TARGET";	
 	public final static String EXCHANGE_ID = "EXCHANGE_ID";
 	
+	public final static String SPAGIC_GENERIC_TOPIC = "SPAGIC/MESSAGES";
 	public final static String SPAGIC_BASE_TOPIC = "SPAGIC/MESSAGES/";
 
 	public final static String IN_ONLY_MEP = "in-only";
