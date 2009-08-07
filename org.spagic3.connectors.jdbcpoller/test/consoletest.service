@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<spagic:component 
+    xmlns:spagic="urn:org:spagic3"
+    xmlns="urn:org:spagic3"
+    
+    spagic.id="ConsoleTest" factory.name="spagic3.consoleoutfactory">
+  
+</spagic:component>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<spagic:component 
+    xmlns:spagic="urn:org:spagic3"
+    xmlns="urn:org:spagic3"
+    
+    spagic.id="jdbcpoller" factory.name="spagic3.jdbcpollerfactory">
+
+    <property name="mainQueryName" value="mainQuery"/>
+    <property name="mainQuerySQL" value="SELECT * FROM XML_NAMESPACE WHERE ID_NAMESPACE > ?"/>
+    <property name="keyColumn" value="id_namespace"/>
+    <property name="initialKeyValue" value="0"/>
+    <property name="columnNameAsAttribute" value="false"/>
+    <property name="rowNameAsAttribute" value="true"/>
+    <property name="valueAsAttribute" value="false"/>
+    <!--property name="rowsInMessage" value=""/-->
+    <property name="commPointID" value="id_namespace"/>
+    <property name="databaseType" value="H2"/>
+    <property name="datasourceName" value="metadb"/>
+    
+    <property name="target" value="ConsoleTest"/>
+    
+</spagic:component>
