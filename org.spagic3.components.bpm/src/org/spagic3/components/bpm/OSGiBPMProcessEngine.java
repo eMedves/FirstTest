@@ -58,7 +58,7 @@ public class OSGiBPMProcessEngine implements IProcessEngine {
 	}
 	
 	public void bindMetaDB(javax.sql.DataSource ds){
-		System.out.println("Metadb Datasource has been unbound");
+		System.out.println("Metadb Datasource has been bound");
 	}
 	
 	public void unbindMetaDB(javax.sql.DataSource ds){
