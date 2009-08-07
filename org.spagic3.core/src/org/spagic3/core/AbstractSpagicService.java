@@ -75,8 +75,8 @@ public  abstract class AbstractSpagicService implements ISpagicService, EventHan
 
 	public boolean isSpagicInternalEvent(Event event){
 	
-		return ( event.getProperty("SPAGIC.INTERNAL_EVENT") != null 
-					? (Boolean)event.getProperty("SPAGIC.INTERNAL_EVENT") 
+		return ( event.getProperty(SpagicConstants._IS_INTERNAL_EVENT) != null 
+					? (Boolean)event.getProperty(SpagicConstants._IS_INTERNAL_EVENT) 
 							: false );
 	}
 	

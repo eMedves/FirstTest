@@ -10,7 +10,9 @@ Import-Package: org.apache.commons.dbcp;version="1.2.2.osgi",
  org.apache.commons.dbcp.datasources;version="1.2.2.osgi",
  org.osgi.framework;version="1.5.0",
  org.osgi.service.component;version="1.1.0",
+ org.osgi.service.event;version="1.2.0",
  org.slf4j;version="1.5.6",
+ org.spagic3.constants,
  org.spagic3.core
 Export-Package: org.spagic3.datasource
 Service-Component: datasource_cf.xml, datasource_manager.xml
