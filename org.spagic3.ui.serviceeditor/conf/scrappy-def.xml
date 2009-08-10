@@ -65,7 +65,7 @@
 		
 		<def name="JBDCService" factory="spagic3.jdbcfactory">
 		
-			<property name="query" label="Query" type="string"/>
+			<property name="query" label="Query" type="string" editor="textarea"/>
 			<property name="datasource" label="Datasource" type="string"/>
 			
 			<property name="result.columnAsAttribute" label="Column As Attribute" default="false"/>
@@ -83,13 +83,18 @@
 				<!--                                        -->
 				<property name="parameterName" label="Paramenter Name"/>
 				<property name="xPathExpression" label="XPath Expression"/> 
-				<property name="parameterType" label="Parameter Type"/>   
+				<property name="parameterType" label="Parameter Type" editor="combo" combo="ParameterTypeComboProvider"/>   
 			
 			</when> 	
 		</def>
 		
 	</definitions>
 	<combo-providers>
+	
+		<combo-provider name="FaultManagementComboProvider" type="StaticComboProvider">
+          <combo-provider-parameter name="comboValues" value="Stop;Continue;Exception"/>
+      	</combo-provider>
+
 		<combo-provider name="MarshallerMailComboProvider" type="StaticComboProvider">
           <combo-provider-parameter name="comboValues" value="MailMarshaller;MailAdvancedMarshaller"/>
       	</combo-provider>
@@ -101,7 +106,6 @@
 		<combo-provider name="TrueFalseComboProvider" type="StaticComboProvider">
 			<combo-provider-parameter name="comboValues" value="true;false"/>
 		</combo-provider>
-		
 	
 		<combo-provider name="BindingTypeComboProvider" type="StaticComboProvider">
    			<combo-provider-parameter name="comboValues" value="Static;Dynamic"/>

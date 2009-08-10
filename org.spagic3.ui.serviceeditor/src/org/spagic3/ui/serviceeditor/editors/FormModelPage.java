@@ -3,7 +3,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.plaf.multi.MultiButtonUI;
+
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -117,8 +120,8 @@ public class FormModelPage extends FormPage {
 			gd.widthHint = 150;
 			text.setLayoutData(gd);
 			listener
-			= new ListenerHelper(editor, model, 
-					new PropertyModifier(model, "target"));
+					= new ListenerHelper(editor, model, 
+							new PropertyModifier(model, "target"));
 			text.addKeyListener(listener);
 		}
 		
@@ -143,18 +146,31 @@ public class FormModelPage extends FormPage {
 				if (model.getProperties().containsKey(name)) {
 					toolkit.createLabel(client, (label == null || "".equals(label)) ? name : label);
 					
-					if ("combo".equals(propertyHelper.getEditor())) {
+					if ("textarea".equals(propertyHelper.getEditor())) {
+						StyledText textarea = new StyledText(client, SWT.WRAP | SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+						textarea.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+						textarea.setText((String) model.getProperties().get(name));
+						GridData gd = new GridData();
+						gd.heightHint = 80;
+						gd.widthHint = 140;
+						textarea.setLayoutData(gd);
+						ListenerHelper listener
+								= new ListenerHelper(editor, model, 
+										new PropertyModifier(model, name));
+						textarea.addKeyListener(listener);
+					} else if ("combo".equals(propertyHelper.getEditor())) {
 						Combo combo = new Combo(client, SWT.DROP_DOWN);
 						combo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
-						combo.add("true");
-						combo.add("false");
+						for (String item : helper.getComboItems(propertyHelper.getCombo())) {
+							combo.add(item);
+						}
 						combo.setText((String) model.getProperties().get(name));
 						GridData gd = new GridData();
 						gd.widthHint = 133;
 						combo.setLayoutData(gd);
 						ListenerHelper listener
-						= new ListenerHelper(editor, model, 
-								new PropertyModifier(model, name));
+								= new ListenerHelper(editor, model, 
+										new PropertyModifier(model, name));
 						combo.addSelectionListener(listener);
 					} else {
 						Text text = toolkit.createText(client, 
@@ -164,11 +180,10 @@ public class FormModelPage extends FormPage {
 						gd.widthHint = 150;
 						text.setLayoutData(gd);
 						ListenerHelper listener
-							= new ListenerHelper(editor, model, 
-									new PropertyModifier(model, name));
+								= new ListenerHelper(editor, model, 
+										new PropertyModifier(model, name));
 						text.addKeyListener(listener);
 					}
-					
 				}
 			}
 		}
@@ -208,16 +223,32 @@ public class FormModelPage extends FormPage {
 						final String label = propertyHelper.getLabel();
 						if (model.getEntryForPropertyMap(mapName, key).containsKey(name)) {
 							toolkit.createLabel(subClient, (label == null || "".equals(label)) ? name : label);
-							Text text = toolkit.createText(subClient, 
-									(String) model.getEntryForPropertyMap(mapName, key).get(name), 
-									SWT.SINGLE);
-							GridData gd = new GridData();
-							gd.widthHint = 150;
-							text.setLayoutData(gd);
-							ListenerHelper listener
-								= new ListenerHelper(editor, model, 
-										new MapPropertyModifier(model, mapName, key, name));
-							text.addKeyListener(listener);
+							if ("combo".equals(propertyHelper.getEditor())) {
+								Combo combo = new Combo(subClient, SWT.DROP_DOWN);
+								combo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+								for (String item : helper.getComboItems(propertyHelper.getCombo())) {
+									combo.add(item.trim());
+								}
+								combo.setText((String) model.getEntryForPropertyMap(mapName, key).get(name));
+								GridData gd = new GridData();
+								gd.widthHint = 133;
+								combo.setLayoutData(gd);
+								ListenerHelper listener
+										= new ListenerHelper(editor, model, 
+												new MapPropertyModifier(model, mapName, key, name));
+								combo.addSelectionListener(listener);
+							} else {
+								Text text = toolkit.createText(subClient, 
+										(String) model.getEntryForPropertyMap(mapName, key).get(name), 
+										SWT.SINGLE);
+								GridData gd = new GridData();
+								gd.widthHint = 150;
+								text.setLayoutData(gd);
+								ListenerHelper listener
+										= new ListenerHelper(editor, model, 
+												new MapPropertyModifier(model, mapName, key, name));
+								text.addKeyListener(listener);
+							}
 						}
 					}
 				}

@@ -1,12 +1,11 @@
 package org.spagic3.ui.serviceeditor.editors;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
@@ -14,7 +13,7 @@ import org.eclipse.swt.widgets.Text;
 import org.spagic3.ui.serviceeditor.model.IPropertyModifier;
 import org.spagic3.ui.serviceeditor.model.IServiceModel;
 
-public class ListenerHelper implements FocusListener, KeyListener, ModifyListener, SelectionListener {
+public class ListenerHelper implements FocusListener, KeyListener, SelectionListener {
 
 	private ServiceEditor editor;
 	private IServiceModel model;
@@ -47,20 +46,13 @@ public class ListenerHelper implements FocusListener, KeyListener, ModifyListene
 			if (e.getSource() instanceof Text) {
 				Text text = (Text) e.getSource();
 				modifier.setValue(text.getText());
-				editor.refreshModel();
 			} else if (e.getSource() instanceof Combo) {
 				Combo combo = (Combo) e.getSource();
 				modifier.setValue(combo.getText());
-				editor.refreshModel();
+			} else if (e.getSource() instanceof StyledText) {
+				StyledText textarea = (StyledText) e.getSource();
+				modifier.setValue(textarea.getText().replaceAll("\\s+", " "));
 			}
-		}
-	}
-
-	@Override
-	public void modifyText(ModifyEvent e) {
-		if (e.getSource() instanceof Combo) {
-			Combo combo = (Combo) e.getSource();
-			modifier.setValue(combo.getText());
 			editor.refreshModel();
 		}
 	}

@@ -194,6 +194,15 @@ public class ServiceModelHelper {
 		return defCategories;
 	}
 	
+	public List<String> getComboItems(String comboName) {
+		String comboValues = evalXPathAsString(scappyDefDocument, "(/scrappy/combo-providers/combo-provider[@name=\"" + comboName + "\"]/combo-provider-parameter[@name=\"comboValues\"]/@value)");
+		List<String> values = new ArrayList<String>();
+		for (String value : comboValues.split(";")) {
+			values.add(value);
+		}
+		return values;
+	}
+	
 	public List<MapPropertyHelper> getDefMapProperties(IServiceModel model) {
 		List<Node> defMapPropertyNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when[(@action=\"handleKeyMap\") or (@action=\"handleNumberedMap\")])");
 		List<MapPropertyHelper> defMapProperties = new ArrayList<MapPropertyHelper>();
