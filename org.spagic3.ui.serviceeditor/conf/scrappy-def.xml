@@ -82,7 +82,7 @@
 				<!--  This  are the fields of the map entry -->
 				<!--                                        -->
 				<property name="parameterName" label="Paramenter Name"/>
-				<property name="xPathExpression" label="XPath Expression"/> 
+				<property name="xPathExpression" label="XPath Expression" editor="textarea"/> 
 				<property name="parameterType" label="Parameter Type" editor="combo" combo="ParameterTypeComboProvider"/>   
 			
 			</when> 	

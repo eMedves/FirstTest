@@ -3,6 +3,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JSpinner.DateEditor;
 import javax.swing.plaf.multi.MultiButtonUI;
 
 import org.eclipse.swt.SWT;
@@ -12,6 +13,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
@@ -73,7 +75,7 @@ public class FormModelPage extends FormPage {
 		layout.rightMargin = 10;
 		layout.horizontalSpacing = 10;
 		layout.verticalSpacing = 10;
-		layout.maxNumColumns = 1;
+		layout.maxNumColumns = 2;
 		layout.minNumColumns = 1;
 		form.getBody().setLayout(layout);
 		
@@ -95,7 +97,7 @@ public class FormModelPage extends FormPage {
 				model.getSpagicId(), 
 				SWT.SINGLE);
 		GridData gd = new GridData();
-		gd.widthHint = 150;
+		gd.widthHint = 200;
 		text.setLayoutData(gd);
 		ListenerHelper listener
 			= new ListenerHelper(editor, model, 
@@ -117,7 +119,7 @@ public class FormModelPage extends FormPage {
 					(String) model.getProperties().get("target"), 
 					SWT.SINGLE);
 			gd = new GridData();
-			gd.widthHint = 150;
+			gd.widthHint = 200;
 			text.setLayoutData(gd);
 			listener
 					= new ListenerHelper(editor, model, 
@@ -146,13 +148,25 @@ public class FormModelPage extends FormPage {
 				if (model.getProperties().containsKey(name)) {
 					toolkit.createLabel(client, (label == null || "".equals(label)) ? name : label);
 					
+//					if ("date".equals(propertyHelper.getEditor())) {
+//						DateTime date = new DateTime(client, SWT.BORDER);
+//						date.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+////						date.setText((String) model.getProperties().get(name));
+//						GridData gd = new GridData();
+//						gd.widthHint = 190;
+//						date.setLayoutData(gd);
+//						ListenerHelper listener
+//								= new ListenerHelper(editor, model, 
+//										new PropertyModifier(model, name));
+//						date.addKeyListener(listener);
+//					} else 
 					if ("textarea".equals(propertyHelper.getEditor())) {
 						StyledText textarea = new StyledText(client, SWT.WRAP | SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
 						textarea.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 						textarea.setText((String) model.getProperties().get(name));
 						GridData gd = new GridData();
 						gd.heightHint = 80;
-						gd.widthHint = 140;
+						gd.widthHint = 190;
 						textarea.setLayoutData(gd);
 						ListenerHelper listener
 								= new ListenerHelper(editor, model, 
@@ -166,7 +180,7 @@ public class FormModelPage extends FormPage {
 						}
 						combo.setText((String) model.getProperties().get(name));
 						GridData gd = new GridData();
-						gd.widthHint = 133;
+						gd.widthHint = 183;
 						combo.setLayoutData(gd);
 						ListenerHelper listener
 								= new ListenerHelper(editor, model, 
@@ -177,7 +191,7 @@ public class FormModelPage extends FormPage {
 								(String) model.getProperties().get(name), 
 								SWT.SINGLE);
 						GridData gd = new GridData();
-						gd.widthHint = 150;
+						gd.widthHint = 200;
 						text.setLayoutData(gd);
 						ListenerHelper listener
 								= new ListenerHelper(editor, model, 
@@ -223,7 +237,19 @@ public class FormModelPage extends FormPage {
 						final String label = propertyHelper.getLabel();
 						if (model.getEntryForPropertyMap(mapName, key).containsKey(name)) {
 							toolkit.createLabel(subClient, (label == null || "".equals(label)) ? name : label);
-							if ("combo".equals(propertyHelper.getEditor())) {
+							if ("textarea".equals(propertyHelper.getEditor())) {
+								StyledText textarea = new StyledText(subClient, SWT.WRAP | SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+								textarea.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+								textarea.setText((String) model.getEntryForPropertyMap(mapName, key).get(name));
+								GridData gd = new GridData();
+								gd.heightHint = 80;
+								gd.widthHint = 190;
+								textarea.setLayoutData(gd);
+								ListenerHelper listener
+										= new ListenerHelper(editor, model, 
+												new MapPropertyModifier(model, mapName, key, name));
+								textarea.addKeyListener(listener);
+							} else if ("combo".equals(propertyHelper.getEditor())) {
 								Combo combo = new Combo(subClient, SWT.DROP_DOWN);
 								combo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 								for (String item : helper.getComboItems(propertyHelper.getCombo())) {
@@ -231,7 +257,7 @@ public class FormModelPage extends FormPage {
 								}
 								combo.setText((String) model.getEntryForPropertyMap(mapName, key).get(name));
 								GridData gd = new GridData();
-								gd.widthHint = 133;
+								gd.widthHint = 183;
 								combo.setLayoutData(gd);
 								ListenerHelper listener
 										= new ListenerHelper(editor, model, 
@@ -242,7 +268,7 @@ public class FormModelPage extends FormPage {
 										(String) model.getEntryForPropertyMap(mapName, key).get(name), 
 										SWT.SINGLE);
 								GridData gd = new GridData();
-								gd.widthHint = 150;
+								gd.widthHint = 200;
 								text.setLayoutData(gd);
 								ListenerHelper listener
 										= new ListenerHelper(editor, model, 

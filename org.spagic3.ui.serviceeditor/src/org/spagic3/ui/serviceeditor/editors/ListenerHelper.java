@@ -51,7 +51,7 @@ public class ListenerHelper implements FocusListener, KeyListener, SelectionList
 				modifier.setValue(combo.getText());
 			} else if (e.getSource() instanceof StyledText) {
 				StyledText textarea = (StyledText) e.getSource();
-				modifier.setValue(textarea.getText().replaceAll("\\s+", " "));
+				modifier.setValue(textarea.getText().replaceAll("\\s+", " ").trim());
 			}
 			editor.refreshModel();
 		}
