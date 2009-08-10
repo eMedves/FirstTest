@@ -308,6 +308,19 @@ public class ServiceModelHelper {
 		public String getUICategory() {
 			return evalXPathAsString(propertyDoc, "/property/@uicategory");
 		}
+
+		public String getEditor() {
+			return evalXPathAsString(propertyDoc, "/property/@editor");
+		}
+
+		public String getCombo() {
+			return evalXPathAsString(propertyDoc, "/property/@combo");
+		}
+
+		public String getDefault() {
+			return evalXPathAsString(propertyDoc, "/property/@default");
+		}
+
 	}
 
 	public class MapPropertyHelper {

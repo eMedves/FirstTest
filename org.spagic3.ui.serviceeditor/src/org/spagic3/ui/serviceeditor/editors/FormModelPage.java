@@ -6,6 +6,7 @@ import java.util.Set;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Listener;
@@ -99,6 +100,10 @@ public class FormModelPage extends FormPage {
 						@Override
 						public void setValue(String value) {
 							model.setSpagicId(value);
+						}
+						@Override
+						public String getValue() {
+							return model.getSpagicId();
 						}});
 		text.addKeyListener(listener);
 
@@ -137,16 +142,33 @@ public class FormModelPage extends FormPage {
 				final String label = propertyHelper.getLabel();
 				if (model.getProperties().containsKey(name)) {
 					toolkit.createLabel(client, (label == null || "".equals(label)) ? name : label);
-					Text text = toolkit.createText(client, 
-							(String) model.getProperties().get(name), 
-							SWT.SINGLE);
-					GridData gd = new GridData();
-					gd.widthHint = 150;
-					text.setLayoutData(gd);
-					ListenerHelper listener
+					
+					if ("combo".equals(propertyHelper.getEditor())) {
+						Combo combo = new Combo(client, SWT.DROP_DOWN);
+						combo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+						combo.add("true");
+						combo.add("false");
+						combo.setText((String) model.getProperties().get(name));
+						GridData gd = new GridData();
+						gd.widthHint = 133;
+						combo.setLayoutData(gd);
+						ListenerHelper listener
 						= new ListenerHelper(editor, model, 
 								new PropertyModifier(model, name));
-					text.addKeyListener(listener);
+						combo.addSelectionListener(listener);
+					} else {
+						Text text = toolkit.createText(client, 
+								(String) model.getProperties().get(name), 
+								SWT.SINGLE);
+						GridData gd = new GridData();
+						gd.widthHint = 150;
+						text.setLayoutData(gd);
+						ListenerHelper listener
+							= new ListenerHelper(editor, model, 
+									new PropertyModifier(model, name));
+						text.addKeyListener(listener);
+					}
+					
 				}
 			}
 		}

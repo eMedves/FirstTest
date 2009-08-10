@@ -4,4 +4,6 @@ public interface IPropertyModifier {
 
 	public void setValue(String value);
 
+	public String getValue();
+
 }
