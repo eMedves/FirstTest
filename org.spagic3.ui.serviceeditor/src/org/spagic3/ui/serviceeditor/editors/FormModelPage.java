@@ -1,5 +1,7 @@
 package org.spagic3.ui.serviceeditor.editors;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -122,22 +124,30 @@ public class FormModelPage extends FormPage {
 	private void createPropertySection(IManagedForm mform) {
 		Composite client = createSection(mform, "Root Properties", "", 2);
 		FormToolkit toolkit = mform.getToolkit();
-		List<PropertyHelper> defProperties = helper.getDefProperties(model);
-		for (PropertyHelper propertyHelper : defProperties) {
-			final String name = propertyHelper.getName();
-			final String label = propertyHelper.getLabel();
-			if (model.getProperties().containsKey(name)) {
-				toolkit.createLabel(client, (label == null || "".equals(label)) ? name : label);
-				Text text = toolkit.createText(client, 
-						(String) model.getProperties().get(name), 
-						SWT.SINGLE);
-				GridData gd = new GridData();
-				gd.widthHint = 150;
-				text.setLayoutData(gd);
-				ListenerHelper listener
-					= new ListenerHelper(editor, model, 
-							new PropertyModifier(model, name));
-				text.addKeyListener(listener);
+		Set<String> uiCategories = new LinkedHashSet<String>();
+		uiCategories.add("");
+		uiCategories.addAll(helper.getDefUICategories(model));
+		for (String uiCategory : uiCategories) {
+			List<PropertyHelper> defProperties = helper.getDefProperties(model, uiCategory);
+			if (!"".equals(uiCategory) && !defProperties.isEmpty()) {
+				client = createSection(mform, uiCategory, "", 2);
+			}
+			for (PropertyHelper propertyHelper : defProperties) {
+				final String name = propertyHelper.getName();
+				final String label = propertyHelper.getLabel();
+				if (model.getProperties().containsKey(name)) {
+					toolkit.createLabel(client, (label == null || "".equals(label)) ? name : label);
+					Text text = toolkit.createText(client, 
+							(String) model.getProperties().get(name), 
+							SWT.SINGLE);
+					GridData gd = new GridData();
+					gd.widthHint = 150;
+					text.setLayoutData(gd);
+					ListenerHelper listener
+						= new ListenerHelper(editor, model, 
+								new PropertyModifier(model, name));
+					text.addKeyListener(listener);
+				}
 			}
 		}
 		

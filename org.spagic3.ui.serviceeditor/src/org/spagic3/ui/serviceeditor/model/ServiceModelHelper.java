@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -109,7 +108,8 @@ public class ServiceModelHelper {
 						model.removeProperty(name);
 					}
         		}
-        	} else if ("handleKeyMap".equals(action)) {
+        	} else if ("handleKeyMap".equals(action)
+        			|| "handleNumberedMap".equals(action)) {
             	final String mapName = evalXPathAsString(condictionXML, "/when/@map");
     			final boolean mapExists = model.getMapProperties().containsKey(mapName);
     			if (!condiction) {
@@ -121,9 +121,19 @@ public class ServiceModelHelper {
 	        		final String variable = model.getProperties().getProperty(variableName);
 	        		Set<String> keys = new LinkedHashSet<String>();
 	        		if (variable != null) {
-	        			Matcher matcher = parameterPattern.matcher(variable);
-	        			while (matcher.find()) {
-	        				keys.add(matcher.group().substring(1));
+	        			if( "handleKeyMap".equals(action)) {
+		        			Matcher matcher = parameterPattern.matcher(variable);
+		        			while (matcher.find()) {
+		        				keys.add(matcher.group().substring(1));
+		        			}
+	        			} else {
+	        				int number = 0;
+	        				try {
+	        					number = Integer.valueOf(variable);
+	        				} catch (NumberFormatException nfe) {}
+	        				for (int i = 1; i <= number; i++) {
+	        					keys.add(new Integer(i).toString());
+	        				}
 	        			}
 	        		}
 	        		List<Node> propertyList = evalXPathAsNodes(condictionXML, "/when/property");
@@ -144,10 +154,6 @@ public class ServiceModelHelper {
 	                    }
 	        		}
     			}
-        	} else if ("handleNumberedMap".equals(action)) {
-            	final String mapName = evalXPathAsString(condictionXML, "/when/@map");
-            	final String variable = evalXPathAsString(condictionXML, "/when/@extractFromProperty");
-        		
         	}
         }
 	}
@@ -162,6 +168,32 @@ public class ServiceModelHelper {
 		return defProperties;
 	}
 
+	public List<PropertyHelper> getDefProperties(IServiceModel model, String category) {
+		List<Node> defPropertyNodes;
+		if (category == null || "".equals(category)) {
+			defPropertyNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/property[not(@uicategory)])" +
+					" | (/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when/property[not(@uicategory)])");
+		} else {
+			defPropertyNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/property[@uicategory=\"" + category + "\"])" +
+				" | (/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when/property[@uicategory=\"" + category + "\"])");
+		}
+		List<PropertyHelper> defProperties = new ArrayList<PropertyHelper>();
+		for (Node defPropertyNode : defPropertyNodes) {
+			defProperties.add(new PropertyHelper(defPropertyNode.asXML()));
+		}
+		return defProperties;
+	}
+
+	public Set<String> getDefUICategories(IServiceModel model) {
+		List<Node> defCategoryNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/property/@uicategory)" +
+				" | (/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when/property/@uicategory)");
+		Set<String> defCategories = new LinkedHashSet<String>();
+		for (Node defCategoryNode : defCategoryNodes) {
+			defCategories.add(defCategoryNode.getStringValue());
+		}
+		return defCategories;
+	}
+	
 	public List<MapPropertyHelper> getDefMapProperties(IServiceModel model) {
 		List<Node> defMapPropertyNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when[(@action=\"handleKeyMap\") or (@action=\"handleNumberedMap\")])");
 		List<MapPropertyHelper> defMapProperties = new ArrayList<MapPropertyHelper>();
@@ -273,6 +305,9 @@ public class ServiceModelHelper {
 			return evalXPathAsString(propertyDoc, "/property/@label");
 		}
 
+		public String getUICategory() {
+			return evalXPathAsString(propertyDoc, "/property/@uicategory");
+		}
 	}
 
 	public class MapPropertyHelper {
