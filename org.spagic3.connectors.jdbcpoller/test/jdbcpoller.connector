@@ -17,6 +17,23 @@
     <property name="databaseType" value="H2"/>
     <property name="datasourceName" value="metadb"/>
     
-    <property name="target" value="ConsoleTest"/>
+    <xproperty name="subQueries">
+		<map>
+		   <entry>
+		      <string>SubQuery1</string>
+		      <properties>
+		         <property name="Sql" value="SELECT * FROM TYPE_SERVICE WHERE ID_TS=@ID_NAMESPACE" />
+		      </properties>
+		   </entry>
+		
+		   <entry>
+		      <string>SubQuery2</string>
+		      <properties>
+		         <property name="Sql" value="SELECT * FROM TYPE_SERVICE WHERE ID_TS=@ID_NAMESPACE" />
+		      </properties>
+		   </entry>
+		</map>
+    </xproperty>
+    <property name="target" value="ConsoleTest"/>    
     
 </spagic:component>

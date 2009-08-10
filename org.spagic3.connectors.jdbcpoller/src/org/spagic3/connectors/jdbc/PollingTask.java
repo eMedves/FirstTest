@@ -54,6 +54,9 @@ public class PollingTask extends TimerTask {
 	// JNDI datasource for keys table
 	private DataSource keyDatasource;
 	private JDBCPoller poller;
+	
+	// Indicates if the task can run properly (e.g. because all datasources has been retrieved)
+	private boolean initialized = false;
 
 	public DataSource getDatasource() {
 		return datasource;
@@ -78,30 +81,57 @@ public class PollingTask extends TimerTask {
 	public PollingTask(PollingParameters pollingParams, JDBCPoller poller) throws Exception {
 		this.pollingParams = pollingParams;
 		this.poller = poller;
+	}
+	
+	public void initializeKey() {
+		if (initialized)
+			return;
 
 		// Try to update the table for keys: if it already exists, the statement
 		// will have no effect
+		Connection keyConnection = null;
 		try {
+			keyConnection = openKeyConnection();
+			if (keyConnection == null)
+				// Connection still not available
+				return;
+			
 			// Verify if the key table already exists
-			updateConditionKey(null, null);
+			updateConditionKey(keyConnection, null, null);
 			log.debug("Table for keys already existing");
 
 			// Verify if the row containing the condition key exists
 			try {
 				// Retrieve condition key from our database
-				getConditionKey(pollingParams.commPointID);
+				getConditionKey(keyConnection, pollingParams.commPointID);
 				log.debug("Row for condition key already existing");
+				initialized = true;
 			} catch (ConditionKeyNotFoundException ex) {
 				// Insert the row containing the initial key value
-				insertConditionKey(pollingParams.initialKeyValue, pollingParams.commPointID);
+				insertConditionKey(keyConnection, pollingParams.initialKeyValue, pollingParams.commPointID);
 				log.debug("Row for condition key created");
+				initialized = true;
 			}
 		} catch (Exception ex) {
 			log.debug("Trying to create table for keys");
-			createConditionKeyTable(pollingParams.initialKeyValue, pollingParams.commPointID);
+			try {
+				createConditionKeyTable(keyConnection, pollingParams.initialKeyValue, pollingParams.commPointID);
+				initialized = true;
+			} catch (Exception e) {
+				log.debug("Unable to create table for keys");
+			}
+		} finally {
+			if (keyConnection != null) {
+				try {
+					keyConnection.close();
+				} catch (SQLException e) {
+					log.error("Unable to close key connection");
+				}
+			}
 		}
-	
+		
 	}
+	
     
 	/**
 	 * Opens the connection used for polling
@@ -117,14 +147,18 @@ public class PollingTask extends TimerTask {
 			log.debug("Lookup of datasource: " + pollingParams.datasourceName);
 			
 			try {
-				datasource = poller.getDataSourceManager().getDataSource(pollingParams.datasourceName);
+				try {
+					datasource = poller.getDataSourceManager().getDataSource(pollingParams.datasourceName);
+				} catch (Exception e) {
+					log.warn("Datasource " + pollingParams.datasourceName + " not available. Polling not executed.");
+					return null;
+				}
 			} catch (Exception e) {
 				log.error("Error during lookup of datasource", e);
 				try {
 					log.error("Deactivating polling task for JDBC Poller");
 					// Cancels this timer task: it will never run again
 					cancel();
-//					stop(); // ??????? IS THIS RIGHT ??????
 					poller = null;
 				} catch (Exception e1) {
 					log.error("Error deactivating component JDBC Poller");
@@ -139,13 +173,21 @@ public class PollingTask extends TimerTask {
 	 * Method that performs the database polling
 	 */
 	public void run() {
+		initializeKey();
+		
+		if (!initialized)
+			return;
+		
 		log.debug("Entering pollDatabase");
-
 		Connection conn = null;
 
 		try {
 			conn = openConnection();
-			executeStatement(conn, pollingParams.rootStatement);
+			// Check if the connection is available. It may be null if the datasource
+			// hasn't been deployed yet
+			if (conn != null) {
+				executeStatement(conn, pollingParams.rootStatement);
+			}
 		} catch (Exception ex) {
 			log.error("Error executing statement", ex);
 		} finally {
@@ -224,7 +266,7 @@ public class PollingTask extends TimerTask {
 		try {
 			stmt = conn.prepareStatement(currentStatement.getSql());
 			// Retrieve condition keyColumn from our database
-			conditionKey = getConditionKey(pollingParams.commPointID);
+			conditionKey = getConditionKey(conn, pollingParams.commPointID);
 			// Use it for data retrieval
 			stmt.setString(1, conditionKey);
 
@@ -321,7 +363,7 @@ public class PollingTask extends TimerTask {
 				} finally {
 					// Update the condition key for the next iteration
 					if (keyValue != null) {
-						updateConditionKey(pollingParams.commPointID, keyValue);
+						updateConditionKey(conn, pollingParams.commPointID, keyValue);
 					}
 				}
 			}
@@ -442,8 +484,7 @@ public class PollingTask extends TimerTask {
 	 *          Unique ID for keyColumn retrieval
 	 * @throws Exception
 	 */
-	protected void insertConditionKey(String initialKeyValue, String commPointID) throws Exception {
-		Connection conn = openKeyConnection();
+	protected void insertConditionKey(Connection conn, String initialKeyValue, String commPointID) throws Exception {
 		PreparedStatement insertStmt = null;
 
 		try {
@@ -453,14 +494,8 @@ public class PollingTask extends TimerTask {
 			insertStmt.setString(2, initialKeyValue);
 			insertStmt.executeUpdate();
 		} finally {
-			try {
-				if (insertStmt != null) {
-					insertStmt.close();
-				}
-			} finally {
-				if (conn != null) {
-					conn.close();
-				}
+			if (insertStmt != null) {
+				insertStmt.close();
 			}
 		}
 	}
@@ -475,8 +510,7 @@ public class PollingTask extends TimerTask {
 	 *          Unique ID for key retrieval
 	 * @throws Exception
 	 */
-	protected void createConditionKeyTable(String initialKeyValue, String commPointID) throws Exception {
-		Connection conn = openKeyConnection();
+	protected void createConditionKeyTable(Connection conn, String initialKeyValue, String commPointID) throws Exception {
 		PreparedStatement stmt = null;
 		try {
 			String keyCreationStatement = getKeyCreationStatement();
@@ -488,7 +522,7 @@ public class PollingTask extends TimerTask {
 				log.debug("Table for keys created");
 
 				// Insert the row containing the initial keyColumn value
-				insertConditionKey(initialKeyValue, commPointID);
+				insertConditionKey(conn, initialKeyValue, commPointID);
 				log.debug("Row for condition keyColumn created");
 			} catch (Exception ex1) {
 				log.error("Unable to create table for keys", ex1);
@@ -497,14 +531,8 @@ public class PollingTask extends TimerTask {
 				throw ex1;
 			}
 		} finally {
-			try {
-				if (stmt != null) {
-					stmt.close();
-				}
-			} finally {
-				if (conn != null) {
-					conn.close();
-				}
+			if (stmt != null) {
+				stmt.close();
 			}
 		}
 	}
@@ -516,20 +544,24 @@ public class PollingTask extends TimerTask {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	protected Connection openKeyConnection() throws ClassNotFoundException, SQLException {
+	protected Connection openKeyConnection() throws SQLException {
 		// Open database connection or get it from the datasource
 		Connection conn = null;
 		if (keyDatasource == null) {
 			log.debug("Lookup of datasource: " + pollingParams.keyDatasourceName);
 			try {
-				keyDatasource = poller.getDataSourceManager().getDataSource(/*"java:comp/env/jdbc/" + */pollingParams.keyDatasourceName);
+				try {
+					keyDatasource = poller.getDataSourceManager().getDataSource(pollingParams.keyDatasourceName);
+				} catch (Exception e) {
+					log.warn("Datasource " + pollingParams.datasourceName + " not available. Polling not executed.");
+					return null;
+				}
 			} catch (Exception e) {
 				log.error("Error during lookup of datasource", e);
 				try {
 					log.error("Deactivating component JDBC Poller");
 					// Cancels this timer task: it will never run again
 					cancel();
-//					stop(); // ????
 					poller = null;
 				} catch (Exception e1) {
 					log.error("Error deactivating component JDBC Poller");
@@ -548,10 +580,9 @@ public class PollingTask extends TimerTask {
 	 * @return The condition keyColumn
 	 * @throws Exception
 	 */
-	protected String getConditionKey(String commPointID) throws Exception {
+	protected String getConditionKey(Connection conn, String commPointID) throws Exception {
 		String result = null;
 
-		Connection conn = openKeyConnection();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 
@@ -572,14 +603,8 @@ public class PollingTask extends TimerTask {
 					rs.close();
 				}
 			} finally {
-				try {
-					if (selectStmt != null) {
-						selectStmt.close();
-					}
-				} finally {
-					if (conn != null) {
-						conn.close();
-					}
+				if (selectStmt != null) {
+					selectStmt.close();
 				}
 			}
 		}
@@ -596,8 +621,7 @@ public class PollingTask extends TimerTask {
 	 *          Last key used
 	 * @throws Exception
 	 */
-	protected void updateConditionKey(String commPointID, String currentKeyValue) throws Exception {
-		Connection conn = openKeyConnection();
+	protected void updateConditionKey(Connection conn, String commPointID, String currentKeyValue) throws Exception {
 		PreparedStatement stmt = null;
 
 		try {
@@ -606,14 +630,8 @@ public class PollingTask extends TimerTask {
 			stmt.setString(2, commPointID);
 			stmt.executeUpdate();
 		} finally {
-			try {
-				if (stmt != null) {
-					stmt.close();
-				}
-			} finally {
-				if (conn != null) {
-					conn.close();
-				}
+			if (stmt != null) {
+				stmt.close();
 			}
 		}
 	}
@@ -744,4 +762,12 @@ public class PollingTask extends TimerTask {
 
 		return result;
 	}
+
+	@Override
+	public boolean cancel() {
+		log.info("Deactivating polling task for JDBC Poller");
+		poller = null;
+		
+		return super.cancel();
+	}	
 }

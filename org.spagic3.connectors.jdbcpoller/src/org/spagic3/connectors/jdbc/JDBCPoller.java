@@ -50,7 +50,6 @@ public class JDBCPoller extends AbstractSpagicConnector {
 	public static final String PROPERTY_DATABASETYPE = "databaseType";
 	public static final String PROPERTY_DATASOURCENAME = "datasourceName";
 	public static final String PROPERTY_PERIOD = "period";
-//	public static final String PROPERTY_PERIOD = "NumberOfSubQueries";
 	
 	public static final String PROPERTY_ROWSFOREACHMESSAGE = "rowsForEachMessage";
 	public static final String PROPERTY_MAXMESSAGESPERUNIT = "maxMessagesPerUnit";
@@ -59,14 +58,14 @@ public class JDBCPoller extends AbstractSpagicConnector {
 	// dependent)
 
 	// Constants Used in Spagic Studio
-	private static String MS_SQL_SERVER = "MS_SQL";
-	private static String MySQL_SERVER = "MySQL";
-	private static String Oracle_SERVER = "Oracle";
-	private static String Sybase_SERVER = "Sysbase";
-	private static String DB2_SERVER = "DB2";
-	private static String Postgre_SQL_SERVER = "Postgres";
-	private static String H2_SERVER = "H2";
-	private static String JDBC_SERVER = "JDBC_Generic";
+	private static String MS_SQL_SERVER = "MS_SQL".intern();
+	private static String MySQL_SERVER = "MySQL".intern();
+	private static String Oracle_SERVER = "Oracle".intern();
+	private static String Sybase_SERVER = "Sysbase".intern();
+	private static String DB2_SERVER = "DB2".intern();
+	private static String Postgre_SQL_SERVER = "Postgres".intern();
+	private static String H2_SERVER = "H2".intern();
+	private static String JDBC_SERVER = "JDBC_Generic".intern();
 	private static String[] supportedDatabases = { MS_SQL_SERVER, MySQL_SERVER, Oracle_SERVER, Sybase_SERVER, DB2_SERVER,
 			Postgre_SQL_SERVER, H2_SERVER, JDBC_SERVER };
 
@@ -127,8 +126,6 @@ public class JDBCPoller extends AbstractSpagicConnector {
 			Properties value = subQueriesMap.get(key);
 			
 			subQueries[subQueryCounter] = new StatementElement(key, new PropertyConfigurator(value).getString("Sql"));
-//			subQueries[subQueryCounter].setName();
-//			subQueries[subQueryCounter].setSql();
 			subQueryCounter++;			
 		}
 		rootStatement.setSubQueries(subQueries);
@@ -202,7 +199,7 @@ public class JDBCPoller extends AbstractSpagicConnector {
 			pollingParams.keyDatasourceName = pollingParams.datasourceName;			
 		}
 	}
-
+	
 	public void setColumnNameAsAttribute(boolean columnNameAsAttribute) {
 		pollingParams.columnNameAsAttribute = columnNameAsAttribute;
 	}
