@@ -24,6 +24,7 @@ import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.concurrent.atomic.AtomicReference;
@@ -33,6 +34,7 @@ import org.apache.servicemix.nmr.api.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spagic3.core.AbstractSpagicConnector;
+import org.spagic3.core.PropertyConfigurator;
 import org.spagic3.datasource.IDataSourceManager;
 
 public class JDBCPoller extends AbstractSpagicConnector {
@@ -57,13 +59,6 @@ public class JDBCPoller extends AbstractSpagicConnector {
 	// dependent)
 
 	// Constants Used in Spagic Studio
-	// "MySQL;
-	// "MS_SQL"
-	// "Sysbase"
-	// "Oracle"
-	// "DB2";
-	// "Postgres"
-	// "JDBC_Generic"
 	private static String MS_SQL_SERVER = "MS_SQL";
 	private static String MySQL_SERVER = "MySQL";
 	private static String Oracle_SERVER = "Oracle";
@@ -103,8 +98,9 @@ public class JDBCPoller extends AbstractSpagicConnector {
 	public void init() {
 		pollingParams = new PollingParameters();
 		
-		setRootStatement(new StatementElement(propertyConfigurator.getString(PROPERTY_MAINQUERYNAME),
-											 propertyConfigurator.getString(PROPERTY_MAINQUERYSQL)));
+		StatementElement rootStatement = new StatementElement(propertyConfigurator.getString(PROPERTY_MAINQUERYNAME),
+				 propertyConfigurator.getString(PROPERTY_MAINQUERYSQL));
+		setRootStatement(rootStatement);
 		
 		setKeyColumn(propertyConfigurator.getString(PROPERTY_KEYCOLUMN));
 		setInitialKeyValue(propertyConfigurator.getString(PROPERTY_INITIALKEYVALUE));
@@ -122,6 +118,20 @@ public class JDBCPoller extends AbstractSpagicConnector {
 		// Load database dependent statements
 		statementsBundle = ResourceBundle.getBundle("statements");		
 		setKeyCreationStatement(statementsBundle.getString(getDatabaseType() + "_KEY_CREATE"));
+		
+		
+		Map<String, Properties> subQueriesMap = (Map<String, Properties>)propertyConfigurator.getXMapProperty("subQueries");
+		StatementElement[] subQueries = new StatementElement[subQueriesMap.size()];
+		int subQueryCounter = 0;
+		for (String key : subQueriesMap.keySet()) {
+			Properties value = subQueriesMap.get(key);
+			
+			subQueries[subQueryCounter] = new StatementElement(key, new PropertyConfigurator(value).getString("Sql"));
+//			subQueries[subQueryCounter].setName();
+//			subQueries[subQueryCounter].setSql();
+			subQueryCounter++;			
+		}
+		rootStatement.setSubQueries(subQueries);
 
 		// Use reflection to populate a map of int values to names
 		if (jdbcTypesNames == null) {
@@ -285,7 +295,7 @@ public class JDBCPoller extends AbstractSpagicConnector {
 	}
 
 	@Override
-	public void process(Exchange exchange) throws Exception {
+	public void process(Exchange exchange) {
 		String exchangeId = exchange.getId();
 		log.debug("Received acknowledge for exchange: " + exchangeId);
 	}

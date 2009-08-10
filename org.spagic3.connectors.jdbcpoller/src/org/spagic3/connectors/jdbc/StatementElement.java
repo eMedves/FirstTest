@@ -1,6 +1,6 @@
 /**
 
-    Copyright 2007, 2008 Engineering Ingegneria Informatica S.p.A.
+    Copyright 2007, 2009 Engineering Ingegneria Informatica S.p.A.
 
     This file is part of Spagic.
 
