@@ -65,14 +65,14 @@
 		
 		<def name="JBDCService" factory="spagic3.jdbcfactory">
 		
-			<property name="query" label="Query" type="string" editor="textarea"/>
+			<property name="query" label="Query" type="string" editor="textarea" refreshModel="true"/>
 			<property name="datasource" label="Datasource" type="string"/>
 			
-			<property name="result.columnAsAttribute" label="Column As Attribute" default="false"/>
-			<property name="result.rowsXmlEnvelope" label="Rows XML Envelope" default="rows" uicategory="Input Definition"/>
-			<property name="result.rowXmlEnvelope" label="Row XML Envelope" default="row" uicategory="Input Definition"/>
-			<property name="result.enrichInputMessage" label="Enrich Input Message" editor="combo" combo="TrueFalseComboProvider" default="false" uicategory="Input Definition"/>
-			<property name="result.valueAsAttribute" label="Value As Attribute" editor="combo" combo="TrueFalseComboProvider" default="false"/>
+			<property name="result.columnAsAttribute" label="Column As Attribute" default="false" uicategory="Output Definition"/>
+			<property name="result.valueAsAttribute" label="Value As Attribute" editor="combo" combo="TrueFalseComboProvider" default="false" uicategory="Output Definition"/>
+			<property name="result.rowsXmlEnvelope" label="Rows XML Envelope" default="rows" uicategory="Output Definition"/>
+			<property name="result.rowXmlEnvelope" label="Row XML Envelope" default="row" uicategory="Output Definition"/>
+			<property name="result.enrichInputMessage" label="Enrich Input Message" editor="combo" combo="TrueFalseComboProvider" default="false" uicategory="Output Definition"/>
 			<property name="result.xmlEnvelope" label="XML Envelope" default="" uicategory="Output Definition"/> 
 			<property name="faultManagement" label="Fault Management" editor="combo" combo="FaultManagementComboProvider"/>
 

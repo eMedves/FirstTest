@@ -116,7 +116,7 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 		}
 	}
 	
-	private void refreshXML() {
+	void refreshXML() {
 		String xmlFromModel = helper.asXML(model);
 		String actualXML = xmlEditor.getDocumentProvider()
 				.getDocument(xmlEditor.getEditorInput()).get();

@@ -109,7 +109,7 @@ public class FormModelPage extends FormPage {
 						@Override
 						public String getValue() {
 							return model.getSpagicId();
-						}});
+						}}, false);
 		text.addKeyListener(listener);
 
 		//target
@@ -123,7 +123,7 @@ public class FormModelPage extends FormPage {
 			text.setLayoutData(gd);
 			listener
 					= new ListenerHelper(editor, model, 
-							new PropertyModifier(model, "target"));
+							new PropertyModifier(model, "target"), false);
 			text.addKeyListener(listener);
 		}
 		
@@ -170,7 +170,8 @@ public class FormModelPage extends FormPage {
 						textarea.setLayoutData(gd);
 						ListenerHelper listener
 								= new ListenerHelper(editor, model, 
-										new PropertyModifier(model, name));
+										new PropertyModifier(model, name), 
+										propertyHelper.refreshModel());
 						textarea.addKeyListener(listener);
 					} else if ("combo".equals(propertyHelper.getEditor())) {
 						Combo combo = new Combo(client, SWT.DROP_DOWN);
@@ -184,7 +185,8 @@ public class FormModelPage extends FormPage {
 						combo.setLayoutData(gd);
 						ListenerHelper listener
 								= new ListenerHelper(editor, model, 
-										new PropertyModifier(model, name));
+										new PropertyModifier(model, name), 
+										propertyHelper.refreshModel());
 						combo.addSelectionListener(listener);
 					} else {
 						Text text = toolkit.createText(client, 
@@ -195,7 +197,8 @@ public class FormModelPage extends FormPage {
 						text.setLayoutData(gd);
 						ListenerHelper listener
 								= new ListenerHelper(editor, model, 
-										new PropertyModifier(model, name));
+										new PropertyModifier(model, name), 
+										propertyHelper.refreshModel());
 						text.addKeyListener(listener);
 					}
 				}
@@ -247,7 +250,8 @@ public class FormModelPage extends FormPage {
 								textarea.setLayoutData(gd);
 								ListenerHelper listener
 										= new ListenerHelper(editor, model, 
-												new MapPropertyModifier(model, mapName, key, name));
+												new MapPropertyModifier(model, mapName, key, name), 
+												propertyHelper.refreshModel());
 								textarea.addKeyListener(listener);
 							} else if ("combo".equals(propertyHelper.getEditor())) {
 								Combo combo = new Combo(subClient, SWT.DROP_DOWN);
@@ -261,7 +265,8 @@ public class FormModelPage extends FormPage {
 								combo.setLayoutData(gd);
 								ListenerHelper listener
 										= new ListenerHelper(editor, model, 
-												new MapPropertyModifier(model, mapName, key, name));
+												new MapPropertyModifier(model, mapName, key, name), 
+												propertyHelper.refreshModel());
 								combo.addSelectionListener(listener);
 							} else {
 								Text text = toolkit.createText(subClient, 
@@ -272,7 +277,8 @@ public class FormModelPage extends FormPage {
 								text.setLayoutData(gd);
 								ListenerHelper listener
 										= new ListenerHelper(editor, model, 
-												new MapPropertyModifier(model, mapName, key, name));
+												new MapPropertyModifier(model, mapName, key, name), 
+												propertyHelper.refreshModel());
 								text.addKeyListener(listener);
 							}
 						}

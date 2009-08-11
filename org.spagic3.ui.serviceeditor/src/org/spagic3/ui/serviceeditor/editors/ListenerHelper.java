@@ -17,12 +17,14 @@ public class ListenerHelper implements FocusListener, KeyListener, SelectionList
 
 	private ServiceEditor editor;
 	private IServiceModel model;
-	private IPropertyModifier modifier; 
+	private IPropertyModifier modifier;
+	private boolean refreshModel;
 
-	public ListenerHelper(ServiceEditor editor, IServiceModel model, IPropertyModifier modifier) {
+	public ListenerHelper(ServiceEditor editor, IServiceModel model, IPropertyModifier modifier, boolean refreshModel) {
 		this.editor = editor;
 		this.model = model;
 		this.modifier = modifier;
+		this.refreshModel = refreshModel;
 	}
 	
 	@Override
@@ -33,7 +35,11 @@ public class ListenerHelper implements FocusListener, KeyListener, SelectionList
 		if (e.getSource() instanceof Text) {
 			Text text = (Text) e.getSource();
 			modifier.setValue(text.getText());
-			editor.refreshModel();
+			if (refreshModel) {
+				editor.refreshModel();
+			} else {
+				editor.refreshXML();
+			}
 		}
 	}
 
@@ -53,15 +59,16 @@ public class ListenerHelper implements FocusListener, KeyListener, SelectionList
 				StyledText textarea = (StyledText) e.getSource();
 				modifier.setValue(textarea.getText().replaceAll("\\s+", " ").trim());
 			}
-			editor.refreshModel();
+			if (refreshModel) {
+				editor.refreshModel();
+			} else {
+				editor.refreshXML();
+			}
 		}
 	}
 
 	@Override
-	public void widgetDefaultSelected(SelectionEvent e) {
-		int i = e.detail;
-		
-	}
+	public void widgetDefaultSelected(SelectionEvent e) {}
 
 	@Override
 	public void widgetSelected(SelectionEvent e) {
@@ -69,7 +76,11 @@ public class ListenerHelper implements FocusListener, KeyListener, SelectionList
 			Combo combo = (Combo) e.getSource();
 			if (!modifier.getValue().equals(combo.getText())) {
 				modifier.setValue(combo.getText());
-				editor.refreshModel();
+				if (refreshModel) {
+					editor.refreshModel();
+				} else {
+					editor.refreshXML();
+				}
 			}
 		}
 	}
