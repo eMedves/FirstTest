@@ -93,7 +93,7 @@ public class ServiceNewWizardPage extends WizardPage {
 		});
 		
 		Composite treeComposite = new Composite(container, SWT.NULL);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL);
 		gd.horizontalSpan = 3;
 		treeComposite.setLayoutData(gd);
 		treeComposite.setLayout(new FillLayout());
