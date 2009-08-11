@@ -257,6 +257,16 @@ public class ServiceModelHelper {
 		return xml.toString();
 	}
 	
+	public List<CategoryHelper> getDefinitionCategories() {
+		List<Node> categoryNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/connectors)" +
+				" | (/scrappy/services)");
+		List<CategoryHelper> categories = new ArrayList<CategoryHelper>();
+		for (Node categoryNode : categoryNodes) {
+			categories.add(new CategoryHelper(categoryNode.asXML()));
+		}
+		return categories;
+	}
+	
 	public String evalXPathAsString(String xml, String xpath) {
 		try {
 	        Document document = DocumentHelper.parseText(xml);
@@ -359,6 +369,56 @@ public class ServiceModelHelper {
 			return defProperties;
 		}
 
+	}
+	
+	public class CategoryHelper {
+		
+		private Document categoryDoc;
+		private List<ServiceHelper> services = new ArrayList<ServiceHelper>();
+		
+		public CategoryHelper(String categoryXML) {
+			try {
+				categoryDoc = DocumentHelper.parseText(categoryXML);
+			} catch (DocumentException de) {}
+
+			List<Node> serviceNodes = evalXPathAsNodes(categoryDoc, "(/connectors/connector) | (/services/service)");
+			for (Node serviceNode : serviceNodes) {
+				services.add(new ServiceHelper(this, serviceNode.asXML()));
+			}
+		}
+		
+		public String getName() {
+			return categoryDoc.getRootElement().getName();
+		}
+		
+		public boolean hasServices() {
+			return !services.isEmpty();
+		}
+		
+		public List<ServiceHelper> getServices() {
+			return services;
+		}
+	}
+
+	public class ServiceHelper {
+		
+		private CategoryHelper category;
+		private Document serviceDoc;
+		
+		public ServiceHelper(CategoryHelper category, String serviceXML) {
+			this.category = category;
+			try {
+				serviceDoc = DocumentHelper.parseText(serviceXML);
+			} catch (DocumentException de) {}
+		}
+		
+		public String getName() {
+			return evalXPathAsString(serviceDoc, "/" + serviceDoc.getRootElement().getName() + "/@label");
+		}
+
+		public CategoryHelper getCategory() {
+			return category;
+		}
 	}
 
 }

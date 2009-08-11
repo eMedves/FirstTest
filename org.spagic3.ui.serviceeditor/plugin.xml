@@ -13,5 +13,21 @@
             id="org.spagic3.ui.serviceeditor.editors.ServiceEditor">
       </editor>
    </extension>
+   
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="Service Wizards"
+            id="org.spagic3.ui.serviceeditor.wizard">
+      </category>
+      <wizard
+            name="New Service"
+            icon="icons/sample.gif"
+            category="org.spagic3.ui.serviceeditor.wizard"
+            class="org.spagic3.ui.serviceeditor.wizards.ServiceNewWizard"
+            id="org.spagic3.ui.serviceeditor.wizards.ServiceNewWizard">
+      </wizard>
+   </extension>
+   
 
 </plugin>
