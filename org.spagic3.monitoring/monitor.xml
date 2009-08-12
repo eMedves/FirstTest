@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
+	name="org.spagic3.monitor">
+	
+   <implementation class="org.spagic3.monitoring.MonitorService"/>
+   <!--reference 
+   		cardinality="1..1" 
+   		interface="org.spagic3.deployer.IDeploymentService" 
+   		name="deploymentService" 
+   		policy="dynamic"/-->
+   
+   <service>
+      <provide interface="org.osgi.service.event.EventHandler"/>
+   </service>
+   
+   <property name="event.topics" type="String" value="SPAGIC/*"/>
+   
+</scr:component>
