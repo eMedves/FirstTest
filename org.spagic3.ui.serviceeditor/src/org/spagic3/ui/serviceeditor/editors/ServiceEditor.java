@@ -67,7 +67,7 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 	public void doSaveAs() {
 		IEditorPart editor = getEditor(xmlEditorPageIndex);
 		editor.doSaveAs();
-		setPageText(xmlEditorPageIndex, editor.getTitle());
+//		setPageText(xmlEditorPageIndex, editor.getTitle());
 		setInput(editor.getEditorInput());
 		updateTitle();
 	}

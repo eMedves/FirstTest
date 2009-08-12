@@ -5,8 +5,11 @@ import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -29,6 +32,8 @@ import org.spagic3.ui.serviceeditor.model.ServiceModelHelper.MapPropertyHelper;
 import org.spagic3.ui.serviceeditor.model.ServiceModelHelper.PropertyHelper;
 
 public class FormModelPage extends FormPage {
+	
+	private static String MODIFIER_DATA_REFERENCE = "MODIFIER_DATA_REFERENCE";
 	
 	private ServiceEditor editor;
 	private ServiceModelHelper helper;
@@ -57,7 +62,33 @@ public class FormModelPage extends FormPage {
 			}
 		}
 	}
+
+	private void updateModel() {
+		updateModel(managedForm.getForm().getBody());
+		editor.refreshModel();
+	}
 	
+	private void updateModel(Control control) {
+		IPropertyModifier modifier = (IPropertyModifier) control.getData("MODIFIER_DATA_REFERENCE");
+		if (modifier != null) {
+			if (control instanceof Text) {
+				Text text = (Text) control;
+				modifier.setValue(text.getText());
+			} else if (control instanceof Combo) {
+				Combo combo = (Combo)control;
+				modifier.setValue(combo.getText());
+			} else if (control instanceof StyledText) {
+				StyledText textarea = (StyledText) control;
+				modifier.setValue(textarea.getText().replaceAll("\\s+", " ").trim());
+			}
+		}
+		if (control instanceof Composite) {
+			for (Control child : ((Composite) control).getChildren()) {
+				updateModel(child);
+			}
+		}
+	}
+
 	protected void createFormContent(IManagedForm managedForm) {
 		this.managedForm = managedForm;
 		
@@ -84,7 +115,7 @@ public class FormModelPage extends FormPage {
 		Composite client = toolkit.createComposite(mform.getForm().getBody());
 		GridLayout layout = new GridLayout();
 		layout.marginWidth = layout.marginHeight = 0;
-		layout.numColumns = 2;
+		layout.numColumns = 4;
 		client.setLayout(layout);
 		
 		//ID
@@ -95,18 +126,43 @@ public class FormModelPage extends FormPage {
 		GridData gd = new GridData();
 		gd.widthHint = 200;
 		text.setLayoutData(gd);
-		ListenerHelper listener
-			= new ListenerHelper(editor, model, 
-					new IPropertyModifier() {
-						@Override
-						public void setValue(String value) {
-							model.setSpagicId(value);
-						}
-						@Override
-						public String getValue() {
-							return model.getSpagicId();
-						}}, true);
+		IPropertyModifier modifier = new IPropertyModifier() {
+				@Override
+				public void setValue(String value) {
+					model.setSpagicId(value);
+				}
+				@Override
+				public String getValue() {
+					return model.getSpagicId();
+				}
+			};
+		text.setData(MODIFIER_DATA_REFERENCE, modifier);
+		ListenerHelper listener	= new ListenerHelper(editor, model, modifier, true);
 		text.addKeyListener(listener);
+
+
+		//Apply
+		Composite composite = toolkit.createComposite(client);
+		gd = new GridData();
+		gd.widthHint = 30;
+		gd.heightHint = 0;
+		if (model.getProperties().containsKey("target")) {
+			gd.verticalSpan = 2;
+		}
+		composite.setLayoutData(gd);
+		Button button = toolkit.createButton(client, "Apply", SWT.NULL);
+		gd = new GridData();
+		gd.widthHint = 60;
+		gd.heightHint = 30;
+		if (model.getProperties().containsKey("target")) {
+			gd.verticalSpan = 2;
+		}
+		button.setLayoutData(gd);
+		button.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				updateModel();
+			}
+		});
 
 		//target
 		if (model.getProperties().containsKey("target")) {
@@ -117,9 +173,9 @@ public class FormModelPage extends FormPage {
 			gd = new GridData();
 			gd.widthHint = 200;
 			text.setLayoutData(gd);
-			listener
-					= new ListenerHelper(editor, model, 
-							new PropertyModifier(model, "target"), false);
+			modifier = new PropertyModifier(model, "target");
+			text.setData(MODIFIER_DATA_REFERENCE, modifier);
+			listener = new ListenerHelper(editor, model, modifier, false);
 			text.addKeyListener(listener);
 		}
 		
@@ -164,10 +220,10 @@ public class FormModelPage extends FormPage {
 						gd.heightHint = 80;
 						gd.widthHint = 190;
 						textarea.setLayoutData(gd);
-						ListenerHelper listener
-								= new ListenerHelper(editor, model, 
-										new PropertyModifier(model, name), 
-										propertyHelper.refreshModel());
+						IPropertyModifier modifier = new PropertyModifier(model, name);
+						textarea.setData(MODIFIER_DATA_REFERENCE, modifier);
+						ListenerHelper listener = new ListenerHelper(
+								editor, model, modifier, propertyHelper.refreshModel());
 						textarea.addKeyListener(listener);
 					} else if ("combo".equals(propertyHelper.getEditor())) {
 						Combo combo = new Combo(client, SWT.DROP_DOWN);
@@ -179,10 +235,10 @@ public class FormModelPage extends FormPage {
 						GridData gd = new GridData();
 						gd.widthHint = 183;
 						combo.setLayoutData(gd);
-						ListenerHelper listener
-								= new ListenerHelper(editor, model, 
-										new PropertyModifier(model, name), 
-										propertyHelper.refreshModel());
+						IPropertyModifier modifier = new PropertyModifier(model, name);
+						combo.setData(MODIFIER_DATA_REFERENCE, modifier);
+						ListenerHelper listener	= new ListenerHelper(
+								editor, model, modifier, propertyHelper.refreshModel());
 						combo.addSelectionListener(listener);
 					} else {
 						Text text = toolkit.createText(client, 
@@ -191,10 +247,10 @@ public class FormModelPage extends FormPage {
 						GridData gd = new GridData();
 						gd.widthHint = 200;
 						text.setLayoutData(gd);
-						ListenerHelper listener
-								= new ListenerHelper(editor, model, 
-										new PropertyModifier(model, name), 
-										propertyHelper.refreshModel());
+						IPropertyModifier modifier = new PropertyModifier(model, name);
+						text.setData(MODIFIER_DATA_REFERENCE, modifier);
+						ListenerHelper listener	= new ListenerHelper(
+								editor, model, modifier, propertyHelper.refreshModel());
 						text.addKeyListener(listener);
 					}
 				}
@@ -244,10 +300,10 @@ public class FormModelPage extends FormPage {
 								gd.heightHint = 80;
 								gd.widthHint = 190;
 								textarea.setLayoutData(gd);
-								ListenerHelper listener
-										= new ListenerHelper(editor, model, 
-												new MapPropertyModifier(model, mapName, key, name), 
-												propertyHelper.refreshModel());
+								IPropertyModifier modifier = new MapPropertyModifier(model, mapName, key, name);
+								textarea.setData(MODIFIER_DATA_REFERENCE, modifier);
+								ListenerHelper listener	= new ListenerHelper(
+										editor, model, modifier, propertyHelper.refreshModel());
 								textarea.addKeyListener(listener);
 							} else if ("combo".equals(propertyHelper.getEditor())) {
 								Combo combo = new Combo(subClient, SWT.DROP_DOWN);
@@ -259,10 +315,10 @@ public class FormModelPage extends FormPage {
 								GridData gd = new GridData();
 								gd.widthHint = 183;
 								combo.setLayoutData(gd);
-								ListenerHelper listener
-										= new ListenerHelper(editor, model, 
-												new MapPropertyModifier(model, mapName, key, name), 
-												propertyHelper.refreshModel());
+								IPropertyModifier modifier = new MapPropertyModifier(model, mapName, key, name);
+								combo.setData(MODIFIER_DATA_REFERENCE, modifier);
+								ListenerHelper listener	= new ListenerHelper(
+										editor, model, modifier, propertyHelper.refreshModel());
 								combo.addSelectionListener(listener);
 							} else {
 								Text text = toolkit.createText(subClient, 
@@ -271,10 +327,10 @@ public class FormModelPage extends FormPage {
 								GridData gd = new GridData();
 								gd.widthHint = 200;
 								text.setLayoutData(gd);
-								ListenerHelper listener
-										= new ListenerHelper(editor, model, 
-												new MapPropertyModifier(model, mapName, key, name), 
-												propertyHelper.refreshModel());
+								IPropertyModifier modifier = new MapPropertyModifier(model, mapName, key, name);
+								text.setData(MODIFIER_DATA_REFERENCE, modifier);
+								ListenerHelper listener	= new ListenerHelper(
+										editor, model, modifier, propertyHelper.refreshModel());
 								text.addKeyListener(listener);
 							}
 						}

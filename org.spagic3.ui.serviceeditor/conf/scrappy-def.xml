@@ -28,36 +28,25 @@
 		<def name="HTTPServer" factory="spagic3.httpserverfactory">
 			<property name="locationURI" label="URI" type="string"/>
 			<property name="mep" label="Server Type" type="string"/>
-			<property name="isSoap" label="Is Soap" type="boolean" combo="TrueFalseComboProvider"/> 	
-			<property name="isSSL" label="Enable SSL" type="boolean" combo="TrueFalseComboProvider"/>
+			<property name="isSoap" label="Is Soap" type="boolean" editor="combo" combo="TrueFalseComboProvider" refreshModel="true"/> 	
+			<property name="isSSL" label="Enable SSL" type="boolean" editor="combo" combo="TrueFalseComboProvider" refreshModel="true"/>
 			
 			<when expr="true(isSoap)" action="handleProperty">
 				<property name="wsdl" label="WSDL" type="string" droptarget="*.wsdl"/>
 			</when>	
 			
 			<when expr="true(isSSL)" action="handleProperty">
-				<property name="clientAuthentication" label="Client Authentication" type="boolean" />
-				<property name="keystore" label="Keystore" type="boolean" />
-				<property name="keystorePassword" label="Keystore Password" type="password" />
-				<property name="keystoreType" label="Keystore Type" type="string" />
+				<property name="clientAuthentication" label="Client Authentication" default="NoClientAuthentication" type="boolean" uicategory="SSL Parameters" editor="combo" combo="ClientAuthenticationTypeComboProvider" refreshModel="true"/>
+				<property name="keystore" label="Keystore" type="boolean" uicategory="SSL Parameters"/>
+				<property name="keystorePassword" label="Keystore Password" type="password" uicategory="SSL Parameters"/>
+				<property name="keystoreType" label="Keystore Type" type="string" uicategory="SSL Parameters"/>
 			</when>
 			
 			<when expr="and(true(isSSL),oneOf(clientAuthentication,[OptionalClientAuthentication;MandatoryClientAuthentication]))" action="handleProperty">
-				<property name="truststore" label="Keystore" type="boolean" />
-				<property name="truststorePassword" label="Keystore Password" type="password" />
-				<property name="truststoreType" label="Keystore Type" type="string" />
+				<property name="truststore" label="Truststore" type="boolean" uicategory="SSL Parameters"/>
+				<property name="truststorePassword" label="Truststore Password" type="password" uicategory="SSL Parameters"/>
+				<property name="truststoreType" label="Truststore Type" type="string" uicategory="SSL Parameters"/>
 			</when>
-
-			<when expr="true()" action="handleKeyMap" map="uriParametersMap" extractFromProperty="locationURI">
-				<!--                                        -->
-				<!--  The map key is the placeholder        -->
-				<!--  This  are the fields of the map entry -->
-				<!--                                        -->
-				<property name="parameterName" label="Paramenter Name"/>
-				<property name="xPathExpression" label="XPath Expression"/> 
-				<property name="parameterType" label="Parameter Type"/>   
-			</when> 	
-			
 			
 		</def>
 		
