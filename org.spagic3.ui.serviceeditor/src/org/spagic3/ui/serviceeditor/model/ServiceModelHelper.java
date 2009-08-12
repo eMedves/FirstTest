@@ -168,6 +168,15 @@ public class ServiceModelHelper {
 		return defProperties;
 	}
 
+	public List<PropertyHelper> getDefBaseProperties(String factory) {
+		List<Node> defPropertyNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + factory + "\"]/property)");
+		List<PropertyHelper> defProperties = new ArrayList<PropertyHelper>();
+		for (Node defPropertyNode : defPropertyNodes) {
+			defProperties.add(new PropertyHelper(defPropertyNode.asXML()));
+		}
+		return defProperties;
+	}
+
 	public List<PropertyHelper> getDefProperties(IServiceModel model, String category) {
 		List<Node> defPropertyNodes;
 		if (category == null || "".equals(category)) {
@@ -412,8 +421,20 @@ public class ServiceModelHelper {
 			} catch (DocumentException de) {}
 		}
 		
+		public String getType() {
+			return serviceDoc.getRootElement().getName();
+		}
+
+		public String getLabel() {
+			return evalXPathAsString(serviceDoc, "/" + getType() + "/@label");
+		}
+
 		public String getName() {
-			return evalXPathAsString(serviceDoc, "/" + serviceDoc.getRootElement().getName() + "/@label");
+			return evalXPathAsString(serviceDoc, "/" + getType() + "/@name");
+		}
+
+		public String getFactory() {
+			return evalXPathAsString(serviceDoc, "/" + getType() + "/@factory");
 		}
 
 		public CategoryHelper getCategory() {

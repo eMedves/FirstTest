@@ -105,7 +105,7 @@ public class FormModelPage extends FormPage {
 						@Override
 						public String getValue() {
 							return model.getSpagicId();
-						}}, false);
+						}}, true);
 		text.addKeyListener(listener);
 
 		//target

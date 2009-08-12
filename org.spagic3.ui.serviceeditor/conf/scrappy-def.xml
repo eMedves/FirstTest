@@ -12,7 +12,7 @@
 		<service label="Script" name="ScriptService" factory=""/>
 		<service label="Schema Validator" name="SchemaValidatorService" factory=""/>
 		<service label="XLST Transformer" name="XSLTTransformerService" factory=""/>
-		<service label="SQL/JDBC" name="JBDCService" factory="spagic3.jdbcservice"/>
+		<service label="SQL/JDBC" name="JBDCService" factory="spagic3.jdbcfactory"/>
 		<service label="StoredProcedure" name="StoredProcedureService" factory=""/>
 		<service label="Console" name="ConsoleService" factory=""/>
 	</services>

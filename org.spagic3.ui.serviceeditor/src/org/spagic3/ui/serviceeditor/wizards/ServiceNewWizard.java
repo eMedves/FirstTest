@@ -15,6 +15,7 @@ import java.io.*;
 import org.eclipse.ui.*;
 import org.eclipse.ui.ide.IDE;
 import org.spagic3.ui.serviceeditor.model.ServiceModelHelper;
+import org.spagic3.ui.serviceeditor.model.ServiceModelHelper.PropertyHelper;
 
 
 public class ServiceNewWizard extends Wizard implements INewWizard {
@@ -41,11 +42,12 @@ public class ServiceNewWizard extends Wizard implements INewWizard {
 
 	public boolean performFinish() {
 		final String containerName = page.getContainerName();
-		final String fileName = page.getFileName();
+		final String fileName = page.getFileName() + "." + page.getFileType();
+		final String factory = page.getFactory();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					doFinish(containerName, fileName, monitor);
+					doFinish(containerName, fileName, factory, monitor);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -66,11 +68,8 @@ public class ServiceNewWizard extends Wizard implements INewWizard {
 		return true;
 	}
 	
-	private void doFinish(
-		String containerName,
-		String fileName,
-		IProgressMonitor monitor)
-		throws CoreException {
+	private void doFinish(String containerName, String fileName, String factory, IProgressMonitor monitor)
+			throws CoreException {
 		// create a sample file
 		monitor.beginTask("Creating " + fileName, 2);
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -81,7 +80,7 @@ public class ServiceNewWizard extends Wizard implements INewWizard {
 		IContainer container = (IContainer) resource;
 		final IFile file = container.getFile(new Path(fileName));
 		try {
-			InputStream stream = openContentStream();
+			InputStream stream = openContentStream(fileName, factory);
 			if (file.exists()) {
 				file.setContents(stream, true, true, monitor);
 			} else {
@@ -105,10 +104,25 @@ public class ServiceNewWizard extends Wizard implements INewWizard {
 		monitor.worked(1);
 	}
 	
-	private InputStream openContentStream() {
-		String contents =
-			"This is the initial file contents for *.service file that should be word-sorted in the Preview page of the multi-page editor";
-		return new ByteArrayInputStream(contents.getBytes());
+	private InputStream openContentStream(String fileName, String factory) {
+		StringBuffer xml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		xml.append("<spagic:component\n");
+		xml.append("\t\txmlns:spagic=\"urn:org:spagic3\"\n");
+		xml.append("\t\txmlns=\"urn:org:spagic3\"\n");
+		xml.append("\t\tspagic.id=\"").append("").append("\"\n");
+		xml.append("\t\tfactory.name=\"").append(factory).append("\">\n");
+		if (fileName.endsWith("connector")) {
+			xml.append("\t<property name=\"target\" value=\"\"/>\n");
+		}
+		for(PropertyHelper propertyHelper : helper.getDefBaseProperties(factory)) {
+			xml.append("\t<property name=\"")
+					.append(propertyHelper.getName())
+					.append("\" value=\"")
+					.append(propertyHelper.getDefault())
+					.append("\"/>\n");
+		}
+		xml.append("</spagic:component>");
+		return new ByteArrayInputStream(xml.toString().getBytes());
 	}
 
 	private void throwCoreException(String message) throws CoreException {

@@ -140,7 +140,7 @@ public class ServiceNewWizardPage extends WizardPage {
 			if (element  instanceof CategoryHelper)
 				return ((CategoryHelper) element).getName();
 			else if (element  instanceof ServiceHelper)
-				return ((ServiceHelper) element).getName();
+				return ((ServiceHelper) element).getLabel();
 			else
 				return "<empty>";
 		}
@@ -256,4 +256,13 @@ public class ServiceNewWizardPage extends WizardPage {
 	public String getFileName() {
 		return fileText.getText();
 	}
+
+	public String getFileType() {
+		return ((ServiceHelper) ((TreeSelection) definitionTree.getSelection()).getFirstElement()).getType();
+	}
+
+	public String getFactory() {
+		return ((ServiceHelper) ((TreeSelection) definitionTree.getSelection()).getFirstElement()).getFactory();
+	}
+
 }
