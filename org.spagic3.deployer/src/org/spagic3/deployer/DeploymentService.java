@@ -77,7 +77,7 @@ public class DeploymentService implements IDeploymentService {
 								String spagicType,
 								String factoryName, 
 								Hashtable properties, 
-								boolean subcribeOnBus) {
+								boolean subscribeOnBus) {
 		
 		logger.info("Deploying ["+spagicType+"] With ID ["+id+"] using ["+factoryName+"]");
 				
@@ -93,7 +93,7 @@ public class DeploymentService implements IDeploymentService {
 			ComponentFactory cf = (ComponentFactory) componentContext
 					.locateService("cf", sr);
 
-			if (subcribeOnBus){
+			if (subscribeOnBus){
 				String topicToSubscribe = SpagicConstants.SPAGIC_BASE_TOPIC+ id;
 				topicToSubscribe = SpagicUtils.normalizeTopic(topicToSubscribe);
 				properties.put(EventConstants.EVENT_TOPIC, topicToSubscribe);
