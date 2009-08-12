@@ -6,8 +6,11 @@ import java.net.URL;
 import java.util.Collections;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -22,6 +25,13 @@ public class Activator extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.spagic.ui.service.editor";
 
+	public static final String IMG_SAMPLE = "sample";
+	public static final String IMG_CONNECTORS = "connectors";
+	public static final String IMG_CONNECTOR = "connector";
+	public static final String IMG_SERVICES = "services";
+	public static final String IMG_SERVICE = "service";
+
+	
 	// The shared instance
 	private static Activator plugin;
 
@@ -59,18 +69,37 @@ public class Activator extends AbstractUIPlugin {
 	public static Activator getDefault() {
 		return plugin;
 	}
+	
+	
+	protected void initializeImageRegistry(ImageRegistry registry) {
+		registerImage(registry, IMG_SAMPLE, "sample.gif");
+		registerImage(registry, IMG_CONNECTORS, "connectors.gif");
+		registerImage(registry, IMG_CONNECTOR, "connector.gif");
+		registerImage(registry, IMG_SERVICES, "services.gif");
+		registerImage(registry, IMG_SERVICE, "service.gif");
+	}
 
-	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path
-	 *
-	 * @param path the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(String path) {
-		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+	private void registerImage(ImageRegistry registry, String key,
+			String fileName) {
+		try {
+			IPath path = new Path("icons/" + fileName);
+			URL url = find(path);
+			if (url!=null) {
+				ImageDescriptor desc = ImageDescriptor.createFromURL(url);
+				registry.put(key, desc);
+			}
+		} catch (Exception e) {
+		}
 	}
 	
+	public Image getImage(String key) {
+		return getImageRegistry().get(key);
+	}
+	
+	public ImageDescriptor getImageDescriptor(String key) {
+		return getImageRegistry().getDescriptor(key);
+	}
+
 	public static File getFileFromPlugin(String filePath){
 		Bundle bundle = Activator.getDefault().getBundle();
 		Path path = new Path(filePath); 
@@ -78,7 +107,7 @@ public class Activator extends AbstractUIPlugin {
 		URL fileUrl = null;
 		try {
 			fileUrl = FileLocator.toFileURL(url);
-		}catch (IOException e) {
+		} catch (IOException e) {
 			// Will happen if the file cannot be read for some reason
 			e.printStackTrace();
 		}

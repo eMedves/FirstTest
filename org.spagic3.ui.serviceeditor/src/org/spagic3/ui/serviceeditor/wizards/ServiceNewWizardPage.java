@@ -4,15 +4,16 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -28,7 +29,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
-import org.spagic3.ui.serviceeditor.model.ServiceModel;
+import org.spagic3.ui.serviceeditor.Activator;
 import org.spagic3.ui.serviceeditor.model.ServiceModelHelper;
 import org.spagic3.ui.serviceeditor.model.ServiceModelHelper.CategoryHelper;
 import org.spagic3.ui.serviceeditor.model.ServiceModelHelper.ServiceHelper;
@@ -102,6 +103,12 @@ public class ServiceNewWizardPage extends WizardPage {
 		definitionTree.setLabelProvider(new DefinitionLabelProvider());
 		definitionTree.setContentProvider(new DefinitionContentProvider());
 		definitionTree.setInput(helper.getDefinitionCategories().toArray());
+		definitionTree.addSelectionChangedListener(
+				new ISelectionChangedListener() {
+					public void selectionChanged(SelectionChangedEvent e) {
+						dialogChanged();
+					}
+				});
 		
 		initialize();
 		dialogChanged();
@@ -109,8 +116,24 @@ public class ServiceNewWizardPage extends WizardPage {
 	}
 	
 	public class DefinitionLabelProvider extends LabelProvider {
+		
 		public Image getImage(Object element) {
-			return null;
+			if (element instanceof CategoryHelper) {
+				if ("connectors".equals(((CategoryHelper) element).getName())) {
+					return Activator.getDefault().getImage(Activator.IMG_CONNECTORS);
+				} else if ("services".equals(((CategoryHelper) element).getName())) {
+					return Activator.getDefault().getImage(Activator.IMG_SERVICES);
+				} else
+					return null;
+			} else if (element instanceof ServiceHelper) {
+				if ("connectors".equals(((ServiceHelper) element).getCategory().getName())) {
+					return Activator.getDefault().getImage(Activator.IMG_CONNECTOR);
+				} else if ("services".equals(((ServiceHelper) element).getCategory().getName())) {
+					return Activator.getDefault().getImage(Activator.IMG_SERVICE);
+				} else
+					return null;
+			} else
+				return null;
 		}
 
 		public String getText(Object element) {
@@ -213,6 +236,11 @@ public class ServiceNewWizardPage extends WizardPage {
 //				return;
 //			}
 //		}
+		if (!(((TreeSelection) definitionTree.getSelection()).getFirstElement() instanceof ServiceHelper)) {
+			updateStatus("Choose a service or a connector in the tree view below.");
+			return;
+		}
+		
 		updateStatus(null);
 	}
 
