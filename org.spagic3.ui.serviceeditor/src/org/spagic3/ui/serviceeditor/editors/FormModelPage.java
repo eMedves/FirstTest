@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
@@ -239,7 +240,12 @@ public class FormModelPage extends FormPage {
 			PropertyHelper propertyHelper, IPropertyModifier modifier) {
 		final String name = propertyHelper.getName();
 		final String label = propertyHelper.getLabel();
-		toolkit.createLabel(client, (label == null || "".equals(label)) ? name : label);
+		
+		Label labelControl = toolkit.createLabel(client, (label == null || "".equals(label)) ? name : label);
+		GridData gd = new GridData();
+		gd.widthHint = 120;
+		labelControl.setLayoutData(gd);
+		
 		ListenerHelper listener = new ListenerHelper(
 				editor, model, modifier, propertyHelper.refreshModel());
 		
@@ -259,7 +265,7 @@ public class FormModelPage extends FormPage {
 			StyledText textarea = new StyledText(client, SWT.WRAP | SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
 			textarea.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 			textarea.setText(modifier.getValue());
-			GridData gd = new GridData();
+			gd = new GridData();
 			gd.heightHint = 80;
 			gd.widthHint = 190;
 			textarea.setLayoutData(gd);
@@ -272,7 +278,7 @@ public class FormModelPage extends FormPage {
 				combo.add(item);
 			}
 			combo.setText(modifier.getValue());
-			GridData gd = new GridData();
+			gd = new GridData();
 			gd.widthHint = 183;
 			combo.setLayoutData(gd);
 			combo.setData(MODIFIER_DATA_REFERENCE, modifier);
@@ -281,7 +287,7 @@ public class FormModelPage extends FormPage {
 			Text text = toolkit.createText(client, 
 					modifier.getValue(), 
 					SWT.SINGLE);
-			GridData gd = new GridData();
+			gd = new GridData();
 			gd.widthHint = 200;
 			text.setLayoutData(gd);
 			text.setData(MODIFIER_DATA_REFERENCE, modifier);
@@ -383,6 +389,7 @@ public class FormModelPage extends FormPage {
 				String t = (String)o;
 				if (t != null) {
 					text.setText(t);
+					editor.refreshXML();
 				}
 			}
 		}
@@ -406,12 +413,14 @@ public class FormModelPage extends FormPage {
 			if (textTransfer.isSupportedType(event.currentDataType)) {
 				String t = (String)event.data;
 				text.setText(t);
+				editor.refreshXML();
 			}
 			if (fileTransfer.isSupportedType(event.currentDataType)){
 				String[] files = (String[])event.data;
 				if (files.length > 0) {
 	    			if(files[0].endsWith("." + fileFilter)) {
 						text.setText(files[0]);
+						editor.refreshXML();
 	    			}
 				}
 			}
