@@ -304,6 +304,7 @@ public class ServiceModelHelper {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Node> evalXPathAsNodes(Document document, String xpath) {
 		try {
 //	        Document document = DocumentHelper.parseText(xml);

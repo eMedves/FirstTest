@@ -8,8 +8,10 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
+@SuppressWarnings("unchecked")
 public class ColorManager {
 
+	
 	protected Map fColorTable = new HashMap(10);
 
 	public void dispose() {

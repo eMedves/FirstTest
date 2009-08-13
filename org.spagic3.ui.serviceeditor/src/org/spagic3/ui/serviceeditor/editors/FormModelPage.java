@@ -2,8 +2,6 @@ package org.spagic3.ui.serviceeditor.editors;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -11,7 +9,6 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
@@ -151,18 +148,18 @@ public class FormModelPage extends FormPage {
 		text.addKeyListener(listener);
 
 
-		//Apply
+		//Refresh
 		Composite composite = toolkit.createComposite(client);
 		gd = new GridData();
-		gd.widthHint = 30;
+		gd.widthHint = 20;
 		gd.heightHint = 0;
 		if (model.getProperties().containsKey("target")) {
 			gd.verticalSpan = 2;
 		}
 		composite.setLayoutData(gd);
-		Button button = toolkit.createButton(client, "Apply", SWT.NULL);
+		Button button = toolkit.createButton(client, "Refresh Form", SWT.NULL);
 		gd = new GridData();
-		gd.widthHint = 60;
+		gd.widthHint = 80;
 		gd.heightHint = 30;
 		if (model.getProperties().containsKey("target")) {
 			gd.verticalSpan = 2;
@@ -206,63 +203,31 @@ public class FormModelPage extends FormPage {
 			}
 			for (PropertyHelper propertyHelper : defProperties) {
 				final String name = propertyHelper.getName();
-				final String label = propertyHelper.getLabel();
 				if (model.getProperties().containsKey(name)) {
 					IPropertyModifier modifier = new PropertyModifier(model, name);
-					toolkit.createLabel(client, (label == null || "".equals(label)) ? name : label);
-					
-//					if ("date".equals(propertyHelper.getEditor())) {
-//						DateTime date = new DateTime(client, SWT.BORDER);
-//						date.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
-////						date.setText((String) model.getProperties().get(name));
-//						GridData gd = new GridData();
-//						gd.widthHint = 190;
-//						date.setLayoutData(gd);
-//						ListenerHelper listener
-//								= new ListenerHelper(editor, model, 
-//										new PropertyModifier(model, name));
-//						date.addKeyListener(listener);
-//					} else 
-					if ("textarea".equals(propertyHelper.getEditor())) {
-						StyledText textarea = new StyledText(client, SWT.WRAP | SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-						textarea.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
-						textarea.setText((String) model.getProperties().get(name));
-						GridData gd = new GridData();
-						gd.heightHint = 80;
-						gd.widthHint = 190;
-						textarea.setLayoutData(gd);
-						textarea.setData(MODIFIER_DATA_REFERENCE, modifier);
-						ListenerHelper listener = new ListenerHelper(
-								editor, model, modifier, propertyHelper.refreshModel());
-						textarea.addKeyListener(listener);
-					} else if ("combo".equals(propertyHelper.getEditor())) {
-						Combo combo = new Combo(client, SWT.DROP_DOWN);
-						combo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
-						for (String item : helper.getComboItems(propertyHelper.getCombo())) {
-							combo.add(item);
-						}
-						combo.setText((String) model.getProperties().get(name));
-						GridData gd = new GridData();
-						gd.widthHint = 183;
-						combo.setLayoutData(gd);
-						combo.setData(MODIFIER_DATA_REFERENCE, modifier);
-						ListenerHelper listener	= new ListenerHelper(
-								editor, model, modifier, propertyHelper.refreshModel());
-						combo.addSelectionListener(listener);
-					} else {
-						Text text = toolkit.createText(client, 
-								(String) model.getProperties().get(name), 
-								SWT.SINGLE);
-						GridData gd = new GridData();
-						gd.widthHint = 200;
-						text.setLayoutData(gd);
-						text.setData(MODIFIER_DATA_REFERENCE, modifier);
-						ListenerHelper listener	= new ListenerHelper(
-								editor, model, modifier, propertyHelper.refreshModel());
-						text.addKeyListener(listener);
-						if (propertyHelper.getDroptarget() != null 
-								&& !"".equals(propertyHelper.getDroptarget())) {
-							new TextDropTarget(text, propertyHelper.getDroptarget());
+					createFormField(toolkit, client, propertyHelper, modifier);
+				}
+			}
+		}
+	}
+	
+	private void createMapPropertySections(IManagedForm mform) {
+		FormToolkit toolkit = mform.getToolkit();
+		
+		List<MapPropertyHelper> defMapProperties = helper.getDefMapProperties(model);
+		for (MapPropertyHelper mapPropertyHelper : defMapProperties) {
+			final String mapName = mapPropertyHelper.getMapName();
+			if (model.getMapProperties().containsKey(mapName)) {
+				final Composite client = createSection(mform, mapName, "", 1);
+				for(Object keyObj : model.getMapProperties().get(mapName).keySet()) {
+					final String key = (String) keyObj;
+					final Composite subClient = createSubSection(mform, client, key, "", 2);
+					List<PropertyHelper> defProperties = mapPropertyHelper.getDefProperties();
+					for (PropertyHelper propertyHelper : defProperties) {
+						final String name = propertyHelper.getName();
+						if (model.getEntryForPropertyMap(mapName, key).containsKey(name)) {
+							IPropertyModifier modifier = new MapPropertyModifier(model, mapName, key, name);
+							createFormField(toolkit, subClient, propertyHelper, modifier);
 						}
 					}
 				}
@@ -329,93 +294,6 @@ public class FormModelPage extends FormPage {
 
 	}
 		
-	private void createMapPropertySections(IManagedForm mform) {
-		FormToolkit toolkit = mform.getToolkit();
-		
-		List<MapPropertyHelper> defMapProperties = helper.getDefMapProperties(model);
-		for (MapPropertyHelper mapPropertyHelper : defMapProperties) {
-			final String mapName = mapPropertyHelper.getMapName();
-			if (model.getMapProperties().containsKey(mapName)) {
-				final Composite client = createSection(mform, mapName, "", 1);
-				for(Object keyObj : model.getMapProperties().get(mapName).keySet()) {
-					final String key = (String) keyObj;
-					final Composite subClient = createSubSection(mform, client, key, "", 2);
-					List<PropertyHelper> defProperties = mapPropertyHelper.getDefProperties();
-					for (PropertyHelper propertyHelper : defProperties) {
-						final String name = propertyHelper.getName();
-						final String label = propertyHelper.getLabel();
-						if (model.getEntryForPropertyMap(mapName, key).containsKey(name)) {
-							toolkit.createLabel(subClient, (label == null || "".equals(label)) ? name : label);
-							if ("textarea".equals(propertyHelper.getEditor())) {
-								StyledText textarea = new StyledText(subClient, SWT.WRAP | SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-								textarea.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
-								textarea.setText((String) model.getEntryForPropertyMap(mapName, key).get(name));
-								GridData gd = new GridData();
-								gd.heightHint = 80;
-								gd.widthHint = 190;
-								textarea.setLayoutData(gd);
-								IPropertyModifier modifier = new MapPropertyModifier(model, mapName, key, name);
-								textarea.setData(MODIFIER_DATA_REFERENCE, modifier);
-								ListenerHelper listener	= new ListenerHelper(
-										editor, model, modifier, propertyHelper.refreshModel());
-								textarea.addKeyListener(listener);
-							} else if ("combo".equals(propertyHelper.getEditor())) {
-								Combo combo = new Combo(subClient, SWT.DROP_DOWN);
-								combo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
-								for (String item : helper.getComboItems(propertyHelper.getCombo())) {
-									combo.add(item.trim());
-								}
-								combo.setText((String) model.getEntryForPropertyMap(mapName, key).get(name));
-								GridData gd = new GridData();
-								gd.widthHint = 183;
-								combo.setLayoutData(gd);
-								IPropertyModifier modifier = new MapPropertyModifier(model, mapName, key, name);
-								combo.setData(MODIFIER_DATA_REFERENCE, modifier);
-								ListenerHelper listener	= new ListenerHelper(
-										editor, model, modifier, propertyHelper.refreshModel());
-								combo.addSelectionListener(listener);
-							} else {
-								Text text = toolkit.createText(subClient, 
-										(String) model.getEntryForPropertyMap(mapName, key).get(name), 
-										SWT.SINGLE);
-								GridData gd = new GridData();
-								gd.widthHint = 200;
-								text.setLayoutData(gd);
-								IPropertyModifier modifier = new MapPropertyModifier(model, mapName, key, name);
-								text.setData(MODIFIER_DATA_REFERENCE, modifier);
-								ListenerHelper listener	= new ListenerHelper(
-										editor, model, modifier, propertyHelper.refreshModel());
-								text.addKeyListener(listener);
-							}
-						}
-					}
-				}
-			}
-		}
-		
-//		for (String mapName : model.getMapProperties().keySet()) {
-//			final Composite client = createSection(mform, mapName, "", 1);
-//			for(Object keyObj : model.getMapProperties().get(mapName).keySet()) {
-//				final String key = (String) keyObj;
-//				final Composite subClient = createSubSection(mform, client, key, "", 2);
-//				for (Object nameObj : model.getEntryForPropertyMap(mapName, key).keySet()) {
-//					final String name = (String) nameObj;
-//					toolkit.createLabel(subClient, name);
-//					Text text = toolkit.createText(subClient, 
-//							(String) model.getEntryForPropertyMap(mapName, key).get(name), 
-//							SWT.SINGLE);
-//					GridData gd = new GridData();
-//					gd.widthHint = 150;
-//					text.setLayoutData(gd);
-//					ListenerHelper listener
-//						= new ListenerHelper(editor, model, 
-//								new MapPropertyModifier(model, mapName, key, name));
-//					text.addKeyListener(listener);
-//				}
-//			}
-//		}
-	}
-	
 	private Composite createSection(IManagedForm mform, String title,
 			String desc, int numColumns) {
 		final ScrolledForm form = mform.getForm();
