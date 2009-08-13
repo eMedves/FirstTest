@@ -16,10 +16,12 @@
    
    <extension
          point="org.eclipse.ui.newWizards">
+<!--
       <category
             name="Service Wizards"
             id="org.spagic3.ui.serviceeditor.wizard">
       </category>
+ -->
       <wizard
             name="New Service"
             icon="icons/sample.gif"
