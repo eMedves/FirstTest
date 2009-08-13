@@ -207,7 +207,7 @@ public class ServiceModelHelper {
 		String comboValues = evalXPathAsString(scappyDefDocument, "(/scrappy/combo-providers/combo-provider[@name=\"" + comboName + "\"]/combo-provider-parameter[@name=\"comboValues\"]/@value)");
 		List<String> values = new ArrayList<String>();
 		for (String value : comboValues.split(";")) {
-			values.add(value);
+			values.add(value.trim());
 		}
 		return values;
 	}
