@@ -349,6 +349,10 @@ public class ServiceModelHelper {
 			return evalXPathAsString(propertyDoc, "/property/@default");
 		}
 		
+		public String getDroptarget() {
+			return evalXPathAsString(propertyDoc, "/property/@droptarget");
+		}
+
 		public boolean refreshModel() {
 			return "true".equals(evalXPathAsString(propertyDoc, "/property/@refreshModel"));
 		}

@@ -32,7 +32,7 @@
 			<property name="isSSL" label="Enable SSL" type="boolean" editor="combo" combo="TrueFalseComboProvider" refreshModel="true"/>
 			
 			<when expr="true(isSoap)" action="handleProperty">
-				<property name="wsdl" label="WSDL" type="string" droptarget="*.wsdl"/>
+				<property name="wsdl" label="WSDL" type="string" droptarget="wsdl"/>
 			</when>	
 			
 			<when expr="true(isSSL)" action="handleProperty">
