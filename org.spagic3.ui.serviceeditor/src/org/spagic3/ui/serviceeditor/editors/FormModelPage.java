@@ -2,9 +2,19 @@ package org.spagic3.ui.serviceeditor.editors;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -198,6 +208,7 @@ public class FormModelPage extends FormPage {
 				final String name = propertyHelper.getName();
 				final String label = propertyHelper.getLabel();
 				if (model.getProperties().containsKey(name)) {
+					IPropertyModifier modifier = new PropertyModifier(model, name);
 					toolkit.createLabel(client, (label == null || "".equals(label)) ? name : label);
 					
 //					if ("date".equals(propertyHelper.getEditor())) {
@@ -220,7 +231,6 @@ public class FormModelPage extends FormPage {
 						gd.heightHint = 80;
 						gd.widthHint = 190;
 						textarea.setLayoutData(gd);
-						IPropertyModifier modifier = new PropertyModifier(model, name);
 						textarea.setData(MODIFIER_DATA_REFERENCE, modifier);
 						ListenerHelper listener = new ListenerHelper(
 								editor, model, modifier, propertyHelper.refreshModel());
@@ -235,7 +245,6 @@ public class FormModelPage extends FormPage {
 						GridData gd = new GridData();
 						gd.widthHint = 183;
 						combo.setLayoutData(gd);
-						IPropertyModifier modifier = new PropertyModifier(model, name);
 						combo.setData(MODIFIER_DATA_REFERENCE, modifier);
 						ListenerHelper listener	= new ListenerHelper(
 								editor, model, modifier, propertyHelper.refreshModel());
@@ -247,34 +256,79 @@ public class FormModelPage extends FormPage {
 						GridData gd = new GridData();
 						gd.widthHint = 200;
 						text.setLayoutData(gd);
-						IPropertyModifier modifier = new PropertyModifier(model, name);
 						text.setData(MODIFIER_DATA_REFERENCE, modifier);
 						ListenerHelper listener	= new ListenerHelper(
 								editor, model, modifier, propertyHelper.refreshModel());
 						text.addKeyListener(listener);
+						if (propertyHelper.getDroptarget() != null 
+								&& !"".equals(propertyHelper.getDroptarget())) {
+							new TextDropTarget(text, propertyHelper.getDroptarget());
+						}
 					}
 				}
 			}
 		}
-		
-//		for(Object nameObj : model.getProperties().keySet()) {
-//			final String name = (String) nameObj;
-//			toolkit.createLabel(client, name);
-//			Text text = toolkit.createText(client, 
-//					(String) model.getProperties().get(name), 
-//					SWT.SINGLE);
-//			GridData gd = new GridData();
-//			gd.widthHint = 150;
-//			text.setLayoutData(gd);
-//			ListenerHelper listener
-//				= new ListenerHelper(editor, model, 
-//						new PropertyModifier(model, name));
-////			text.addFocusListener(listener);
-//			text.addKeyListener(listener);
-//			//toolkit.paintBordersFor(client);
-//		}
 	}
 	
+	private void createFormField(FormToolkit toolkit, Composite client, 
+			PropertyHelper propertyHelper, IPropertyModifier modifier) {
+		final String name = propertyHelper.getName();
+		final String label = propertyHelper.getLabel();
+		toolkit.createLabel(client, (label == null || "".equals(label)) ? name : label);
+		ListenerHelper listener = new ListenerHelper(
+				editor, model, modifier, propertyHelper.refreshModel());
+		
+//		if ("date".equals(propertyHelper.getEditor())) {
+//			DateTime date = new DateTime(client, SWT.BORDER);
+//			date.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+////				date.setText((String) model.getProperties().get(name));
+//			GridData gd = new GridData();
+//			gd.widthHint = 190;
+//			date.setLayoutData(gd);
+//			ListenerHelper listener
+//					= new ListenerHelper(editor, model, 
+//							new PropertyModifier(model, name));
+//			date.addKeyListener(listener);
+//		} else 
+		if ("textarea".equals(propertyHelper.getEditor())) {
+			StyledText textarea = new StyledText(client, SWT.WRAP | SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+			textarea.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+			textarea.setText(modifier.getValue());
+			GridData gd = new GridData();
+			gd.heightHint = 80;
+			gd.widthHint = 190;
+			textarea.setLayoutData(gd);
+			textarea.setData(MODIFIER_DATA_REFERENCE, modifier);
+			textarea.addKeyListener(listener);
+		} else if ("combo".equals(propertyHelper.getEditor())) {
+			Combo combo = new Combo(client, SWT.DROP_DOWN);
+			combo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+			for (String item : helper.getComboItems(propertyHelper.getCombo())) {
+				combo.add(item);
+			}
+			combo.setText(modifier.getValue());
+			GridData gd = new GridData();
+			gd.widthHint = 183;
+			combo.setLayoutData(gd);
+			combo.setData(MODIFIER_DATA_REFERENCE, modifier);
+			combo.addSelectionListener(listener);
+		} else {
+			Text text = toolkit.createText(client, 
+					modifier.getValue(), 
+					SWT.SINGLE);
+			GridData gd = new GridData();
+			gd.widthHint = 200;
+			text.setLayoutData(gd);
+			text.setData(MODIFIER_DATA_REFERENCE, modifier);
+			text.addKeyListener(listener);
+			if (propertyHelper.getDroptarget() != null 
+					&& !"".equals(propertyHelper.getDroptarget())) {
+				new TextDropTarget(text, propertyHelper.getDroptarget());
+			}
+		}
+
+	}
+		
 	private void createMapPropertySections(IManagedForm mform) {
 		FormToolkit toolkit = mform.getToolkit();
 		
@@ -407,5 +461,84 @@ public class FormModelPage extends FormPage {
 		});
 		return client;
 	}
+	
+	
+	public class TextDropTarget extends DropTargetAdapter {
+		
+		private final TextTransfer textTransfer = TextTransfer.getInstance();
+		private final FileTransfer fileTransfer = FileTransfer.getInstance();
+		private Text text;
+		private String fileFilter;
+
+		public TextDropTarget(Text text, String fileFilter) {
+			this.text = text;
+			this.fileFilter = fileFilter;
+			DropTarget target = new DropTarget(text, DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT);
+			Transfer[] types = new Transfer[] {fileTransfer, textTransfer};
+			target.setTransfer(types);
+			target.addDropListener(this);
+		}
+
+		public void dragEnter(DropTargetEvent event) {
+			if (event.detail == DND.DROP_DEFAULT) {
+				if ((event.operations & DND.DROP_COPY) != 0) {
+					event.detail = DND.DROP_COPY;
+				} else {
+					event.detail = DND.DROP_NONE;
+				}
+			}
+			for (int i = 0; i < event.dataTypes.length; i++) {
+				if (fileTransfer.isSupportedType(event.dataTypes[i])){
+					event.currentDataType = event.dataTypes[i];
+					if (event.detail != DND.DROP_COPY) {
+						event.detail = DND.DROP_NONE;
+					}
+					break;
+				}
+			}
+		}
+		
+		public void dragOver(DropTargetEvent event) {
+			event.feedback = DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
+			if (textTransfer.isSupportedType(event.currentDataType)) {
+				Object o = textTransfer.nativeToJava(event.currentDataType);
+				String t = (String)o;
+				if (t != null) {
+					text.setText(t);
+				}
+			}
+		}
+		
+		public void dragOperationChanged(DropTargetEvent event) {
+			if (event.detail == DND.DROP_DEFAULT) {
+				if ((event.operations & DND.DROP_COPY) != 0) {
+					event.detail = DND.DROP_COPY;
+				} else {
+					event.detail = DND.DROP_NONE;
+				}
+			}
+			if (fileTransfer.isSupportedType(event.currentDataType)){
+				if (event.detail != DND.DROP_COPY) {
+					event.detail = DND.DROP_NONE;
+				}
+			}
+		}
+
+		public void drop(DropTargetEvent event) {
+			if (textTransfer.isSupportedType(event.currentDataType)) {
+				String t = (String)event.data;
+				text.setText(t);
+			}
+			if (fileTransfer.isSupportedType(event.currentDataType)){
+				String[] files = (String[])event.data;
+				if (files.length > 0) {
+	    			if(files[0].endsWith("." + fileFilter)) {
+						text.setText(files[0]);
+	    			}
+				}
+			}
+		}
+	}
+
 
 }
