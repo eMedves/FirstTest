@@ -1,4 +1,5 @@
 package org.spagic3.ui.serviceeditor.editors;
+import java.io.File;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -199,7 +200,7 @@ public class FormModelPage extends FormPage {
 		uiCategories.addAll(helper.getDefUICategories(model));
 		for (String uiCategory : uiCategories) {
 			List<PropertyHelper> defProperties = helper.getDefProperties(model, uiCategory);
-			if (!"".equals(uiCategory) && !defProperties.isEmpty()) {
+			if (!"".equals(uiCategory) && helper.categoryHasProperties(model, uiCategory)) {
 				client = createSection(mform, uiCategory, "", 2);
 			}
 			for (PropertyHelper propertyHelper : defProperties) {
@@ -423,7 +424,11 @@ public class FormModelPage extends FormPage {
 				String[] files = (String[])event.data;
 				if (files.length > 0) {
 	    			if(files[0].endsWith("." + fileFilter)) {
-						text.setText(files[0]);
+	    				int lastSeparatorIndex = files[0].lastIndexOf(File.separatorChar);
+	    				String value = lastSeparatorIndex != -1 
+	    						? files[0].substring(lastSeparatorIndex + 1) 
+	    						        : files[0];
+						text.setText(fileFilter + "://" + value);
 						modifier.setValue(text.getText());
 						editor.refreshXML();
 	    			}

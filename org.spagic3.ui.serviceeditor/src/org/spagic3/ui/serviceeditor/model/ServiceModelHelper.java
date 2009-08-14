@@ -192,6 +192,16 @@ public class ServiceModelHelper {
 		}
 		return defProperties;
 	}
+	
+	public boolean categoryHasProperties(IServiceModel model, String category) {
+		List<PropertyHelper> defProperties = getDefProperties(model, category);
+		for (PropertyHelper defProperty : defProperties) {
+			if (model.getProperties().getProperty(defProperty.getName()) != null) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public Set<String> getDefUICategories(IServiceModel model) {
 		List<Node> defCategoryNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/property/@uicategory)" +
