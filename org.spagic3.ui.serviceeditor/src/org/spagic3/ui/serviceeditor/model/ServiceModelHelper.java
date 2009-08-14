@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -59,7 +60,8 @@ public class ServiceModelHelper {
 		for (Node propertyNode : propertyList) {
 			final String propertyXML = propertyNode.asXML();
             final String name = evalXPathAsString(propertyXML, "/spagic:property/@name");
-            final String value = evalXPathAsString(propertyXML, "/spagic:property/@value");
+            final String value = StringEscapeUtils.unescapeJava(StringEscapeUtils.unescapeXml(
+            		evalXPathAsString(propertyXML, "/spagic:property/@value")));
             model.addProperty(name, value);
 		}
 	}
@@ -79,7 +81,8 @@ public class ServiceModelHelper {
             	for (Node keyPropertyNode : keyPropertyList) {
             		final String keyPropertyXML = keyPropertyNode.asXML();
                     final String name = evalXPathAsString(keyPropertyXML, "/spagic:property/@name");
-                    final String value = evalXPathAsString(keyPropertyXML, "/spagic:property/@value");
+                    final String value = StringEscapeUtils.unescapeJava(StringEscapeUtils.unescapeXml(
+                    		evalXPathAsString(keyPropertyXML, "/spagic:property/@value")));
                     properties.put(name, value);
             	}
             	model.addEntryToPropertyMap(mapName, key, properties);
@@ -239,7 +242,8 @@ public class ServiceModelHelper {
 		for(Object nameObj : model.getProperties().keySet()) {
 			final String name = (String) nameObj;
 			xml.append("\t<property name=\"").append(name).append("\" value=\"")
-					.append((String) model.getProperties().get(name))
+					.append(StringEscapeUtils.escapeXml(StringEscapeUtils.escapeJava(
+							(String) model.getProperties().get(name))))
 					.append("\"/>\n");
 		}
 		for (String mapName : model.getMapProperties().keySet()) {
@@ -253,7 +257,8 @@ public class ServiceModelHelper {
 				for (Object nameObj : model.getEntryForPropertyMap(mapName, key).keySet()) {
 					final String name = (String) nameObj;
 					xml.append("\t\t\t\t\t<property name=\"").append(name).append("\" value=\"")
-							.append((String) model.getEntryForPropertyMap(mapName, key).get(name))
+							.append(StringEscapeUtils.escapeXml(StringEscapeUtils.escapeJava(
+									(String) model.getEntryForPropertyMap(mapName, key).get(name))))
 							.append("\"/>\n");
 				}
 				xml.append("\t\t\t\t</properties>\n");
