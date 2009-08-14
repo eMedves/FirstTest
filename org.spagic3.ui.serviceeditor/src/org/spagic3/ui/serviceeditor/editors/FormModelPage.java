@@ -200,12 +200,14 @@ public class FormModelPage extends FormPage {
 		uiCategories.addAll(helper.getDefUICategories(model));
 		for (String uiCategory : uiCategories) {
 			List<PropertyHelper> defProperties = helper.getDefProperties(model, uiCategory);
-			if (!"".equals(uiCategory) && helper.categoryHasProperties(model, uiCategory)) {
-				client = createSection(mform, uiCategory, "", 2);
-			}
+			boolean create = true;
 			for (PropertyHelper propertyHelper : defProperties) {
 				final String name = propertyHelper.getName();
 				if (model.getProperties().containsKey(name)) {
+					if (create && !"".equals(uiCategory)) {
+						client = createSection(mform, uiCategory, "", 2);
+						create = false;
+					}
 					IPropertyModifier modifier = new PropertyModifier(model, name);
 					createFormField(toolkit, client, propertyHelper, modifier);
 				}
