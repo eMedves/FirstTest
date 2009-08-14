@@ -294,7 +294,7 @@ public class FormModelPage extends FormPage {
 			text.addKeyListener(listener);
 			if (propertyHelper.getDroptarget() != null 
 					&& !"".equals(propertyHelper.getDroptarget())) {
-				new TextDropTarget(text, propertyHelper.getDroptarget());
+				new TextDropTarget(text, propertyHelper.getDroptarget(), modifier);
 			}
 		}
 
@@ -353,10 +353,12 @@ public class FormModelPage extends FormPage {
 		private final FileTransfer fileTransfer = FileTransfer.getInstance();
 		private Text text;
 		private String fileFilter;
+		private IPropertyModifier modifier;
 
-		public TextDropTarget(Text text, String fileFilter) {
+		public TextDropTarget(Text text, String fileFilter, IPropertyModifier modifier) {
 			this.text = text;
 			this.fileFilter = fileFilter;
+			this.modifier = modifier;
 			DropTarget target = new DropTarget(text, DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT);
 			Transfer[] types = new Transfer[] {fileTransfer, textTransfer};
 			target.setTransfer(types);
@@ -382,17 +384,18 @@ public class FormModelPage extends FormPage {
 			}
 		}
 		
-		public void dragOver(DropTargetEvent event) {
-			event.feedback = DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
-			if (textTransfer.isSupportedType(event.currentDataType)) {
-				Object o = textTransfer.nativeToJava(event.currentDataType);
-				String t = (String)o;
-				if (t != null) {
-					text.setText(t);
-					editor.refreshXML();
-				}
-			}
-		}
+//		public void dragOver(DropTargetEvent event) {
+//			event.feedback = DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
+//			if (textTransfer.isSupportedType(event.currentDataType)) {
+//				Object o = textTransfer.nativeToJava(event.currentDataType);
+//				String t = (String)o;
+//				if (t != null) {
+//					text.setText(t);
+//					modifier.setValue(text.getText());
+//					editor.refreshXML();
+//				}
+//			}
+//		}
 		
 		public void dragOperationChanged(DropTargetEvent event) {
 			if (event.detail == DND.DROP_DEFAULT) {
@@ -413,6 +416,7 @@ public class FormModelPage extends FormPage {
 			if (textTransfer.isSupportedType(event.currentDataType)) {
 				String t = (String)event.data;
 				text.setText(t);
+				modifier.setValue(text.getText());
 				editor.refreshXML();
 			}
 			if (fileTransfer.isSupportedType(event.currentDataType)){
@@ -420,6 +424,7 @@ public class FormModelPage extends FormPage {
 				if (files.length > 0) {
 	    			if(files[0].endsWith("." + fileFilter)) {
 						text.setText(files[0]);
+						modifier.setValue(text.getText());
 						editor.refreshXML();
 	    			}
 				}

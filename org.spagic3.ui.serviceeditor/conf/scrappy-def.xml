@@ -21,17 +21,18 @@
 		<!--  By default if editor field is not specified it's a text field 
 			  editor attribute on property could be 
 			  
-			  editor="combo" ( there's another attribute comboprovider );
+			  editor="combo" ( there's another attribute combo );
 			  editor="password";
-			  editor="largeText" ( TextArea )
+			  editor="textarea";
 		-->
 		<def name="HTTPServer" factory="spagic3.httpserverfactory">
 			<property name="locationURI" label="URI" type="string"/>
 			<property name="mep" label="Server Type" type="string"/>
-			<property name="isSoap" label="Is Soap" type="boolean" editor="combo" combo="TrueFalseComboProvider" refreshModel="true"/> 	
-			<property name="isSSL" label="Enable SSL" type="boolean" editor="combo" combo="TrueFalseComboProvider" refreshModel="true"/>
+			<property name="isSoap" label="Is Soap" type="boolean" editor="combo" combo="TrueFalseComboProvider" default="false" refreshModel="true"/> 	
+			<property name="isSSL" label="Enable SSL" type="boolean" editor="combo" combo="TrueFalseComboProvider" default="false" refreshModel="true"/>
 			
 			<when expr="true(isSoap)" action="handleProperty">
+				<property name="soapVersion" label="Soap Version" type="string" editor="combo" combo="SoapVersionComboProvider" default="1.2"/>
 				<property name="wsdl" label="WSDL" type="string" droptarget="wsdl"/>
 			</when>	
 			
@@ -47,13 +48,9 @@
 				<property name="truststorePassword" label="Truststore Password" type="password" uicategory="SSL Parameters"/>
 				<property name="truststoreType" label="Truststore Type" type="string" uicategory="SSL Parameters"/>
 			</when>
-			
 		</def>
 		
-		
-		
 		<def name="JBDCService" factory="spagic3.jdbcfactory">
-		
 			<property name="query" label="Query" type="string" editor="textarea" refreshModel="true"/>
 			<property name="datasource" label="Datasource" type="string"/>
 			
@@ -66,17 +63,15 @@
 			<property name="faultManagement" label="Fault Management" editor="combo" combo="FaultManagementComboProvider"/>
 
 			<when expr="true()" action="handleKeyMap" map="queryParametersMap" extractFromProperty="query">
-				<!--                                        -->
-				<!--  The map key is the placeholder        -->
-				<!--  This  are the fields of the map entry -->
-				<!--                                        -->
+				<!--                                       -->
+				<!--  The map key is the placeholder       -->
+				<!--  This are the fields of the map entry -->
+				<!--                                       -->
 				<property name="parameterName" label="Paramenter Name"/>
 				<property name="xPathExpression" label="XPath Expression" editor="textarea"/> 
 				<property name="parameterType" label="Parameter Type" editor="combo" combo="ParameterTypeComboProvider"/>   
-			
 			</when> 	
 		</def>
-		
 	</definitions>
 	<combo-providers>
 	
