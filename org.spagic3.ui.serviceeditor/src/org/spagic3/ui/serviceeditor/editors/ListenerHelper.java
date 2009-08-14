@@ -40,7 +40,7 @@ public class ListenerHelper implements KeyListener, SelectionListener {
 				modifier.setValue(combo.getText());
 			} else if (e.getSource() instanceof StyledText) {
 				StyledText textarea = (StyledText) e.getSource();
-				modifier.setValue(textarea.getText().replaceAll("\\s+", " ").trim());
+				modifier.setValue(textarea.getText()/*.replaceAll("\\s+", " ").trim()*/);
 			}
 			if (refreshModel) {
 				editor.refreshModel();

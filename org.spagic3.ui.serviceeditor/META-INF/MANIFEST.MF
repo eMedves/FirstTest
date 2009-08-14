@@ -16,4 +16,5 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .,
  lib/jaxen-1.1.1.jar,
  lib/dom4j.jar,
- lib/janino.jar
+ lib/janino.jar,
+ lib/commons-lang-2.1.jar

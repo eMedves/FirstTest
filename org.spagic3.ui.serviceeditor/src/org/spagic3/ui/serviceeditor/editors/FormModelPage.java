@@ -88,7 +88,7 @@ public class FormModelPage extends FormPage {
 				modifier.setValue(combo.getText());
 			} else if (control instanceof StyledText) {
 				StyledText textarea = (StyledText) control;
-				modifier.setValue(textarea.getText().replaceAll("\\s+", " ").trim());
+				modifier.setValue(textarea.getText()/*.replaceAll("\\s+", " ").trim()*/);
 			}
 		}
 		if (control instanceof Composite) {
