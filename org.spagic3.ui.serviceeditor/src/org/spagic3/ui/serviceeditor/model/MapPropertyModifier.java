@@ -58,5 +58,10 @@ public class MapPropertyModifier implements IPropertyModifier {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	@Override
+	public String getId() {
+		return mapName + ":" + key + ":" + name;
+	}
 	
 }

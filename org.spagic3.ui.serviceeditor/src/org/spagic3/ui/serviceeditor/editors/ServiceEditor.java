@@ -102,11 +102,14 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 		refreshXML();
 //		formPage.removeFocusListeners();
 		try {
-			removePage(formPageIndex);
-			formPage = new FormModelPage(this, helper, model);
+			formPage = new FormModelPage(this);
 			addPage(formPageIndex, formPage);
 			setPageText(formPageIndex, "Form");
 			setActivePage(formPageIndex);
+
+			
+			
+			removePage(formPageIndex);
 		} catch (PartInitException e) {
 			ErrorDialog.openError(
 				getSite().getShell(),
@@ -139,7 +142,7 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 			model = helper.createModel(xmlEditorText);
 			
 			//create form from model
-			formPage = new FormModelPage(this, helper, model);
+			formPage = new FormModelPage(this);
 			formPageIndex = addPage(formPage);
 			setPageText(formPageIndex, "Form");
 			setActivePage(formPageIndex);
@@ -198,5 +201,16 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 		}
 	}
 
+	public ServiceModelHelper getHelper() {
+		return helper;
+	}
 
+	public IServiceModel getModel() {
+		return model;
+	}
+
+	public FormModelPage getFormPage() {
+		return formPage;
+	}
+	
 }

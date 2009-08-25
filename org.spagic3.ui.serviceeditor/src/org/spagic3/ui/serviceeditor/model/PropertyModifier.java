@@ -38,6 +38,11 @@ public class PropertyModifier implements IPropertyModifier {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	@Override
+	public String getId() {
+		return name;
+	}
 	
 	
 }

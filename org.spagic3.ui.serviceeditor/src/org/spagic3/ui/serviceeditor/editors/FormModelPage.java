@@ -47,16 +47,26 @@ public class FormModelPage extends FormPage {
 	private ServiceEditor editor;
 	private ServiceModelHelper helper;
 	private IServiceModel model;
+	private boolean dirty;
 	
 	private IManagedForm managedForm;
 	
-	public FormModelPage(ServiceEditor editor, ServiceModelHelper helper, IServiceModel model) {
+	public FormModelPage(ServiceEditor editor) {
 		super(editor, "FormServiceEditor", "Form Service Editor");
 		this.editor = editor;
-		this.helper = helper;
-		this.model = model;
+		this.helper = editor.getHelper();
+		this.model = editor.getModel();
+		dirty = false;
 	}
 	
+	public boolean isDirty() {
+		return dirty;
+	}
+
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
+	}
+
 	public void removeFocusListeners() {
 		removeFocusListeners(managedForm.getForm().getBody());
 	}
@@ -72,7 +82,7 @@ public class FormModelPage extends FormPage {
 		}
 	}
 
-	private void updateModel() {
+	public void refreshModel() {
 		updateModel(managedForm.getForm().getBody());
 		editor.refreshModel();
 	}
@@ -84,8 +94,11 @@ public class FormModelPage extends FormPage {
 				Text text = (Text) control;
 				modifier.setValue(text.getText());
 			} else if (control instanceof Combo) {
-				Combo combo = (Combo)control;
+				Combo combo = (Combo) control;
 				modifier.setValue(combo.getText());
+			} else if (control instanceof Button) {
+				Button button = (Button) control;
+				modifier.setValue(button.getSelection() ? "true" : "false");
 			} else if (control instanceof StyledText) {
 				StyledText textarea = (StyledText) control;
 				modifier.setValue(textarea.getText()/*.replaceAll("\\s+", " ").trim()*/);
@@ -144,9 +157,13 @@ public class FormModelPage extends FormPage {
 				public String getValue() {
 					return model.getSpagicId();
 				}
+				@Override
+				public String getId() {
+					return "spagicId";
+				}
 			};
 		text.setData(MODIFIER_DATA_REFERENCE, modifier);
-		ListenerHelper listener	= new ListenerHelper(editor, model, modifier, true);
+		ListenerHelper listener	= new ListenerHelper(editor, modifier, true);
 		text.addKeyListener(listener);
 
 
@@ -169,7 +186,7 @@ public class FormModelPage extends FormPage {
 		button.setLayoutData(gd);
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				updateModel();
+				refreshModel();
 			}
 		});
 
@@ -184,7 +201,7 @@ public class FormModelPage extends FormPage {
 			text.setLayoutData(gd);
 			modifier = new PropertyModifier(model, "target");
 			text.setData(MODIFIER_DATA_REFERENCE, modifier);
-			listener = new ListenerHelper(editor, model, modifier, false);
+			listener = new ListenerHelper(editor, modifier, false);
 			text.addKeyListener(listener);
 		}
 		
@@ -250,7 +267,7 @@ public class FormModelPage extends FormPage {
 		labelControl.setLayoutData(gd);
 		
 		ListenerHelper listener = new ListenerHelper(
-				editor, model, modifier, propertyHelper.refreshModel());
+				editor, modifier, propertyHelper.refreshModel());
 		
 //		if ("date".equals(propertyHelper.getEditor())) {
 //			DateTime date = new DateTime(client, SWT.BORDER);
@@ -286,6 +303,13 @@ public class FormModelPage extends FormPage {
 			combo.setLayoutData(gd);
 			combo.setData(MODIFIER_DATA_REFERENCE, modifier);
 			combo.addSelectionListener(listener);
+		} else if ("checkbox".equals(propertyHelper.getEditor())) {
+			Button button = toolkit.createButton(client, "", SWT.CHECK);
+			button.setSelection("true".equals(modifier.getValue()));
+			gd = new GridData();
+			button.setLayoutData(gd);
+			button.setData(MODIFIER_DATA_REFERENCE, modifier);
+			button.addSelectionListener(listener);
 		} else {
 			Text text = toolkit.createText(client, 
 					modifier.getValue(), 
