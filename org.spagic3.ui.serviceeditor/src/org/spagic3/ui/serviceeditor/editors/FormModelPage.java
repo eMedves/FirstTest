@@ -1,7 +1,9 @@
 package org.spagic3.ui.serviceeditor.editors;
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
@@ -48,6 +50,8 @@ public class FormModelPage extends FormPage {
 	private ServiceModelHelper helper;
 	private IServiceModel model;
 	private boolean dirty;
+	private String focusHolderId;
+	private Map<String,Control> editableControls;
 	
 	private IManagedForm managedForm;
 	
@@ -58,13 +62,35 @@ public class FormModelPage extends FormPage {
 		this.model = editor.getModel();
 		dirty = false;
 	}
+
+	public FormModelPage(FormModelPage previousForm) {
+		super(previousForm.editor, "FormServiceEditor", "Form Service Editor");
+		this.editor = previousForm.editor;
+		this.helper = previousForm.editor.getHelper();
+		this.model = previousForm.editor.getModel();
+		dirty = false;
+
+		this.focusHolderId = previousForm.focusHolderId;
+	}
 	
+	private void copyFormStatus(FormModelPage previousForm) {
+		
+	}
+
 	public boolean isDirty() {
 		return dirty;
 	}
 
 	public void setDirty(boolean dirty) {
 		this.dirty = dirty;
+	}
+
+	public String getFocusHolderId() {
+		return focusHolderId;
+	}
+
+	public void setFocusHolderId(String focusHolderId) {
+		this.focusHolderId = focusHolderId;
 	}
 
 	public void removeFocusListeners() {
@@ -79,6 +105,16 @@ public class FormModelPage extends FormPage {
 			for (Control child : ((Composite) control).getChildren()) {
 				removeFocusListeners(child);
 			}
+		}
+	}
+	
+	@Override
+	public void setFocus() {
+		Control control = editableControls.get(focusHolderId);
+		if (control != null) {
+			control.setFocus();
+		} else {
+			super.setFocus();
 		}
 	}
 
@@ -112,6 +148,8 @@ public class FormModelPage extends FormPage {
 	}
 
 	protected void createFormContent(IManagedForm managedForm) {
+		editableControls = new HashMap<String, Control>();
+		
 		this.managedForm = managedForm;
 		
 		ScrolledForm form = managedForm.getForm();
@@ -163,8 +201,10 @@ public class FormModelPage extends FormPage {
 				}
 			};
 		text.setData(MODIFIER_DATA_REFERENCE, modifier);
+		editableControls.put(modifier.getId(), text);
 		ListenerHelper listener	= new ListenerHelper(editor, modifier, true);
 		text.addKeyListener(listener);
+		text.addFocusListener(listener);
 
 
 		//Refresh
@@ -201,8 +241,10 @@ public class FormModelPage extends FormPage {
 			text.setLayoutData(gd);
 			modifier = new PropertyModifier(model, "target");
 			text.setData(MODIFIER_DATA_REFERENCE, modifier);
+			editableControls.put(modifier.getId(), text);
 			listener = new ListenerHelper(editor, modifier, false);
 			text.addKeyListener(listener);
+			text.addFocusListener(listener);
 		}
 		
 		createPropertySection(mform);
@@ -290,7 +332,9 @@ public class FormModelPage extends FormPage {
 			gd.widthHint = 190;
 			textarea.setLayoutData(gd);
 			textarea.setData(MODIFIER_DATA_REFERENCE, modifier);
+			editableControls.put(modifier.getId(), textarea);
 			textarea.addKeyListener(listener);
+			textarea.addFocusListener(listener);
 		} else if ("combo".equals(propertyHelper.getEditor())) {
 			Combo combo = new Combo(client, SWT.DROP_DOWN);
 			combo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
@@ -302,14 +346,18 @@ public class FormModelPage extends FormPage {
 			gd.widthHint = 183;
 			combo.setLayoutData(gd);
 			combo.setData(MODIFIER_DATA_REFERENCE, modifier);
+			editableControls.put(modifier.getId(), combo);
 			combo.addSelectionListener(listener);
+			combo.addFocusListener(listener);
 		} else if ("checkbox".equals(propertyHelper.getEditor())) {
 			Button button = toolkit.createButton(client, "", SWT.CHECK);
 			button.setSelection("true".equals(modifier.getValue()));
 			gd = new GridData();
 			button.setLayoutData(gd);
 			button.setData(MODIFIER_DATA_REFERENCE, modifier);
+			editableControls.put(modifier.getId(), button);
 			button.addSelectionListener(listener);
+			button.addFocusListener(listener);
 		} else {
 			Text text = toolkit.createText(client, 
 					modifier.getValue(), 
@@ -318,7 +366,9 @@ public class FormModelPage extends FormPage {
 			gd.widthHint = 200;
 			text.setLayoutData(gd);
 			text.setData(MODIFIER_DATA_REFERENCE, modifier);
+			editableControls.put(modifier.getId(), text);
 			text.addKeyListener(listener);
+			text.addFocusListener(listener);
 			if (propertyHelper.getDroptarget() != null 
 					&& !"".equals(propertyHelper.getDroptarget())) {
 				new TextDropTarget(text, propertyHelper.getDroptarget(), modifier);

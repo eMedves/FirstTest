@@ -100,16 +100,22 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 	void refreshModel() {
 		helper.applyRules(model);
 		refreshXML();
-//		formPage.removeFocusListeners();
+			
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				updateFormPage();
+			}
+		});
+	}
+	
+	private void updateFormPage() {
 		try {
-			formPage = new FormModelPage(this);
+//			formPage.removeFocusListeners();
+			formPage = new FormModelPage(formPage);
 			addPage(formPageIndex, formPage);
 			setPageText(formPageIndex, "Form");
 			setActivePage(formPageIndex);
-
-			
-			
-			removePage(formPageIndex);
+			removePage(formPageIndex + 1);
 		} catch (PartInitException e) {
 			ErrorDialog.openError(
 				getSite().getShell(),

@@ -28,14 +28,20 @@ public class ListenerHelper implements FocusListener, KeyListener, SelectionList
 	}
 	
 	@Override
-	public void focusGained(FocusEvent arg0) {
+	public void focusGained(FocusEvent e) {
+		System.out.println("entered focus gained handler");
+		System.out.println("\tformPage.getFocusHolderId()=" + formPage.getFocusHolderId());
+		System.out.println("\tmodifier.getId()=" + modifier.getId());
+		System.out.println("\tformPage.isDirty()=" + formPage.isDirty());
+		formPage.setFocusHolderId(modifier.getId());
 		if (formPage.isDirty()) {
+			formPage.setDirty(false);
 			formPage.refreshModel();
 		}
 	}
 
 	@Override
-	public void focusLost(FocusEvent arg0) {}
+	public void focusLost(FocusEvent e) {}
 
 	@Override
 	public void keyPressed(KeyEvent e) {}
