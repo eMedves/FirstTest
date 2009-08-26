@@ -3,16 +3,16 @@
 	name="org.spagic3.monitor">
 	
    <implementation class="org.spagic3.monitoring.MonitorService"/>
-   <!--reference 
-   		cardinality="1..1" 
-   		interface="org.spagic3.deployer.IDeploymentService" 
-   		name="deploymentService" 
-   		policy="dynamic"/-->
+   
+   <reference bind="setDatabaseManager" cardinality="1..1" 
+   		interface="org.spagic3.databaseManager.IDatabaseManager" 
+   		name="IDatabaseManager" 
+   		policy="dynamic" unbind="unsetDatabaseManager"/>
    
    <service>
       <provide interface="org.osgi.service.event.EventHandler"/>
    </service>
    
-   <property name="event.topics" type="String" value="SPAGIC/*"/>
+   <property name="event.topics" type="String" value="SPAGIC/MESSAGES/*"/>
    
 </scr:component>
