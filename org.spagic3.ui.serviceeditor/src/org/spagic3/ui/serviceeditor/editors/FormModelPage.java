@@ -84,20 +84,17 @@ public class FormModelPage extends FormPage {
 	
 	public void copyFormStatus(FormModelPage previousForm) {
 		Control activeControl = getEditableControl(focusHolderId);
-		Control previousControl = previousForm.getEditableControl(focusHolderId);
-		if (activeControl != null && previousControl != null
-				&& previousControl.getClass().isAssignableFrom(activeControl.getClass())) {
+		Control prevControl = previousForm.getEditableControl(focusHolderId);
+		if (activeControl != null && prevControl != null
+				&& prevControl.getClass().isAssignableFrom(activeControl.getClass())) {
 			if (activeControl instanceof StyledText) {
-				
-			} else if (activeControl instanceof Combo) {
-				Combo activeCombo = (Combo) activeControl;
-//				Combo previousCombo = (Combo) previousControl;
-//				activeCombo.setListVisible(previousCombo.getListVisible());
-				activeCombo.setListVisible(true);
-			} else if (activeControl instanceof Button) {
-				
+				StyledText activeText = (StyledText) activeControl;
+				StyledText prevText = (StyledText) prevControl;
+				activeText.setSelection(prevText.getSelection());
 			} else if (activeControl instanceof Text) {
-				
+				Text activeText = (Text) activeControl;
+				Text prevText = (Text) prevControl;
+				activeText.setSelection(prevText.getSelection());
 			}
 		}
 		for (String sectionId : sectionControls.keySet()) {
@@ -107,6 +104,10 @@ public class FormModelPage extends FormPage {
 				section.setExpanded(prevSection.isExpanded());
 			}
 		}
+		
+		//scroll as last action
+		managedForm.getForm().setOrigin(
+				previousForm.managedForm.getForm().getOrigin());
 	}
 
 	public boolean isDirty() {

@@ -35,8 +35,11 @@ public class ListenerHelper implements FocusListener, KeyListener, SelectionList
 		System.out.println("\tformPage.isDirty()=" + formPage.isDirty());
 		formPage.setFocusHolderId(modifier.getId());
 		if (formPage.isDirty()) {
-			formPage.setDirty(false);
-			formPage.refreshModel();
+			if (e.getSource() instanceof Text) {
+				formPage.refreshModel();
+			} else if (e.getSource() instanceof StyledText) {
+				formPage.refreshModel();
+			}
 		}
 	}
 
@@ -51,16 +54,13 @@ public class ListenerHelper implements FocusListener, KeyListener, SelectionList
 		if (e.getSource() instanceof Text) {
 			Text text = (Text) e.getSource();
 			modifier.setValue(text.getText());
-		} else if (e.getSource() instanceof Combo) {
-			Combo combo = (Combo) e.getSource();
-			modifier.setValue(combo.getText());
 		} else if (e.getSource() instanceof StyledText) {
 			StyledText textarea = (StyledText) e.getSource();
-			modifier.setValue(textarea.getText()/*.replaceAll("\\s+", " ").trim()*/);
+			modifier.setValue(textarea.getText());
 		}
 		if (refreshModel) {
 			formPage.setDirty(true);
-		} 
+		}
 		editor.refreshXML();
 	}
 
@@ -71,20 +71,26 @@ public class ListenerHelper implements FocusListener, KeyListener, SelectionList
 	public void widgetSelected(SelectionEvent e) {
 		if (e.getSource() instanceof Combo) {
 			Combo combo = (Combo) e.getSource();
+			boolean changed = false;
 			if (!modifier.getValue().equals(combo.getText())) {
 				modifier.setValue(combo.getText());
-				if (refreshModel) {
-					formPage.setDirty(true);
-				} 
+				changed = true;
+			}
+			if ((changed && refreshModel) || formPage.isDirty()) {
+				formPage.refreshModel();
+			} else {
 				editor.refreshXML();
 			}
 		} else if(e.getSource() instanceof Button) {
 			Button button = (Button) e.getSource();
+			boolean changed = false;
 			if ("true".equals(modifier.getValue()) ^ button.getSelection()) {
 				modifier.setValue(button.getSelection() ? "true" : "false");
-				if (refreshModel) {
-					formPage.setDirty(true);
-				} 
+				changed = true;
+			}
+			if ((changed && refreshModel) || formPage.isDirty()) {
+				formPage.refreshModel();
+			} else {
 				editor.refreshXML();
 			}
 		}
