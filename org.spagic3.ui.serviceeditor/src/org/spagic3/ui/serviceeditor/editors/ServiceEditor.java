@@ -115,7 +115,10 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 			addPage(formPageIndex, formPage);
 			setPageText(formPageIndex, "Form");
 			setActivePage(formPageIndex);
+			
+			formPage.copyFormStatus((FormModelPage) pages.get(formPageIndex + 1));
 			removePage(formPageIndex + 1);
+
 		} catch (PartInitException e) {
 			ErrorDialog.openError(
 				getSite().getShell(),

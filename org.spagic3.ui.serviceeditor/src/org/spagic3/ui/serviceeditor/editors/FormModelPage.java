@@ -51,6 +51,7 @@ public class FormModelPage extends FormPage {
 	private IServiceModel model;
 	private boolean dirty;
 	private String focusHolderId;
+	private Map<String,Section> sectionControls;
 	private Map<String,Control> editableControls;
 	
 	private IManagedForm managedForm;
@@ -73,8 +74,39 @@ public class FormModelPage extends FormPage {
 		this.focusHolderId = previousForm.focusHolderId;
 	}
 	
-	private void copyFormStatus(FormModelPage previousForm) {
-		
+	private Section getSection(String id) {
+		return sectionControls == null ? null : sectionControls.get(id);
+	}
+
+	private Control getEditableControl(String id) {
+		return editableControls == null ? null : editableControls.get(id);
+	}
+	
+	public void copyFormStatus(FormModelPage previousForm) {
+		Control activeControl = getEditableControl(focusHolderId);
+		Control previousControl = previousForm.getEditableControl(focusHolderId);
+		if (activeControl != null && previousControl != null
+				&& previousControl.getClass().isAssignableFrom(activeControl.getClass())) {
+			if (activeControl instanceof StyledText) {
+				
+			} else if (activeControl instanceof Combo) {
+				Combo activeCombo = (Combo) activeControl;
+//				Combo previousCombo = (Combo) previousControl;
+//				activeCombo.setListVisible(previousCombo.getListVisible());
+				activeCombo.setListVisible(true);
+			} else if (activeControl instanceof Button) {
+				
+			} else if (activeControl instanceof Text) {
+				
+			}
+		}
+		for (String sectionId : sectionControls.keySet()) {
+			Section section = getSection(sectionId);
+			Section prevSection = previousForm.getSection(sectionId);
+			if (prevSection != null) {
+				section.setExpanded(prevSection.isExpanded());
+			}
+		}
 	}
 
 	public boolean isDirty() {
@@ -110,9 +142,9 @@ public class FormModelPage extends FormPage {
 	
 	@Override
 	public void setFocus() {
-		Control control = editableControls.get(focusHolderId);
-		if (control != null) {
-			control.setFocus();
+		Control activeControl = editableControls.get(focusHolderId);
+		if (activeControl != null) {
+			activeControl.setFocus();
 		} else {
 			super.setFocus();
 		}
@@ -148,6 +180,7 @@ public class FormModelPage extends FormPage {
 	}
 
 	protected void createFormContent(IManagedForm managedForm) {
+		sectionControls = new HashMap<String, Section>();
 		editableControls = new HashMap<String, Control>();
 		
 		this.managedForm = managedForm;
@@ -162,7 +195,7 @@ public class FormModelPage extends FormPage {
 		layout.rightMargin = 10;
 		layout.horizontalSpacing = 10;
 		layout.verticalSpacing = 10;
-		layout.maxNumColumns = 2;
+		layout.maxNumColumns = 1;
 		layout.minNumColumns = 1;
 		form.getBody().setLayout(layout);
 		
@@ -175,7 +208,7 @@ public class FormModelPage extends FormPage {
 		Composite client = toolkit.createComposite(mform.getForm().getBody());
 		GridLayout layout = new GridLayout();
 		layout.marginWidth = layout.marginHeight = 0;
-		layout.numColumns = 4;
+		layout.numColumns = 2;
 		client.setLayout(layout);
 		
 		//ID
@@ -208,27 +241,27 @@ public class FormModelPage extends FormPage {
 
 
 		//Refresh
-		Composite composite = toolkit.createComposite(client);
-		gd = new GridData();
-		gd.widthHint = 20;
-		gd.heightHint = 0;
-		if (model.getProperties().containsKey("target")) {
-			gd.verticalSpan = 2;
-		}
-		composite.setLayoutData(gd);
-		Button button = toolkit.createButton(client, "Refresh Form", SWT.NULL);
-		gd = new GridData();
-		gd.widthHint = 80;
-		gd.heightHint = 30;
-		if (model.getProperties().containsKey("target")) {
-			gd.verticalSpan = 2;
-		}
-		button.setLayoutData(gd);
-		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				refreshModel();
-			}
-		});
+//		Composite composite = toolkit.createComposite(client);
+//		gd = new GridData();
+//		gd.widthHint = 20;
+//		gd.heightHint = 0;
+//		if (model.getProperties().containsKey("target")) {
+//			gd.verticalSpan = 2;
+//		}
+//		composite.setLayoutData(gd);
+//		Button button = toolkit.createButton(client, "Refresh Form", SWT.NULL);
+//		gd = new GridData();
+//		gd.widthHint = 80;
+//		gd.heightHint = 30;
+//		if (model.getProperties().containsKey("target")) {
+//			gd.verticalSpan = 2;
+//		}
+//		button.setLayoutData(gd);
+//		button.addSelectionListener(new SelectionAdapter() {
+//			public void widgetSelected(SelectionEvent event) {
+//				refreshModel();
+//			}
+//		});
 
 		//target
 		if (model.getProperties().containsKey("target")) {
@@ -284,7 +317,7 @@ public class FormModelPage extends FormPage {
 				final Composite client = createSection(mform, mapName, "", 1);
 				for(Object keyObj : model.getMapProperties().get(mapName).keySet()) {
 					final String key = (String) keyObj;
-					final Composite subClient = createSubSection(mform, client, key, "", 2);
+					final Composite subClient = createSubSection(mform, client, mapName, key, "", 2);
 					List<PropertyHelper> defProperties = mapPropertyHelper.getDefProperties();
 					for (PropertyHelper propertyHelper : defProperties) {
 						final String name = propertyHelper.getName();
@@ -336,7 +369,7 @@ public class FormModelPage extends FormPage {
 			textarea.addKeyListener(listener);
 			textarea.addFocusListener(listener);
 		} else if ("combo".equals(propertyHelper.getEditor())) {
-			Combo combo = new Combo(client, SWT.DROP_DOWN);
+			Combo combo = new Combo(client, SWT.READ_ONLY); //SWT.DROP_DOWN
 			combo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 			for (String item : helper.getComboItems(propertyHelper.getCombo())) {
 				combo.add(item);
@@ -385,6 +418,7 @@ public class FormModelPage extends FormPage {
 				Section.TITLE_BAR | Section.TWISTIE | Section.DESCRIPTION | Section.EXPANDED);
 		section.setText(title);
 		section.setDescription(desc);
+		sectionControls.put(title, section);
 		//toolkit.createCompositeSeparator(section);
 		Composite client = toolkit.createComposite(section);
 		GridLayout layout = new GridLayout();
@@ -400,7 +434,7 @@ public class FormModelPage extends FormPage {
 		return client;
 	}
 	
-	private Composite createSubSection(IManagedForm mform, Composite parent, String title,
+	private Composite createSubSection(IManagedForm mform, Composite parent, String sectionTitle, String title,
 			String desc, int numColumns) {
 		final ScrolledForm form = mform.getForm();
 		FormToolkit toolkit = mform.getToolkit();
@@ -408,6 +442,7 @@ public class FormModelPage extends FormPage {
 				Section.TWISTIE | Section.DESCRIPTION | Section.EXPANDED);
 		section.setText(title);
 		section.setDescription(desc);
+		sectionControls.put(sectionTitle + ":" + title, section);
 		//toolkit.createCompositeSeparator(section);
 		Composite client = toolkit.createComposite(section);
 		GridLayout layout = new GridLayout();
