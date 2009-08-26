@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: DatabaseManager
+Bundle-SymbolicName: org.spagic3.databaseManager
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Engineering Ingegneria Informatica
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: databaseManager.xml
+Export-Package: org.spagic.metadb.model,
+ org.spagic3.databaseManager;uses:="org.spagic.metadb.model"
+Bundle-ClassPath: .,
+ lib/metadb-model-2.5.1.jar
