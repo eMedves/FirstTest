@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
@@ -150,6 +151,7 @@ public class FormModelPage extends FormPage {
 	}
 
 	public void refreshModel() {
+		managedForm.getForm().setMessage("refreshing...", IMessage.NONE);
 		updateModel(managedForm.getForm().getBody());
 		editor.refreshModel();
 	}
