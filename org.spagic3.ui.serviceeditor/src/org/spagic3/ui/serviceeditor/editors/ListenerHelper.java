@@ -29,10 +29,10 @@ public class ListenerHelper implements FocusListener, KeyListener, SelectionList
 	
 	@Override
 	public void focusGained(FocusEvent e) {
-		System.out.println("entered focus gained handler");
-		System.out.println("\tformPage.getFocusHolderId()=" + formPage.getFocusHolderId());
-		System.out.println("\tmodifier.getId()=" + modifier.getId());
-		System.out.println("\tformPage.isDirty()=" + formPage.isDirty());
+//		System.out.println("entered focus gained handler");
+//		System.out.println("\tformPage.getFocusHolderId()=" + formPage.getFocusHolderId());
+//		System.out.println("\tmodifier.getId()=" + modifier.getId());
+//		System.out.println("\tformPage.isDirty()=" + formPage.isDirty());
 		formPage.setFocusHolderId(modifier.getId());
 		if (formPage.isDirty()) {
 			if (e.getSource() instanceof Text) {

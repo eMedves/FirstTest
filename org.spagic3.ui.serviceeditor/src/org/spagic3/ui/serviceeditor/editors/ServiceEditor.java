@@ -1,5 +1,7 @@
 package org.spagic3.ui.serviceeditor.editors;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -59,12 +61,49 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 	public boolean isSaveAsAllowed() {
 		return true;
 	}
+	
+	private void warnForMandatoryFields() {
+		List<String> emptyMandatoryProperties
+				= helper.getEmptyMandatoryProperties(model);
+		List<String> emptyMandatoryMapProperties 
+				= helper.getEmptyMandatoryMapProperties(model);
+		if (!emptyMandatoryProperties.isEmpty() 
+				|| !emptyMandatoryMapProperties.isEmpty()) {
+			StringBuffer message = new StringBuffer("\tthe following fields are mandatory but empty.\n");
+			if (!emptyMandatoryProperties.isEmpty()) {
+				message.append("\nProperties:\n");
+				for (String property : emptyMandatoryProperties) {
+					message.append("\t" + property + "\n");
+				}
+			}
+			if (!emptyMandatoryMapProperties.isEmpty()) {
+				message.append("\nMap properties:\n");
+				for (String mapProperty : emptyMandatoryMapProperties) {
+					message.append("\t" + mapProperty + "\n");
+				}
+			}
+			ErrorDialog.openError(
+					getSite().getShell(),
+					"Mandatory fields warning",
+					"Some mandatory fields are empty.",
+					new Status(IStatus.WARNING, Activator.PLUGIN_ID,
+							IStatus.WARNING, message.toString(), null));
+		}
+	}
 
 	public void doSave(IProgressMonitor monitor) {
+		if (formPage.isDirty()) {
+			formPage.refreshModel();
+		}
+		warnForMandatoryFields();
 		getEditor(xmlEditorPageIndex).doSave(monitor);
 	}
 
 	public void doSaveAs() {
+		if (formPage.isDirty()) {
+			formPage.refreshModel();
+		}
+		warnForMandatoryFields();
 		IEditorPart editor = getEditor(xmlEditorPageIndex);
 		editor.doSaveAs();
 //		setPageText(xmlEditorPageIndex, editor.getTitle());
