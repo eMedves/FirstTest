@@ -231,6 +231,44 @@ public class ServiceModelHelper {
 				"\"]/@name)");
 	}
 	
+	public List<String> getEmptyMandatoryProperties(IServiceModel model) {
+		List<Node> mandatoryPropertyNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/property[@mandatory=\"true\"])" +
+				" | (/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when/property[@mandatory=\"true\"])");
+		List<String> emptyMandatoryPropertyNames = new ArrayList<String>();
+		for (Node mandatoryPropertyNode : mandatoryPropertyNodes) {
+			final PropertyHelper propertyHelper = new PropertyHelper(mandatoryPropertyNode.asXML());
+			final String name = propertyHelper.getName();
+			final String value = model.getProperties().getProperty(name);
+			if ("".equals(value)) {
+				emptyMandatoryPropertyNames.add(name);
+			}
+		}
+		return emptyMandatoryPropertyNames;
+	}
+
+	public List<String> getEmptyMandatoryMapProperties(IServiceModel model) {
+		List<Node> defMapPropertyNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when[(@action=\"handleKeyMap\") or (@action=\"handleNumberedMap\")])");
+		List<String> emptyMandatoryMapPropertyNames = new ArrayList<String>();
+		for (Node defMapPropertyNode : defMapPropertyNodes) {
+			MapPropertyHelper mapPropertyHelper = new MapPropertyHelper(defMapPropertyNode.asXML());
+			final String mapName = mapPropertyHelper.getMapName();
+			final List<PropertyHelper> propertyHelpers = mapPropertyHelper.getDefProperties();
+			for (String key : model.getMapProperties().get(mapName).keySet()) {
+				final Properties properties = model.getEntryForPropertyMap(mapName, key);
+				for (PropertyHelper propertyHelper : propertyHelpers) {
+					if (propertyHelper.isMandatory()) {
+						final String name = propertyHelper.getName();
+						final String value = properties.getProperty(name);
+						if ("".equals(value)) {
+							emptyMandatoryMapPropertyNames.add(mapName + ":" + key + ":" + name);
+						}
+					}
+				}
+			}
+		}
+		return emptyMandatoryMapPropertyNames;
+	}
+
 	public String asXML(IServiceModel model) {
 		StringBuffer xml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		xml.append("<spagic:component\n");
@@ -361,6 +399,10 @@ public class ServiceModelHelper {
 
 		public boolean refreshModel() {
 			return "true".equals(evalXPathAsString(propertyDoc, "/property/@refreshModel"));
+		}
+
+		public boolean isMandatory() {
+			return "true".equals(evalXPathAsString(propertyDoc, "/property/@mandatory"));
 		}
 
 	}
