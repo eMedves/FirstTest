@@ -207,12 +207,15 @@ public class ServiceModelHelper {
 	}
 	
 	public List<String> getComboItems(String comboName) {
-		String comboValues = evalXPathAsString(scappyDefDocument, "(/scrappy/combo-providers/combo-provider[@name=\"" + comboName + "\"]/combo-provider-parameter[@name=\"comboValues\"]/@value)");
-		List<String> values = new ArrayList<String>();
-		for (String value : comboValues.split(";")) {
-			values.add(value.trim());
+		Node comboProviderNode = evalXPathAsNodes(scappyDefDocument, "(/scrappy/combo-providers/combo-provider[@name=\"" + comboName + "\"])").get(0);
+		String config = comboProviderNode.asXML();
+		String type = evalXPathAsString(config, "(/combo-provider/@type)");
+		IComboProvider comboProvider = new ComboProviderFactory().getComboProvider(type, config);
+		if (comboProvider != null) {
+			return comboProvider.getComboItems();
+		} else {
+			return new ArrayList<String>();
 		}
-		return values;
 	}
 	
 	public List<MapPropertyHelper> getDefMapProperties(IServiceModel model) {
@@ -319,7 +322,7 @@ public class ServiceModelHelper {
 		return categories;
 	}
 	
-	public String evalXPathAsString(String xml, String xpath) {
+	public static String evalXPathAsString(String xml, String xpath) {
 		try {
 	        Document document = DocumentHelper.parseText(xml);
 			return evalXPathAsString(document, xpath);
@@ -328,7 +331,7 @@ public class ServiceModelHelper {
 		}
 	}
 	
-	public String evalXPathAsString(Document document, String xpath) {
+	public static String evalXPathAsString(Document document, String xpath) {
 		try {
 			org.dom4j.XPath xPath = new DefaultXPath(xpath);
 			xPath.setNamespaceURIs(namespaceMap);
@@ -338,7 +341,7 @@ public class ServiceModelHelper {
 		}
 	}
 
-	public List<Node> evalXPathAsNodes(String xml, String xpath) {
+	public static List<Node> evalXPathAsNodes(String xml, String xpath) {
 		try {
 	        Document document = DocumentHelper.parseText(xml);
 			return evalXPathAsNodes(document, xpath);
@@ -348,7 +351,7 @@ public class ServiceModelHelper {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Node> evalXPathAsNodes(Document document, String xpath) {
+	public static List<Node> evalXPathAsNodes(Document document, String xpath) {
 		try {
 //	        Document document = DocumentHelper.parseText(xml);
 			org.dom4j.XPath xPath = new DefaultXPath(xpath);
