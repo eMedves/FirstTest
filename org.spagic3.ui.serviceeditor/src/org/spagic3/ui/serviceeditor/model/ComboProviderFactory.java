@@ -9,6 +9,8 @@ public class ComboProviderFactory {
 			return new StaticComboProvider(config);
 		} else if("DataSourcesComboProvider".equals(type)) {
 			return new DataSourcesComboProvider(config);
+		} else if("ServicesComboProvider".equals(type)) {
+			return new ServicesComboProvider(config);
 		} else {
 			return null;
 		}
