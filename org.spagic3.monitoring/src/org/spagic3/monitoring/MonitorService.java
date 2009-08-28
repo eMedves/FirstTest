@@ -8,6 +8,7 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spagic.metadb.model.Service;
+import org.spagic.metadb.model.ServiceInstance;
 import org.spagic3.constants.SpagicConstants;
 import org.spagic3.databaseManager.IDatabaseManager;
 
@@ -36,16 +37,76 @@ public class MonitorService implements EventHandler {
 		for (String propertyName : event.getPropertyNames())
 			System.out.println(propertyName + " = " + event.getProperty(propertyName));
 		
+		Boolean internalEvent = (Boolean) event.getProperty(SpagicConstants._IS_INTERNAL_EVENT);
 		String exchangeID = (String) event.getProperty(SpagicConstants.EXCHANGE_ID);
 		String status = (String) event.getProperty(SpagicConstants.EXCHANGE_STATUS);
-		String sender = (String) event.getProperty(SpagicConstants.SPAGIC_SENDER);
-		String target = (String) event.getProperty(SpagicConstants.SPAGIC_TARGET);
+		String sender = (String) event.getProperty(SpagicConstants.EXCHANGE_PROPERTY + "." + SpagicConstants.SPAGIC_SENDER);
+		String target = (String) event.getProperty(SpagicConstants.EXCHANGE_PROPERTY + "." + SpagicConstants.SPAGIC_TARGET);
+		String inBody  = (String) event.getProperty(SpagicConstants.INBODY);
+		String outBody  = (String) event.getProperty(SpagicConstants.OUTBODY);
 		
+		if (internalEvent != null) {
+			return;
+		}
 		
+		if (status == SpagicConstants.STATUS_DONE) {
+			return;
+		}
 
 		IDatabaseManager dbManager = getDatabaseManager();
 		Service senderService = dbManager.getServiceById(sender);
+		if (senderService == null) {
+			logger.info("Sender service: " + sender + " not found");
+			return;
+		}
+		
 		Service targetService = dbManager.getServiceById(target);
+		if (targetService == null) {
+			logger.info("Target service: " + target + " not found");
+			return;
+		}
+		
+		if (inBody == null) {
+			logger.warn("Input body not found");
+			return;
+		}
+		
+		// Search for the service instance with specified exchange id
+		ServiceInstance senderServiceInstance = dbManager.getServiceInstance(sender, exchangeID);
+		ServiceInstance targetServiceInstance = dbManager.getServiceInstance(target, exchangeID);
+		
+		if (status == SpagicConstants.STATUS_ACTIVE) {
+			
+			if (outBody != null) {
+				// Response message
+				if ((senderServiceInstance == null) || (targetServiceInstance == null)) {
+					logger.warn("Service instances not found");
+					return;
+				}
+				
+				// Save the service response
+				dbManager.updateServiceInstance(senderServiceInstance, outBody);
+				
+			} else {
+				// Request message
+				if (senderServiceInstance == null) {
+					// Input message not available, if not provided by the component itself
+					senderServiceInstance = dbManager.createServiceInstance(sender, exchangeID, null, null);				
+				}
+				
+				if (targetServiceInstance == null) {
+					targetServiceInstance = dbManager.createServiceInstance(target, exchangeID, inBody, null);
+				}
+			}
+			
+			
+		} else if (status == SpagicConstants.STATUS_ERROR) {
+			
+		} else {
+			logger.warn("Unknown state: " + status);
+		}
+		
+
 		
 	}
 	
