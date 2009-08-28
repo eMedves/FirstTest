@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Servicerepository Plug-in
+Bundle-SymbolicName: org.spagic3.ui.servicerepository;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.spagic3.ui.servicerepository.ServiceRepositoryActivator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.stp.im;bundle-version="1.0.0",
+ org.eclipse.stp.im.resources;bundle-version="1.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: org.spagic3.ui.servicerepository
