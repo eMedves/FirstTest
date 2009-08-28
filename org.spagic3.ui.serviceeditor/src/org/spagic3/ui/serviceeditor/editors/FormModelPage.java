@@ -38,6 +38,7 @@ import org.spagic3.ui.serviceeditor.model.IServiceModel;
 import org.spagic3.ui.serviceeditor.model.MapPropertyModifier;
 import org.spagic3.ui.serviceeditor.model.PropertyModifier;
 import org.spagic3.ui.serviceeditor.model.ServiceModelHelper;
+import org.spagic3.ui.serviceeditor.model.ServicesComboProvider;
 import org.spagic3.ui.serviceeditor.model.ServiceModelHelper.MapPropertyHelper;
 import org.spagic3.ui.serviceeditor.model.ServiceModelHelper.PropertyHelper;
 
@@ -267,18 +268,34 @@ public class FormModelPage extends FormPage {
 		//target
 		if (model.getProperties().containsKey("target")) {
 			toolkit.createLabel(client, "target");
-			text = toolkit.createText(client, 
-					(String) model.getProperties().get("target"), 
-					SWT.SINGLE);
+			
+			Combo combo = new Combo(client, SWT.READ_ONLY); //SWT.DROP_DOWN
+			combo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+			for (String item : new ServicesComboProvider("").getComboItems()) {
+				combo.add(item);
+			}
+			combo.setText((String) model.getProperties().get("target"));
 			gd = new GridData();
-			gd.widthHint = 200;
-			text.setLayoutData(gd);
+			gd.widthHint = 183;
+			combo.setLayoutData(gd);
 			modifier = new PropertyModifier(model, "target");
-			text.setData(MODIFIER_DATA_REFERENCE, modifier);
-			editableControls.put(modifier.getId(), text);
-			listener = new ListenerHelper(editor, modifier, false);
-			text.addKeyListener(listener);
-			text.addFocusListener(listener);
+			combo.setData(MODIFIER_DATA_REFERENCE, modifier);
+			editableControls.put(modifier.getId(), combo);
+			combo.addSelectionListener(listener);
+			combo.addFocusListener(listener);
+
+//			text = toolkit.createText(client, 
+//					(String) model.getProperties().get("target"), 
+//					SWT.SINGLE);
+//			gd = new GridData();
+//			gd.widthHint = 200;
+//			text.setLayoutData(gd);
+//			modifier = new PropertyModifier(model, "target");
+//			text.setData(MODIFIER_DATA_REFERENCE, modifier);
+//			editableControls.put(modifier.getId(), text);
+//			listener = new ListenerHelper(editor, modifier, false);
+//			text.addKeyListener(listener);
+//			text.addFocusListener(listener);
 		}
 		
 		createPropertySection(mform);
