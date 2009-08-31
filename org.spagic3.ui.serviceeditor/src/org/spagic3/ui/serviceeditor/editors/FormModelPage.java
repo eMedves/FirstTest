@@ -282,6 +282,7 @@ public class FormModelPage extends FormPage {
 			modifier = new PropertyModifier(model, "target");
 			combo.setData(MODIFIER_DATA_REFERENCE, modifier);
 			editableControls.put(modifier.getId(), combo);
+			listener = new ListenerHelper(editor, modifier, false);
 			combo.addSelectionListener(listener);
 			combo.addFocusListener(listener);
 
