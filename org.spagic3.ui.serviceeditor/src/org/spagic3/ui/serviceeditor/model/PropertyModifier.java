@@ -1,5 +1,7 @@
 package org.spagic3.ui.serviceeditor.model;
 
+import java.util.Properties;
+
 public class PropertyModifier implements IPropertyModifier {
 
 	private IServiceModel model;
@@ -19,7 +21,11 @@ public class PropertyModifier implements IPropertyModifier {
 	 */
 	public void setValue(String value) {
 		if (model != null) {
-			model.getProperties().setProperty(name, value);
+			Properties toUpdate = model.getProperties();
+			if (toUpdate != null) {
+				toUpdate.setProperty(name, value);
+			}
+
 		}
 	}
 

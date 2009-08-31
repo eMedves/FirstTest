@@ -49,7 +49,7 @@ public class FormModelPage extends FormPage {
 	private ServiceEditor editor;
 	private ServiceModelHelper helper;
 	private IServiceModel model;
-	private boolean dirty;
+	private boolean modelDirty;
 	private String focusHolderId;
 	private Map<String,Section> sectionControls;
 	private Map<String,Control> editableControls;
@@ -61,7 +61,7 @@ public class FormModelPage extends FormPage {
 		this.editor = editor;
 		this.helper = editor.getHelper();
 		this.model = editor.getModel();
-		dirty = false;
+		modelDirty = false;
 	}
 
 	public FormModelPage(FormModelPage previousForm) {
@@ -69,7 +69,7 @@ public class FormModelPage extends FormPage {
 		this.editor = previousForm.editor;
 		this.helper = previousForm.editor.getHelper();
 		this.model = previousForm.editor.getModel();
-		dirty = false;
+		modelDirty = false;
 
 		this.focusHolderId = previousForm.focusHolderId;
 	}
@@ -110,12 +110,12 @@ public class FormModelPage extends FormPage {
 				previousForm.managedForm.getForm().getOrigin());
 	}
 
-	public boolean isDirty() {
-		return dirty;
+	public boolean isModelDirty() {
+		return modelDirty;
 	}
 
-	public void setDirty(boolean dirty) {
-		this.dirty = dirty;
+	public void setModelDirty(boolean modelDirty) {
+		this.modelDirty = modelDirty;
 	}
 
 	public String getFocusHolderId() {
@@ -238,7 +238,7 @@ public class FormModelPage extends FormPage {
 		text.setData(MODIFIER_DATA_REFERENCE, modifier);
 		editableControls.put(modifier.getId(), text);
 		ListenerHelper listener	= new ListenerHelper(editor, modifier, true);
-		text.addKeyListener(listener);
+		text.addModifyListener(listener);
 		text.addFocusListener(listener);
 
 
@@ -294,6 +294,7 @@ public class FormModelPage extends FormPage {
 //			text.setData(MODIFIER_DATA_REFERENCE, modifier);
 //			editableControls.put(modifier.getId(), text);
 //			listener = new ListenerHelper(editor, modifier, false);
+//			text.addVerifyListener(listener);
 //			text.addKeyListener(listener);
 //			text.addFocusListener(listener);
 		}
@@ -384,7 +385,8 @@ public class FormModelPage extends FormPage {
 			textarea.setLayoutData(gd);
 			textarea.setData(MODIFIER_DATA_REFERENCE, modifier);
 			editableControls.put(modifier.getId(), textarea);
-			textarea.addKeyListener(listener);
+			textarea.addVerifyKeyListener(listener);
+			textarea.addModifyListener(listener);
 			textarea.addFocusListener(listener);
 		} else if ("combo".equals(propertyHelper.getEditor())) {
 			Combo combo = new Combo(client, SWT.READ_ONLY); //SWT.DROP_DOWN
@@ -418,7 +420,7 @@ public class FormModelPage extends FormPage {
 			text.setLayoutData(gd);
 			text.setData(MODIFIER_DATA_REFERENCE, modifier);
 			editableControls.put(modifier.getId(), text);
-			text.addKeyListener(listener);
+			text.addModifyListener(listener);
 			text.addFocusListener(listener);
 			if (propertyHelper.getDroptarget() != null 
 					&& !"".equals(propertyHelper.getDroptarget())) {

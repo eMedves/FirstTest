@@ -1,5 +1,7 @@
 package org.spagic3.ui.serviceeditor.model;
 
+import java.util.Properties;
+
 public class MapPropertyModifier implements IPropertyModifier {
 
 	private IServiceModel model;
@@ -23,7 +25,10 @@ public class MapPropertyModifier implements IPropertyModifier {
 	 */
 	public void setValue(String value) {
 		if (model != null) {
-			model.getEntryForPropertyMap(mapName, key).put(name, value);
+			Properties toUpdate = model.getEntryForPropertyMap(mapName, key);
+			if (toUpdate != null) {
+				toUpdate.put(name, value);
+			}
 		}
 	}
 

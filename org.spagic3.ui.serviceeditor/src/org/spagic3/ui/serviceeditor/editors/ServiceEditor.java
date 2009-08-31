@@ -90,9 +90,14 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 							IStatus.WARNING, message.toString(), null));
 		}
 	}
+	
+	@Override
+	public boolean isDirty() {
+		return xmlEditor.isDirty();
+	}
 
 	public void doSave(IProgressMonitor monitor) {
-		if (formPage.isDirty()) {
+		if (formPage.isModelDirty()) {
 			formPage.refreshModel();
 		}
 		warnForMandatoryFields();
@@ -100,7 +105,7 @@ public class ServiceEditor extends FormEditor implements IResourceChangeListener
 	}
 
 	public void doSaveAs() {
-		if (formPage.isDirty()) {
+		if (formPage.isModelDirty()) {
 			formPage.refreshModel();
 		}
 		warnForMandatoryFields();
