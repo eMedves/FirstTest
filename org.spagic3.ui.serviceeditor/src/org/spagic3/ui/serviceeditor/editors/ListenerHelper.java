@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Text;
 import org.spagic3.ui.serviceeditor.model.IPropertyModifier;
 
-public class ListenerHelper implements FocusListener, VerifyKeyListener, ModifyListener, SelectionListener {
+public class ListenerHelper implements FocusListener, KeyListener, VerifyKeyListener, ModifyListener, SelectionListener {
 
 	private ServiceEditor editor;
 	private FormModelPage formPage;
@@ -55,12 +55,21 @@ public class ListenerHelper implements FocusListener, VerifyKeyListener, ModifyL
 	public void focusLost(FocusEvent e) {}
 
 	
-//	@Override
-//	public void keyPressed(KeyEvent e) {}
-//
-//	
-//	@Override
-//	public void keyReleased(KeyEvent e) {}
+	@Override
+	public void keyPressed(KeyEvent e) {}
+
+	
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if (e.getSource() instanceof Text) {
+			if (e.character == SWT.CR) {
+				if(refreshModel) {
+					e.doit = false;
+					formPage.refreshModel();
+				}
+			}
+		}	
+	}
 
 
 	@Override

@@ -238,6 +238,7 @@ public class FormModelPage extends FormPage {
 		text.setData(MODIFIER_DATA_REFERENCE, modifier);
 		editableControls.put(modifier.getId(), text);
 		ListenerHelper listener	= new ListenerHelper(editor, modifier, true);
+		text.addKeyListener(listener);
 		text.addModifyListener(listener);
 		text.addFocusListener(listener);
 
@@ -420,6 +421,7 @@ public class FormModelPage extends FormPage {
 			text.setLayoutData(gd);
 			text.setData(MODIFIER_DATA_REFERENCE, modifier);
 			editableControls.put(modifier.getId(), text);
+			text.addKeyListener(listener);
 			text.addModifyListener(listener);
 			text.addFocusListener(listener);
 			if (propertyHelper.getDroptarget() != null 
