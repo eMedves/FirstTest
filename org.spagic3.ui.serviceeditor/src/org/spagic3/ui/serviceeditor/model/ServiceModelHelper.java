@@ -1,8 +1,6 @@
 package org.spagic3.ui.serviceeditor.model;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,30 +14,17 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
-import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
-import org.spagic3.ui.serviceeditor.Activator;
 import org.spagic3.ui.serviceeditor.expression.ScrappyEvaluator;
 
-public class ServiceModelHelper {
-	
-	
-	private static Map<String, String> namespaceMap;
-	static {
-		namespaceMap = new HashMap<String, String>();
-		namespaceMap.put("spagic", "urn:org:spagic3");
-	}
-	
-	private Document scappyDefDocument;
-	
-	private Pattern parameterPattern = Pattern.compile("\\$\\w+");
-	
+public class ServiceModelHelper extends org.spagic3.service.model.ServiceModelHelper {
+			
 	public ServiceModelHelper() throws Exception {
-		File scrappyDefFile = Activator.getFileFromPlugin("conf/scrappy-def.xml");
-		SAXReader xmlReader = new SAXReader();
-		scappyDefDocument = xmlReader.read(scrappyDefFile);
+		super();
 	}
-	
+
+	private Pattern parameterPattern = Pattern.compile("\\$\\w+");
+		
 	public IServiceModel createModel(String xml) throws DocumentException {
 		Document document = DocumentHelper.parseText(xml);
 
@@ -55,6 +40,27 @@ public class ServiceModelHelper {
 		return model;
 	}
 	
+	public static List<Node> evalXPathAsNodes(String xml, String xpath) {
+		try {
+	        Document document = DocumentHelper.parseText(xml);
+			return evalXPathAsNodes(document, xpath);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<Node> evalXPathAsNodes(Document document, String xpath) {
+		try {
+//	        Document document = DocumentHelper.parseText(xml);
+			org.dom4j.XPath xPath = new DefaultXPath(xpath);
+			xPath.setNamespaceURIs(getNamespaceMap());
+			return (List<Node>) xPath.selectNodes(document);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	private void copyProperties(Document document, IServiceModel model) {
 		List<Node> propertyList = evalXPathAsNodes(document, "/spagic:component/spagic:property");
 		for (Node propertyNode : propertyList) {
@@ -90,8 +96,27 @@ public class ServiceModelHelper {
 		}
 	}
 
+	public List<PropertyHelper> getDefBaseProperties(String factory) {
+		List<Node> defPropertyNodes = evalXPathAsNodes(getScappyDefDocument(), "(/scrappy/definitions/def[@factory=\"" + factory + "\"]/property)");
+		List<PropertyHelper> defProperties = new ArrayList<PropertyHelper>();
+		for (Node defPropertyNode : defPropertyNodes) {
+			defProperties.add(new PropertyHelper(defPropertyNode.asXML()));
+		}
+		return defProperties;
+	}
+			
+	public List<CategoryHelper> getDefinitionCategories() {
+		List<Node> categoryNodes = evalXPathAsNodes(getScappyDefDocument(), "(/scrappy/connectors)" +
+				" | (/scrappy/services)");
+		List<CategoryHelper> categories = new ArrayList<CategoryHelper>();
+		for (Node categoryNode : categoryNodes) {
+			categories.add(new CategoryHelper(categoryNode.asXML()));
+		}
+		return categories;
+	}
+	
 	public void applyRules(IServiceModel model) {
-		List<Node> condictionsList = evalXPathAsNodes(scappyDefDocument, "/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when");
+		List<Node> condictionsList = evalXPathAsNodes(getScappyDefDocument(), "/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when");
 		for (Node condictionNode : condictionsList) {
 			final String condictionXML = condictionNode.asXML();
 			final String expr = evalXPathAsString(condictionXML, "/when/@expr");
@@ -162,17 +187,8 @@ public class ServiceModelHelper {
 	}
 	
 	public List<PropertyHelper> getDefProperties(IServiceModel model) {
-		List<Node> defPropertyNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/property)" +
+		List<Node> defPropertyNodes = evalXPathAsNodes(getScappyDefDocument(), "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/property)" +
 				" | (/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when/property)");
-		List<PropertyHelper> defProperties = new ArrayList<PropertyHelper>();
-		for (Node defPropertyNode : defPropertyNodes) {
-			defProperties.add(new PropertyHelper(defPropertyNode.asXML()));
-		}
-		return defProperties;
-	}
-
-	public List<PropertyHelper> getDefBaseProperties(String factory) {
-		List<Node> defPropertyNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + factory + "\"]/property)");
 		List<PropertyHelper> defProperties = new ArrayList<PropertyHelper>();
 		for (Node defPropertyNode : defPropertyNodes) {
 			defProperties.add(new PropertyHelper(defPropertyNode.asXML()));
@@ -183,10 +199,10 @@ public class ServiceModelHelper {
 	public List<PropertyHelper> getDefProperties(IServiceModel model, String category) {
 		List<Node> defPropertyNodes;
 		if (category == null || "".equals(category)) {
-			defPropertyNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/property[not(@uicategory)])" +
+			defPropertyNodes = evalXPathAsNodes(getScappyDefDocument(), "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/property[not(@uicategory)])" +
 					" | (/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when/property[not(@uicategory)])");
 		} else {
-			defPropertyNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/property[@uicategory=\"" + category + "\"])" +
+			defPropertyNodes = evalXPathAsNodes(getScappyDefDocument(), "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/property[@uicategory=\"" + category + "\"])" +
 				" | (/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when/property[@uicategory=\"" + category + "\"])");
 		}
 		List<PropertyHelper> defProperties = new ArrayList<PropertyHelper>();
@@ -197,7 +213,7 @@ public class ServiceModelHelper {
 	}
 	
 	public Set<String> getDefUICategories(IServiceModel model) {
-		List<Node> defCategoryNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/property/@uicategory)" +
+		List<Node> defCategoryNodes = evalXPathAsNodes(getScappyDefDocument(), "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/property/@uicategory)" +
 				" | (/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when/property/@uicategory)");
 		Set<String> defCategories = new LinkedHashSet<String>();
 		for (Node defCategoryNode : defCategoryNodes) {
@@ -207,7 +223,7 @@ public class ServiceModelHelper {
 	}
 	
 	public List<String> getComboItems(String comboName) {
-		Node comboProviderNode = evalXPathAsNodes(scappyDefDocument, "(/scrappy/combo-providers/combo-provider[@name=\"" + comboName + "\"])").get(0);
+		Node comboProviderNode = evalXPathAsNodes(getScappyDefDocument(), "(/scrappy/combo-providers/combo-provider[@name=\"" + comboName + "\"])").get(0);
 		String config = comboProviderNode.asXML();
 		String type = evalXPathAsString(config, "(/combo-provider/@type)");
 		IComboProvider comboProvider = new ComboProviderFactory().getComboProvider(type, config);
@@ -219,7 +235,7 @@ public class ServiceModelHelper {
 	}
 	
 	public List<MapPropertyHelper> getDefMapProperties(IServiceModel model) {
-		List<Node> defMapPropertyNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when[(@action=\"handleKeyMap\") or (@action=\"handleNumberedMap\")])");
+		List<Node> defMapPropertyNodes = evalXPathAsNodes(getScappyDefDocument(), "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when[(@action=\"handleKeyMap\") or (@action=\"handleNumberedMap\")])");
 		List<MapPropertyHelper> defMapProperties = new ArrayList<MapPropertyHelper>();
 		for (Node defMapPropertyNode : defMapPropertyNodes) {
 			defMapProperties.add(new MapPropertyHelper(defMapPropertyNode.asXML()));
@@ -228,14 +244,11 @@ public class ServiceModelHelper {
 	}
 
 	public String getComponentName(IServiceModel model) {
-		return evalXPathAsString(scappyDefDocument, 
-				"(/scrappy/definitions/def[@factory=\"" + 
-				model.getFactoryName() + 
-				"\"]/@name)");
+		return getComponentName(model.getFactoryName());
 	}
 	
 	public List<String> getEmptyMandatoryProperties(IServiceModel model) {
-		List<Node> mandatoryPropertyNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/property[@mandatory=\"true\"])" +
+		List<Node> mandatoryPropertyNodes = evalXPathAsNodes(getScappyDefDocument(), "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/property[@mandatory=\"true\"])" +
 				" | (/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when/property[@mandatory=\"true\"])");
 		List<String> emptyMandatoryPropertyNames = new ArrayList<String>();
 		for (Node mandatoryPropertyNode : mandatoryPropertyNodes) {
@@ -250,7 +263,7 @@ public class ServiceModelHelper {
 	}
 
 	public List<String> getEmptyMandatoryMapProperties(IServiceModel model) {
-		List<Node> defMapPropertyNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when[(@action=\"handleKeyMap\") or (@action=\"handleNumberedMap\")])");
+		List<Node> defMapPropertyNodes = evalXPathAsNodes(getScappyDefDocument(), "(/scrappy/definitions/def[@factory=\"" + model.getFactoryName() + "\"]/when[(@action=\"handleKeyMap\") or (@action=\"handleNumberedMap\")])");
 		List<String> emptyMandatoryMapPropertyNames = new ArrayList<String>();
 		for (Node defMapPropertyNode : defMapPropertyNodes) {
 			MapPropertyHelper mapPropertyHelper = new MapPropertyHelper(defMapPropertyNode.asXML());
@@ -310,56 +323,6 @@ public class ServiceModelHelper {
 		}
 		xml.append("</spagic:component>");
 		return xml.toString();
-	}
-	
-	public List<CategoryHelper> getDefinitionCategories() {
-		List<Node> categoryNodes = evalXPathAsNodes(scappyDefDocument, "(/scrappy/connectors)" +
-				" | (/scrappy/services)");
-		List<CategoryHelper> categories = new ArrayList<CategoryHelper>();
-		for (Node categoryNode : categoryNodes) {
-			categories.add(new CategoryHelper(categoryNode.asXML()));
-		}
-		return categories;
-	}
-	
-	public static String evalXPathAsString(String xml, String xpath) {
-		try {
-	        Document document = DocumentHelper.parseText(xml);
-			return evalXPathAsString(document, xpath);
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	
-	public static String evalXPathAsString(Document document, String xpath) {
-		try {
-			org.dom4j.XPath xPath = new DefaultXPath(xpath);
-			xPath.setNamespaceURIs(namespaceMap);
-			return xPath.valueOf(document);
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	public static List<Node> evalXPathAsNodes(String xml, String xpath) {
-		try {
-	        Document document = DocumentHelper.parseText(xml);
-			return evalXPathAsNodes(document, xpath);
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static List<Node> evalXPathAsNodes(Document document, String xpath) {
-		try {
-//	        Document document = DocumentHelper.parseText(xml);
-			org.dom4j.XPath xPath = new DefaultXPath(xpath);
-			xPath.setNamespaceURIs(namespaceMap);
-			return (List<Node>) xPath.selectNodes(document);
-		} catch (Exception e) {
-			return null;
-		}
 	}
 	
 	public class PropertyHelper {
@@ -496,5 +459,5 @@ public class ServiceModelHelper {
 			return category;
 		}
 	}
-
+	
 }

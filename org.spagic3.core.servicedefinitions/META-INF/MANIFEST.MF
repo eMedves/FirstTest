@@ -7,8 +7,24 @@ Bundle-Vendor: Engineering Ingegneria Informatica
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: lib/dom4j.jar,
  lib/commons-lang-2.4.jar,
+ lib/jaxen-1.1.1.jar,
  .
 Import-Package: org.eclipse.core.runtime;version="3.4.0",
- org.osgi.framework;version="1.5.0"
+ org.osgi.framework;version="1.4.0"
 Bundle-Activator: org.spagic3.service.model.Activator
-Export-Package: org.spagic3.service.model
+Export-Package: org.dom4j,
+ org.dom4j.bean,
+ org.dom4j.datatype,
+ org.dom4j.dom,
+ org.dom4j.dtd,
+ org.dom4j.io,
+ org.dom4j.jaxb,
+ org.dom4j.rule,
+ org.dom4j.rule.pattern,
+ org.dom4j.swing,
+ org.dom4j.tree,
+ org.dom4j.util,
+ org.dom4j.xpath,
+ org.dom4j.xpp,
+ org.spagic3.service.model
+Bundle-ActivationPolicy: lazy
