@@ -12,11 +12,12 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources,
  org.eclipse.ui.ide,
  org.eclipse.stp.im.resources;bundle-version="1.0.0",
- org.spagic3.ui.servicerepository;bundle-version="1.0.0"
+ org.spagic3.ui.servicerepository;bundle-version="1.0.0",
+ org.spagic3.core.servicedefinitions;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .,
  lib/jaxen-1.1.1.jar,
  lib/dom4j.jar,
  lib/janino.jar,
- lib/commons-lang-2.1.jar
+ lib/commons-lang-2.4.jar
