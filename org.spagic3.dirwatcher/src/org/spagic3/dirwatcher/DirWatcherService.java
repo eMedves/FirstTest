@@ -66,14 +66,14 @@ public class DirWatcherService {
 							
 							Node n = doc.selectSingleNode("/spagic:component");
 							String spagicId = n.valueOf("@spagic.id");
-							String factoryName =  n.valueOf("@factory.name");
+							String factoryName =  n.valueOf("@" + SpagicConstants.SPAGIC_FACTORYNAME);
 							
 							List<Node> propertiesNode = doc.selectNodes("/spagic:component/spagic:property");
 							List<Node>  xpropertiesNode = doc.selectNodes("/spagic:component/spagic:xproperty");
 							
 							Hashtable<String, String> properties = new Hashtable<String, String>();
 							properties.put("spagic.id", spagicId);
-							properties.put("factory.name", factoryName);
+							properties.put(SpagicConstants.SPAGIC_FACTORYNAME, factoryName);
 							for (Node pn : propertiesNode){
 								properties.put(pn.valueOf("@name"), pn.valueOf("@value"));
 							}
@@ -126,14 +126,14 @@ public class DirWatcherService {
 							
 							Node n = doc.selectSingleNode("/spagic:component");
 							String spagicId = n.valueOf("@spagic.id");
-							String factoryName =  n.valueOf("@factory.name");
+							String factoryName =  n.valueOf("@" + SpagicConstants.SPAGIC_FACTORYNAME);
 							
 							List<Node> propertiesNode = doc.selectNodes("/spagic:component/spagic:property");
 							List<Node>  xpropertiesNode = doc.selectNodes("/spagic:component/spagic:xproperty");
 							
 							Hashtable<String, String> properties = new Hashtable<String, String>();
 							properties.put("spagic.id", spagicId);
-							properties.put("factory.name", factoryName);
+							properties.put(SpagicConstants.SPAGIC_FACTORYNAME, factoryName);
 							for (Node pn : propertiesNode){
 								properties.put(pn.valueOf("@name"), pn.valueOf("@value"));
 							}

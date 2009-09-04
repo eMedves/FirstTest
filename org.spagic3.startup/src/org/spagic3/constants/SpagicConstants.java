@@ -8,8 +8,10 @@ public class SpagicConstants {
 	public final static String SPAGIC_ID_PROPERTY = "spagic.id";
 	
 	public final static String SPAGIC_SENDER = "SPAGIC_SENDER";
-	
 	public final static String SPAGIC_TARGET = "SPAGIC_TARGET";	
+	public final static String SPAGIC_FACTORYNAME = "factory.name";	
+	public final static String SPAGIC_TYPE = "SPAGIC_TYPE";
+	
 	public final static String EXCHANGE_ID = "EXCHANGE_ID";
 	
 	public final static String SPAGIC_GENERIC_TOPIC = "SPAGIC/MESSAGES";
