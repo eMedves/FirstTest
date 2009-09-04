@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Serviceregistration
+Bundle-SymbolicName: org.spagic3.serviceregistration
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.spagic3.serviceregistration.Activator
+Bundle-Vendor: Engineering Ingegneria Informatica
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.osgi.framework;version="1.3.0",
+ org.osgi.util.tracker;version="1.3.1",
+ org.spagic3.constants,
+ org.spagic3.core
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.spagic3.databaseManager;bundle-version="1.0.0",
+ org.spagic3.core.servicedefinitions;bundle-version="1.0.0"
