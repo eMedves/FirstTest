@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Osgi
 Bundle-SymbolicName: org.spagic3.client.osgi
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-Activator: org.spagic3.client.osgi.OSGiSideClientActivator
 Bundle-Vendor: Engineering Ing. Informatica
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
@@ -12,4 +12,3 @@ Import-Package: org.apache.servicemix.nmr.api,
  org.spagic3.client.api,
  org.spagic3.constants,
  org.spagic3.core
-Bundle-ActivationPolicy: lazy

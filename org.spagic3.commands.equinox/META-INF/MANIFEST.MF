@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Equinox
+Bundle-Name: Spagic3 Commands Equinox
 Bundle-SymbolicName: org.spagic3.commands.equinox
-Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Spagic3 Commands Equinos
+Bundle-Version: 1.0.0
+Bundle-Vendor: Engineering Ing. Informatica
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: spagic-commands.xml
 Import-Package: org.eclipse.osgi.framework.console;version="1.0.0",

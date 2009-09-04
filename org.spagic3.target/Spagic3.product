@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Spagic3" uid="Spagic3" id="org.spagic3.equinox.product.Spagic3" version="1" useFeatures="false" includeLaunchers="true">
+
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -console</programArgs>
+      <vmArgs>-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dspagic.home=C:\Scrappy</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+
+   <launcher name="spagic3">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+
+   <vm>
+      <windows>org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/OSGi%Minimum-1.0</windows>
+   </vm>
+
+
+   <plugins>
+      <plugin id="Tester"/>
+      <plugin id="ch.qos.logback.logback-classic"/>
+      <plugin id="ch.qos.logback.logback-core"/>
+      <plugin id="com.springsource.com.mysql.jdbc"/>
+      <plugin id="com.springsource.javax.mail"/>
+      <plugin id="com.springsource.javax.resource"/>
+      <plugin id="com.springsource.javax.xml.stream"/>
+      <plugin id="com.springsource.oracle.jdbc"/>
+      <plugin id="com.springsource.org.apache.commons.beanutils"/>
+      <plugin id="com.springsource.org.apache.commons.codec"/>
+      <plugin id="com.springsource.org.apache.commons.dbcp"/>
+      <plugin id="com.springsource.org.apache.commons.logging"/>
+      <plugin id="com.springsource.org.apache.commons.pool"/>
+      <plugin id="com.springsource.org.apache.ws.commons.schema"/>
+      <plugin id="com.springsource.org.codehaus.groovy"/>
+      <plugin id="com.springsource.org.dom4j"/>
+      <plugin id="com.springsource.org.jaxen"/>
+      <plugin id="com.springsource.org.postgresql.jdbc3"/>
+      <plugin id="com.springsource.org.postgresql.jdbc4"/>
+      <plugin id="javax.servlet"/>
+      <plugin id="javax.servlet.jsp"/>
+      <plugin id="javax.wsdl16"/>
+      <plugin id="jcl.over.slf4j"/>
+      <plugin id="org.apache.commons.codec"/>
+      <plugin id="org.apache.commons.collections"/>
+      <plugin id="org.apache.commons.dbutils"/>
+      <plugin id="org.apache.commons.el"/>
+      <plugin id="org.apache.commons.httpclient"/>
+      <plugin id="org.apache.commons.logging"/>
+      <plugin id="org.apache.jasper"/>
+      <plugin id="org.apache.servicemix.bundles.antlr"/>
+      <plugin id="org.apache.servicemix.bundles.asm"/>
+      <plugin id="org.apache.servicemix.bundles.commons-codec"/>
+      <plugin id="org.apache.servicemix.nmr.api"/>
+      <plugin id="org.apache.servicemix.soap"/>
+      <plugin id="org.apache.servicemix.specs.scripting-api-1.0"/>
+      <plugin id="org.apache.xbean.xbean-naming"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.ecf"/>
+      <plugin id="org.eclipse.ecf.filetransfer"/>
+      <plugin id="org.eclipse.ecf.identity"/>
+      <plugin id="org.eclipse.ecf.provider.filetransfer"/>
+      <plugin id="org.eclipse.ecf.provider.filetransfer.httpclient"/>
+      <plugin id="org.eclipse.ecf.provider.filetransfer.httpclient.ssl" fragment="true"/>
+      <plugin id="org.eclipse.ecf.provider.filetransfer.ssl" fragment="true"/>
+      <plugin id="org.eclipse.ecf.ssl" fragment="true"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.cm"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.concurrent"/>
+      <plugin id="org.eclipse.equinox.device"/>
+      <plugin id="org.eclipse.equinox.ds"/>
+      <plugin id="org.eclipse.equinox.event"/>
+      <plugin id="org.eclipse.equinox.frameworkadmin"/>
+      <plugin id="org.eclipse.equinox.frameworkadmin.equinox"/>
+      <plugin id="org.eclipse.equinox.http"/>
+      <plugin id="org.eclipse.equinox.http.registry"/>
+      <plugin id="org.eclipse.equinox.io"/>
+      <plugin id="org.eclipse.equinox.ip"/>
+      <plugin id="org.eclipse.equinox.jsp.jasper"/>
+      <plugin id="org.eclipse.equinox.jsp.jasper.registry"/>
+      <plugin id="org.eclipse.equinox.launcher"/>
+      <plugin id="org.eclipse.equinox.launcher.carbon.macosx" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.cocoa.macosx" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.cocoa.macosx.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.gtk.linux.ppc" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.gtk.linux.s390" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.gtk.linux.s390x" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.gtk.linux.x86" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.gtk.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.gtk.solaris.sparc" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.gtk.solaris.x86" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.motif.aix.ppc" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.motif.hpux.PA_RISC" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.motif.hpux.ia64_32" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.motif.linux.x86" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.motif.solaris.sparc" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.win32.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.win32.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.wpf.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.equinox.log"/>
+      <plugin id="org.eclipse.equinox.metatype"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
+      <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.equinox.servletbridge"/>
+      <plugin id="org.eclipse.equinox.simpleconfigurator"/>
+      <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator"/>
+      <plugin id="org.eclipse.equinox.supplement"/>
+      <plugin id="org.eclipse.equinox.transforms.hook" fragment="true"/>
+      <plugin id="org.eclipse.equinox.transforms.xslt"/>
+      <plugin id="org.eclipse.equinox.useradmin"/>
+      <plugin id="org.eclipse.equinox.util"/>
+      <plugin id="org.eclipse.equinox.wireadmin"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.osgi.util"/>
+      <plugin id="org.mortbay.jetty.client"/>
+      <plugin id="org.mortbay.jetty.server"/>
+      <plugin id="org.mortbay.jetty.util"/>
+      <plugin id="org.sat4j.core"/>
+      <plugin id="org.sat4j.pb"/>
+      <plugin id="org.spagic3.client.api"/>
+      <plugin id="org.spagic3.client.osgi"/>
+      <plugin id="org.spagic3.commands.equinox"/>
+      <plugin id="org.spagic3.components.bpm"/>
+      <plugin id="org.spagic3.components.consoleout"/>
+      <plugin id="org.spagic3.components.groovy"/>
+      <plugin id="org.spagic3.components.jdbc"/>
+      <plugin id="org.spagic3.components.xsdvalidator"/>
+      <plugin id="org.spagic3.components.xslt"/>
+      <plugin id="org.spagic3.connectors.filesystem"/>
+      <plugin id="org.spagic3.connectors.http"/>
+      <plugin id="org.spagic3.connectors.tcp"/>
+      <plugin id="org.spagic3.core"/>
+      <plugin id="org.spagic3.datasource"/>
+      <plugin id="org.spagic3.deployer"/>
+      <plugin id="org.spagic3.dirwatcher"/>
+      <plugin id="org.spagic3.h2database"/>
+      <plugin id="org.spagic3.integration.api"/>
+      <plugin id="org.spagic3.jul_to_slf4j-1.5.6"/>
+      <plugin id="org.spagic3.log4j_over_slf4j"/>
+      <plugin id="org.spagic3.nmr.core"/>
+      <plugin id="org.spagic3.osgi_over_slf4j"/>
+      <plugin id="org.spagic3.startup"/>
+      <plugin id="org.spagic3.xstream"/>
+      <plugin id="slf4j.api"/>
+   </plugins>
+
+   <configurations>
+      <plugin id="ch.qos.logback.logback-classic" autoStart="true" startLevel="0" />
+      <plugin id="ch.qos.logback.logback-core" autoStart="true" startLevel="0" />
+      <plugin id="com.springsource.com.mysql.jdbc" autoStart="false" startLevel="0" />
+      <plugin id="com.springsource.javax.mail" autoStart="false" startLevel="0" />
+      <plugin id="com.springsource.javax.resource" autoStart="false" startLevel="0" />
+      <plugin id="com.springsource.javax.xml.stream" autoStart="false" startLevel="0" />
+      <plugin id="com.springsource.oracle.jdbc" autoStart="false" startLevel="0" />
+      <plugin id="com.springsource.org.apache.commons.beanutils" autoStart="false" startLevel="0" />
+      <plugin id="com.springsource.org.apache.commons.dbcp" autoStart="false" startLevel="0" />
+      <plugin id="com.springsource.org.apache.commons.pool" autoStart="false" startLevel="0" />
+      <plugin id="com.springsource.org.apache.ws.commons.schema" autoStart="false" startLevel="0" />
+      <plugin id="com.springsource.org.codehaus.groovy" autoStart="false" startLevel="0" />
+      <plugin id="com.springsource.org.dom4j" autoStart="false" startLevel="0" />
+      <plugin id="com.springsource.org.jaxen" autoStart="false" startLevel="0" />
+      <plugin id="com.springsource.org.postgresql.jdbc3" autoStart="false" startLevel="0" />
+      <plugin id="com.springsource.org.postgresql.jdbc4" autoStart="false" startLevel="0" />
+      <plugin id="javax.servlet" autoStart="false" startLevel="0" />
+      <plugin id="javax.servlet.jsp" autoStart="false" startLevel="0" />
+      <plugin id="javax.wsdl16" autoStart="false" startLevel="0" />
+      <plugin id="jcl.over.slf4j" autoStart="false" startLevel="0" />
+      <plugin id="org.apache.commons.codec" autoStart="false" startLevel="0" />
+      <plugin id="org.apache.commons.collections" autoStart="false" startLevel="0" />
+      <plugin id="org.apache.commons.dbutils" autoStart="false" startLevel="0" />
+      <plugin id="org.apache.commons.el" autoStart="false" startLevel="0" />
+      <plugin id="org.apache.commons.httpclient" autoStart="false" startLevel="0" />
+      <plugin id="org.apache.commons.logging" autoStart="false" startLevel="0" />
+      <plugin id="org.apache.jasper" autoStart="false" startLevel="0" />
+      <plugin id="org.apache.servicemix.bundles.antlr" autoStart="false" startLevel="0" />
+      <plugin id="org.apache.servicemix.bundles.asm" autoStart="false" startLevel="0" />
+      <plugin id="org.apache.servicemix.bundles.commons-codec" autoStart="false" startLevel="0" />
+      <plugin id="org.apache.servicemix.nmr.api" autoStart="false" startLevel="0" />
+      <plugin id="org.apache.servicemix.soap" autoStart="false" startLevel="0" />
+      <plugin id="org.apache.servicemix.specs.scripting-api-1.0" autoStart="false" startLevel="0" />
+      <plugin id="org.apache.xbean.xbean-naming" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.core.contenttype" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.core.jobs" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ecf" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.ecf.filetransfer" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.ecf.identity" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.ecf.provider.filetransfer" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.ecf.provider.filetransfer.httpclient" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.equinox.app" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.equinox.cm" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.concurrent" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.device" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.frameworkadmin" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.frameworkadmin.equinox" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.http" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.equinox.http.registry" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.equinox.io" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.ip" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.equinox.jsp.jasper" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.equinox.jsp.jasper.registry" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.equinox.launcher" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.equinox.log" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.equinox.metatype" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.equinox.preferences" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.equinox.registry" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.security" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.servletbridge" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.supplement" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.equinox.transforms.xslt" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.equinox.useradmin" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.wireadmin" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
+      <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osgi.util" autoStart="true" startLevel="0" />
+      <plugin id="org.mortbay.jetty.client" autoStart="true" startLevel="0" />
+      <plugin id="org.mortbay.jetty.server" autoStart="true" startLevel="0" />
+      <plugin id="org.mortbay.jetty.util" autoStart="true" startLevel="0" />
+      <plugin id="org.sat4j.core" autoStart="false" startLevel="0" />
+      <plugin id="org.sat4j.pb" autoStart="false" startLevel="0" />
+      <plugin id="org.spagic3.client.api" autoStart="false" startLevel="0" />
+      <plugin id="org.spagic3.client.osgi" autoStart="false" startLevel="0" />
+      <plugin id="org.spagic3.commands.equinox" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.components.bpm" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.components.consoleout" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.components.groovy" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.components.jdbc" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.components.xsdvalidator" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.components.xslt" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.connectors.filesystem" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.connectors.http" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.connectors.tcp" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.core" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.datasource" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.deployer" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.dirwatcher" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.h2database" autoStart="false" startLevel="2" />
+      <plugin id="org.spagic3.integration.api" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.jul_to_slf4j-1.5.6" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.log4j_over_slf4j" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.nmr.core" autoStart="true" startLevel="0" />
+      <plugin id="org.spagic3.osgi_over_slf4j" autoStart="true" startLevel="2" />
+      <plugin id="org.spagic3.startup" autoStart="true" startLevel="1" />
+      <plugin id="org.spagic3.xstream" autoStart="true" startLevel="0" />
+      <plugin id="slf4j.api" autoStart="true" startLevel="0" />
+   </configurations>
+
+</product>
