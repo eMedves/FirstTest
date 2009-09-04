@@ -6,13 +6,38 @@
          point="org.eclipse.ui.editors">
       <editor
             name="Service Editor"
-            extensions="connector,service,scrappy"
-            icon="icons/sample.gif"
+            extensions="connector"
+            icon="icons/connector.gif"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.spagic3.ui.serviceeditor.editors.ServiceEditor"
+            id="org.spagic3.ui.serviceeditor.editors.ConnectorEditor">
+      </editor>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="Service Editor"
+            extensions="service"
+            icon="icons/service.gif"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             class="org.spagic3.ui.serviceeditor.editors.ServiceEditor"
             id="org.spagic3.ui.serviceeditor.editors.ServiceEditor">
       </editor>
    </extension>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="Service Editor"
+            extensions="scrappy"
+            icon="icons/service.gif"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.spagic3.ui.serviceeditor.editors.ServiceEditor"
+            id="org.spagic3.ui.serviceeditor.editors.ScrappyEditor">
+      </editor>
+   </extension>
+
    
    <extension
          point="org.eclipse.ui.newWizards">

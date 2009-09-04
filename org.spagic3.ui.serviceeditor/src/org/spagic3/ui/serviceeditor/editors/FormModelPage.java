@@ -1,11 +1,17 @@
 package org.spagic3.ui.serviceeditor.editors;
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.io.SAXReader;
+import org.eclipse.core.internal.content.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.DND;
@@ -270,35 +276,35 @@ public class FormModelPage extends FormPage {
 		if (model.getProperties().containsKey("target")) {
 			toolkit.createLabel(client, "target");
 			
-			Combo combo = new Combo(client, SWT.READ_ONLY); //SWT.DROP_DOWN
-			combo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
-			for (String item : new ServicesComboProvider("").getComboItems()) {
-				combo.add(item);
-			}
-			combo.setText((String) model.getProperties().get("target"));
-			gd = new GridData();
-			gd.widthHint = 183;
-			combo.setLayoutData(gd);
-			modifier = new PropertyModifier(model, "target");
-			combo.setData(MODIFIER_DATA_REFERENCE, modifier);
-			editableControls.put(modifier.getId(), combo);
-			listener = new ListenerHelper(editor, modifier, false);
-			combo.addSelectionListener(listener);
-			combo.addFocusListener(listener);
-
-//			text = toolkit.createText(client, 
-//					(String) model.getProperties().get("target"), 
-//					SWT.SINGLE);
+//			Combo combo = new Combo(client, SWT.READ_ONLY); //SWT.DROP_DOWN
+//			combo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+//			for (String item : new ServicesComboProvider("").getComboItems()) {
+//				combo.add(item);
+//			}
+//			combo.setText((String) model.getProperties().get("target"));
 //			gd = new GridData();
-//			gd.widthHint = 200;
-//			text.setLayoutData(gd);
+//			gd.widthHint = 183;
+//			combo.setLayoutData(gd);
 //			modifier = new PropertyModifier(model, "target");
-//			text.setData(MODIFIER_DATA_REFERENCE, modifier);
-//			editableControls.put(modifier.getId(), text);
+//			combo.setData(MODIFIER_DATA_REFERENCE, modifier);
+//			editableControls.put(modifier.getId(), combo);
 //			listener = new ListenerHelper(editor, modifier, false);
-//			text.addVerifyListener(listener);
-//			text.addKeyListener(listener);
-//			text.addFocusListener(listener);
+//			combo.addSelectionListener(listener);
+//			combo.addFocusListener(listener);
+
+			text = toolkit.createText(client, 
+					(String) model.getProperties().get("target"), 
+					SWT.SINGLE);
+			gd = new GridData();
+			gd.widthHint = 200;
+			text.setLayoutData(gd);
+			modifier = new PropertyModifier(model, "target");
+			text.setData(MODIFIER_DATA_REFERENCE, modifier);
+			editableControls.put(modifier.getId(), text);
+			text.addKeyListener(listener);
+			text.addModifyListener(listener);
+			text.addFocusListener(listener);
+			new ServiceDropTarget(text, "service", modifier);
 		}
 		
 		createPropertySection(mform);
@@ -484,11 +490,11 @@ public class FormModelPage extends FormPage {
 	
 	public class TextDropTarget extends DropTargetAdapter {
 		
-		private final TextTransfer textTransfer = TextTransfer.getInstance();
-		private final FileTransfer fileTransfer = FileTransfer.getInstance();
-		private Text text;
-		private String fileFilter;
-		private IPropertyModifier modifier;
+		protected final TextTransfer textTransfer = TextTransfer.getInstance();
+		protected final FileTransfer fileTransfer = FileTransfer.getInstance();
+		protected Text text;
+		protected String fileFilter;
+		protected IPropertyModifier modifier;
 
 		public TextDropTarget(Text text, String fileFilter, IPropertyModifier modifier) {
 			this.text = text;
@@ -563,6 +569,42 @@ public class FormModelPage extends FormPage {
 	    						? files[0].substring(lastSeparatorIndex + 1) 
 	    						        : files[0];
 						text.setText(fileFilter + "://" + value);
+						modifier.setValue(text.getText());
+						editor.refreshXML();
+	    			}
+				}
+			}
+		}
+	}
+	
+	public class ServiceDropTarget extends TextDropTarget {
+
+		public ServiceDropTarget(Text text, String fileFilter,
+				IPropertyModifier modifier) {
+			super(text, fileFilter, modifier);
+		}
+		
+		public void drop(DropTargetEvent event) {
+			if (textTransfer.isSupportedType(event.currentDataType)) {
+				String t = (String)event.data;
+				text.setText(t);
+				modifier.setValue(text.getText());
+				editor.refreshXML();
+			}
+			if (fileTransfer.isSupportedType(event.currentDataType)){
+				String[] files = (String[])event.data;
+				if (files.length > 0) {
+	    			if(files[0].endsWith("." + fileFilter)) {
+	    				String serviceId = "";
+	    				try {
+							URI fileURI = new URI("file:///" + files[0].replace("\\", "/"));
+							SAXReader xmlReader = new SAXReader();
+							Document serviceDoc = xmlReader.read(new File(fileURI));
+							serviceId = ServiceModelHelper.evalXPathAsString(serviceDoc, "/spagic:component/@spagic.id");
+						} catch (URISyntaxException use) {
+						} catch (DocumentException de) {
+						}
+						text.setText(serviceId);
 						modifier.setValue(text.getText());
 						editor.refreshXML();
 	    			}
