@@ -55,7 +55,7 @@ public class DeploymentService implements IDeploymentService {
 		if (pendingDeploymentForFactory != null){
 			for ( String id : pendingDeploymentForFactory.keySet()){
 				pendingProp = pendingDeploymentForFactory.get(id);
-				String depType = (String)pendingProp.get(IDeploymentService.SPAGIC_TYPE);
+				String depType = (String)pendingProp.get(SpagicConstants.SPAGIC_TYPE);
 				if (depType.equalsIgnoreCase(IDeploymentService.SPAGIC_DATASOURCE))
 					internalDeploy(id, depType, componentFactoryIdentifier, pendingProp, false);
 				else
@@ -82,7 +82,7 @@ public class DeploymentService implements IDeploymentService {
 		logger.info("Deploying ["+spagicType+"] With ID ["+id+"] using ["+factoryName+"]");
 				
 		ServiceReference sr = factories.get(factoryName);
-		properties.put(IDeploymentService.SPAGIC_TYPE, spagicType);
+		properties.put(SpagicConstants.SPAGIC_TYPE, spagicType);
 		
 		if (sr == null) {
 			logger.warn("Cannot Find A Component Factory [" + factoryName + "] for ["+spagicType+"] With ID ["+id+"]");

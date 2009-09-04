@@ -8,9 +8,7 @@ public interface IDeploymentService {
 	public static final String SPAGIC_SERVICE = "SPAGIC_SERVICE";
 	public static final String SPAGIC_CONNECTOR = "SPAGIC_CONNECTOR";
 	public static final String SPAGIC_DATASOURCE = "SPAGIC_DATASOURCE";
-	
-	public static final String SPAGIC_TYPE = "SPAGIC_TYPE";
-	
+		
 	public void deployService(String spagicId, String factoryName, Hashtable properties);
 	public void undeployService(String spagicId);
 	

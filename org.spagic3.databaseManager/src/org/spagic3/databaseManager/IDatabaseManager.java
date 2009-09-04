@@ -1,10 +1,20 @@
 package org.spagic3.databaseManager;
 
+import java.util.Map;
+
+import org.spagic.metadb.model.Component;
 import org.spagic.metadb.model.Service;
 import org.spagic.metadb.model.ServiceInstance;
 
 public interface IDatabaseManager {
 	
+	/**
+	 * Retrieves the definition of a specified Component
+	 * @param componentName
+	 * @return The component found, or null if not found
+	 */
+	public Component getComponentByName(String componentName);
+
 	/**
 	 * Retrieves the latest definition of a specified Service
 	 * @param serviceId
@@ -45,4 +55,13 @@ public interface IDatabaseManager {
 	 */
 	public void updateServiceInstance(ServiceInstance serviceInstance, String response);
 
+	/**
+	 * Create a new service definition with a specified serviceId, associated component and
+	 * a set of generic properties
+	 * @param serviceId
+	 * @param componentName Factory name necessary to relate a component
+	 * @param properties Set of properties
+	 * @return The newly created service.
+	 */
+	public Service registerService(String serviceId, String componentName, Map<String, String> properties);
 }

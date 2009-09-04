@@ -2,12 +2,10 @@ package org.spagic3.service.model;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
-import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
 
@@ -15,6 +13,7 @@ public class ServiceModelHelper {
 	
 	
 	private static Map<String, String> namespaceMap;
+	private static ServiceModelHelper instance;
 	
 	static {
 		namespaceMap = new HashMap<String, String>();
@@ -28,8 +27,13 @@ public class ServiceModelHelper {
 		File scrappyDefFile = Activator.getFileFromPlugin("conf/scrappy-def.xml");
 		SAXReader xmlReader = new SAXReader();
 		scappyDefDocument = xmlReader.read(scrappyDefFile);
+		instance = this;
 	}
 	
+	public static ServiceModelHelper getInstance() {
+		return instance;
+	}
+
 	public Document getScappyDefDocument() {
 		return scappyDefDocument;
 	}
