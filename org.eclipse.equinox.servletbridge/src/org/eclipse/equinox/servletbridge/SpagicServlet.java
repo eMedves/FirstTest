@@ -32,6 +32,14 @@ public class SpagicServlet extends BridgeServlet {
 
 	private static final String SPAGIC_DELEGATE = "SPAGIC_DELEGATE";
 
+	public void init() throws ServletException {
+		String spagicHome = getInitParameter("spagic.home");
+		if (spagicHome != null && spagicHome.trim().length() > 0) {
+			System.setProperty("spagic.home", spagicHome);
+		}
+		super.init();
+	}
+
 	/**
 	 * service is called by the Servlet Container and will first determine if the request is a
 	 * framework control and will otherwise try to delegate to the registered servlet delegate
@@ -74,20 +82,27 @@ public class SpagicServlet extends BridgeServlet {
 	}
 
 	public static synchronized void registerSpagicClient(Client spagicClientDelegate) {
+		System.out.println(" SPAGIC SERVLET --> REGISTERING SPAGIC CLIENT");
 		if (instance == null) {
+			System.out.println(" SPAGIC SERVLET instance is null retunrn");
 			// shutdown already
 			return;
 		}
 
-		if (spagicClientDelegate == null)
+		if (spagicClientDelegate == null) {
+			System.out.println(" SPAGIC SERVLET --> SPAGIC CLIENT DELEGATE IS NULL");
 			throw new NullPointerException("cannot register a null spagic delegate"); //$NON-NLS-1$
 
+		}
 		synchronized (instance) {
 			ServletContext context = instance.getServletContext();
-			if (context.getAttribute(SPAGIC_DELEGATE) != null)
+			if (context.getAttribute(SPAGIC_DELEGATE) != null) {
+				System.out.println(" SPAGIC SERVLET --> SPAGIC CLIENT DELEGATE IS ALREADY BOUND");
 				throw new IllegalStateException("A SpagicDelegate is already registered"); //$NON-NLS-1$
+			}
 
 			context.setAttribute(SPAGIC_DELEGATE, spagicClientDelegate);
+			System.out.println(" SPAGIC SERVLET --> SPAGIC CLIENT DELEGATE REGISTRATION OK");
 		}
 	}
 
@@ -101,6 +116,7 @@ public class SpagicServlet extends BridgeServlet {
 		synchronized (instance) {
 			ServletContext context = instance.getServletContext();
 			context.removeAttribute(SPAGIC_DELEGATE);
+			System.out.println(" SPAGIC SERVLET --> SPAGIC CLIENT DELEGATE UNREGISTRATION OK OK");
 		}
 	}
 }
