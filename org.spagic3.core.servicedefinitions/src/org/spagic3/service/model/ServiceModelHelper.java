@@ -9,7 +9,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
 
-public class ServiceModelHelper {
+public class ServiceModelHelper implements IServiceModelHelper {
 	
 	
 	private static Map<String, String> namespaceMap;

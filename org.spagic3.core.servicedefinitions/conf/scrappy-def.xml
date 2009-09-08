@@ -3,18 +3,19 @@
 	<!--  This element will be visualized when we choose File, New, Spagic3 -->
 	<connectors>
 		<connector label="HTTP Server" name="HTTPServer" factory="spagic3.httpserverfactory"/>
-		<connector label="HTTP Client" name="HTTPClient" factory=""/>
-		<connector label="File System Poller" name="FileSystemPoller" factory=""/>
-		<connector label="File System Writer" name="FileSystemWriter" factory=""/>
-		<connector label="TCP/IP Server" name="TCPServer" factory=""/>	
+		<connector label="HTTP Client" name="HTTPClient" factory="spagic3.httpclientfactory"/>
+		<connector label="File System Poller" name="FileSystemPoller" factory="spagic3.fsreaderfactory"/>
+		<connector label="File System Writer" name="FileSystemWriter" factory="spagic3.fswriterfactory"/>
+		<connector label="TCP/IP Server" name="TCPServer" factory="spagic3.tcpserverfactory"/>
+		<connector label="JDBC Poller" name="JDBCPoller" factory="spagic3.jdbcpollerfactory"/>
 	</connectors>
 	<services>
-		<service label="Script" name="ScriptService" factory=""/>
+		<service label="Script" name="ScriptService" factory="spagic3.groovyfactory"/>
 		<service label="Schema Validator" name="SchemaValidatorService" factory=""/>
-		<service label="XLST Transformer" name="XSLTTransformerService" factory=""/>
+		<service label="XLST Transformer" name="XSLTTransformerService" factory="spagic3.xsltfactory"/>
 		<service label="SQL/JDBC" name="JBDCService" factory="spagic3.jdbcfactory"/>
 		<service label="StoredProcedure" name="StoredProcedureService" factory=""/>
-		<service label="Console" name="ConsoleService" factory=""/>
+		<service label="Console" name="ConsoleService" factory="spagic3.consoleoutfactory"/>
 	</services>
 	
 	<definitions>
@@ -72,6 +73,27 @@
 				<property name="parameterType" label="Parameter Type" editor="combo" combo="ParameterTypeComboProvider" mandatory="true"/>   
 			</when> 	
 		</def>
+				
+		<def name="HTTPClient" factory="spagic3.httpclientfactory">
+		</def>
+		<def name="FileSystemPoller" factory="spagic3.fsreaderfactory">
+		</def>
+		<def name="FileSystemWriter" factory="spagic3.fswriterfactory">
+		</def>
+		<def name="TCPServer" factory="spagic3.tcpserverfactory">
+		</def>
+		<def name="JDBCPoller" factory="spagic3.jdbcpollerfactory">
+		</def>
+
+		<def name="ScriptService" factory="spagic3.groovyfactory">
+		</def>
+		<def name="XSLTTransformerService" factory="spagic3.xsltfactory">
+		</def>
+		<def name="JBDCService" factory="spagic3.jdbcfactory">
+		</def>
+		<def name="ConsoleService" factory="spagic3.consoleoutfactory">
+		</def>
+		
 	</definitions>
 	<combo-providers>
 	

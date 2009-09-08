@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.spagic3.core.servicedefinitions
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Engineering Ingegneria Informatica
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: serviceStore.xml
 Bundle-ClassPath: lib/dom4j.jar,
  lib/commons-lang-2.4.jar,
  lib/jaxen-1.1.1.jar,
