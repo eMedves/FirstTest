@@ -12,12 +12,14 @@ import org.spagic.metadb.model.Service;
 import org.spagic3.constants.SpagicConstants;
 import org.spagic3.core.ISpagicService;
 import org.spagic3.databaseManager.IDatabaseManager;
+import org.spagic3.service.model.IServiceModelHelper;
 import org.spagic3.service.model.ServiceModelHelper;
 
 public class Activator implements BundleActivator {
 
 	private ServiceTracker spagicServiceTracker;
 	private ServiceTracker dbServiceTracker;
+	private ServiceTracker serviceModelTracker;
 	
 	/*
 	 * (non-Javadoc)
@@ -28,6 +30,10 @@ public class Activator implements BundleActivator {
 		dbServiceTracker = new ServiceTracker(context, IDatabaseManager.class
 				.getName(), null);
 		dbServiceTracker.open();
+
+		serviceModelTracker = new ServiceTracker(context, IServiceModelHelper.class
+				.getName(), null);
+		serviceModelTracker.open();
 
 		spagicServiceTracker = new ServiceTracker(context, ISpagicService.class
 				.getName(), new SpagicServiceCustomizer());
@@ -45,11 +51,18 @@ public class Activator implements BundleActivator {
 		spagicServiceTracker = null;
 
 		dbServiceTracker.close();
-		dbServiceTracker = null;		
+		dbServiceTracker = null;
+		
+		serviceModelTracker.close();
+		serviceModelTracker = null;
 	}
 	
 	public IDatabaseManager getDbManager(){
 		return (IDatabaseManager)dbServiceTracker.getService();
+	}
+	
+	public IServiceModelHelper getServiceModelHelper(){
+		return (IServiceModelHelper)serviceModelTracker.getService();
 	}
 	
 	public class DatabaseServiceTracker extends ServiceTracker {
@@ -73,8 +86,14 @@ public class Activator implements BundleActivator {
 				System.out.println("########### " + propKey + "=" + reference.getProperty(propKey));
 			}
 			
-//			String componentName = ServiceModelHelper.getInstance().getComponentName(factoryName);
-//			Service service = getDbManager().registerService(serviceId, componentName, properties);
+			if (factoryName == null) {
+				return reference;
+			}
+			
+			String componentName = getServiceModelHelper().getComponentName(factoryName);
+			if ((componentName != null) && (componentName.length() != 0)) {
+				Service service = getDbManager().registerService(serviceId, componentName, properties);				
+			}
 
 			return reference;
 		}
