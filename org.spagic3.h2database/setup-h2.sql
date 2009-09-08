@@ -4,6 +4,8 @@ INSERT INTO type_service (id_ts, value) VALUES(3, 'GENERIC-PROCESS');
 INSERT INTO type_service (id_ts, value) VALUES(4, 'JBI-PROCESS');
 INSERT INTO type_service (id_ts, value) VALUES(5, 'BPEL-PROCESS');
 INSERT INTO type_service (id_ts, value) VALUES(6, 'JBPM-PROCESS');
+INSERT INTO type_service (id_ts, value) VALUES(7, 'OSGI-CONNECTOR');
+INSERT INTO type_service (id_ts, value) VALUES(8, 'OSGI-SERVICE');
 
 INSERT INTO transition_state (id_state,state_value) VALUES(0, 'JBI_INONLY_ACTIVE');
 INSERT INTO transition_state (id_state,state_value) VALUES(1, 'JBI_INONLY_DONE');
