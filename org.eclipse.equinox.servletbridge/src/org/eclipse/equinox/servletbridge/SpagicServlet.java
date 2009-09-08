@@ -30,7 +30,7 @@ import org.spagic3.client.api.Client;
  */
 public class SpagicServlet extends BridgeServlet {
 
-	private static final String SPAGIC_DELEGATE = "SPAGIC_DELEGATE";
+	public static final String SPAGIC_DELEGATE = "SPAGIC_DELEGATE";
 
 	public void init() throws ServletException {
 		String spagicHome = getInitParameter("spagic.home");
@@ -118,5 +118,9 @@ public class SpagicServlet extends BridgeServlet {
 			context.removeAttribute(SPAGIC_DELEGATE);
 			System.out.println(" SPAGIC SERVLET --> SPAGIC CLIENT DELEGATE UNREGISTRATION OK OK");
 		}
+	}
+
+	public static ClassLoader getFrameworkContextClassLoader() {
+		return instance.getFramework().getFrameworkContextClassLoader();
 	}
 }
