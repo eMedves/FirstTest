@@ -35,7 +35,7 @@ public class OSGiClientImpl implements Client {
 		try {
 
 			refs = context.getServiceReferences(ISpagicService.class.getName(),
-					"(" + SpagicConstants.SPAGIC_ID_PROPERTY + " = "
+					"(" + SpagicConstants.SPAGIC_ID_PROPERTY + "="
 							+ spagicServiceId + ")");
 		} catch (InvalidSyntaxException e) {
 			throw new IllegalStateException(e.getMessage(), e);
@@ -44,7 +44,7 @@ public class OSGiClientImpl implements Client {
 		if (refs == null || (refs.length == 0))
 			throw new IllegalStateException("Service with spagic.id ["
 					+ spagicServiceId + "] not found");
-		if (refs != null || (refs.length > 1))
+		if (refs != null && (refs.length > 1))
 			throw new IllegalStateException(
 					"Founded more than one service with the same spagicId ["
 							+ spagicServiceId + "]");
