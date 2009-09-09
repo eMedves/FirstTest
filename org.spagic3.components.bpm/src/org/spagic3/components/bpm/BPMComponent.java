@@ -76,9 +76,18 @@ public class BPMComponent extends BaseSpagicService  {
 	  	  var[1].setName(BPMContextSingleton.ORCHESTRATION_SERVICE_ID);
 	  	  var[1].setValue(this.getSpagicId());
 	  	  
-	  	  done(exchange);
-		  long pid =  controlAPI.startByProcessName(process, var);
-		  exchangeMap.put(pid, exchange);
+	  	  if (ExchangeUtils.isInOnly(exchange)){
+	  		 // If exchange is InOnly means fire and forget send back the done and execute the process
+	  		 done(exchange);
+	  		 long pid =  controlAPI.startByProcessName(process, var);
+	  		 exchangeMap.put(pid, exchange);
+	  	  }
+	  	 
+		  if (ExchangeUtils.isInAndOut(exchange) && ExchangeUtils.isSync(exchange)) {
+			 long pid =  controlAPI.startByProcessName(process, var);
+			 Variable varOut = controlAPI.getGlobalVariable(pid, BPMContextSingleton.XML_MESSAGE);			 
+			 exchange.getOut(true).setBody(varOut.getValue());
+		  }
 	  	}
 	}
 
