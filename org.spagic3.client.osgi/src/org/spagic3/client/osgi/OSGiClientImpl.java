@@ -76,13 +76,17 @@ public class OSGiClientImpl implements Client {
 		msg.setBody(clientMessage.getBody());
 		
 		Map<String, String> clientMessageProperties = clientMessage.getProperties();
-		for (String key : clientMessageProperties.keySet()){
-			msg.setHeader(key, clientMessageProperties.get(key));
+		if (clientMessageProperties != null){
+			for (String key : clientMessageProperties.keySet()){
+				msg.setHeader(key, clientMessageProperties.get(key));
+			}
 		}
 		
 		Map<String, DataHandler> clientMessageAttachments = clientMessage.getAttachments();
-		for (String key : clientMessageProperties.keySet()){
-			msg.addAttachment(key, clientMessageAttachments.get(key));
+		if (clientMessageAttachments != null){
+			for (String key : clientMessageAttachments.keySet()){
+				msg.addAttachment(key, clientMessageAttachments.get(key));
+			}
 		}
 	}
 	
