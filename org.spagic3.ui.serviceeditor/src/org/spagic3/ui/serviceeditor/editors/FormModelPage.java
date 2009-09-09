@@ -11,7 +11,6 @@ import java.util.Set;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
-import org.eclipse.core.internal.content.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.DND;
@@ -44,7 +43,6 @@ import org.spagic3.ui.serviceeditor.model.IServiceModel;
 import org.spagic3.ui.serviceeditor.model.MapPropertyModifier;
 import org.spagic3.ui.serviceeditor.model.PropertyModifier;
 import org.spagic3.ui.serviceeditor.model.ServiceModelHelper;
-import org.spagic3.ui.serviceeditor.model.ServicesComboProvider;
 import org.spagic3.ui.serviceeditor.model.ServiceModelHelper.MapPropertyHelper;
 import org.spagic3.ui.serviceeditor.model.ServiceModelHelper.PropertyHelper;
 
