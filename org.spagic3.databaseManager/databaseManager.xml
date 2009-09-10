@@ -8,4 +8,6 @@
       <provide interface="org.spagic3.databaseManager.IDatabaseManager"/>
    </service>   
    
+   <reference bind="bindMetaDB" cardinality="1..1" interface="javax.sql.DataSource" name="metaDB" policy="static" target="(id=metadb)" unbind="unbindMetaDB"/>
+
 </scr:component>

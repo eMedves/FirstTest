@@ -32,6 +32,13 @@ public interface IDatabaseManager {
 	
 	/**
 	 * Retrieves a specified Service instance
+	 * @param serviceInstanceId Unique id of the service instance
+	 * @return The found service instance, or null if not found
+	 */
+	public ServiceInstance getServiceInstance(Long serviceInstanceId);
+	
+	/**
+	 * Retrieves a specified Service instance
 	 * @param serviceId 
 	 * @param exchangeID
 	 * @return The service instance found, or null if not found
@@ -46,14 +53,14 @@ public interface IDatabaseManager {
 	 * @param response Response sent by the service instance (can be null)
 	 * @return The new service instance
 	 */
-	public ServiceInstance createServiceInstance(String serviceId, String exchangeID, String request, String response);
+	public ServiceInstance createServiceInstance(String serviceId, String exchangeID, ServiceInstance targetServiceInstance, String request, String response);
 
 	/**
 	 * Updates an existing service instance
 	 * @param serviceInstance The instance to update
 	 * @param response The response to update
 	 */
-	public void updateServiceInstance(ServiceInstance serviceInstance, String response);
+	public void updateServiceInstance(ServiceInstance serviceInstance);
 
 	/**
 	 * Create a new service definition with a specified serviceId, associated component and

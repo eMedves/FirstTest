@@ -1,5 +1,6 @@
 package org.spagic3.databaseManager;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -9,6 +10,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Expression;
 import org.spagic.metadb.base.ProcessExecutionStateConstants;
+import org.spagic.metadb.base.ServiceInstanceStateConstants;
 import org.spagic.metadb.dbutils.HibernateUtil;
 import org.spagic.metadb.model.Component;
 import org.spagic.metadb.model.Property;
@@ -18,7 +20,8 @@ import org.spagic.metadb.model.TransitionInstance;
 
 public class DatabaseService implements IDatabaseManager {
 	
-	public final static String COMPONENT_ID = "idService".intern();
+	public final static String COMPONENT_ID = "idComponent".intern();
+	public final static String COMPONENT_NAME = "name".intern();
 	
 	public final static String SERVICE_ID = "idService".intern();
 	public final static String SERVICE_VERSION = "serviceVersion".intern();
@@ -27,13 +30,21 @@ public class DatabaseService implements IDatabaseManager {
 	public final static String SERVICE_INSTANCE_SERVICE_ID = "service.idService".intern();
 	public final static String SERVICE_INSTANCE_MESSAGE_ID = "messageId".intern();
 	
+	public void bindMetaDB(javax.sql.DataSource ds){
+		System.out.println("DatabaseService: Metadb Datasource has been bound");
+	}
+	
+	public void unbindMetaDB(javax.sql.DataSource ds){
+		System.out.println("DatabaseService: Metadb Datasource has been unbound");
+	}
+
 	@Override
 	public Component getComponentByName(String componentName) {
 		Session aSession = null;
 		try {
 			aSession = HibernateUtil.getSessionFactory().openSession();
 			Criteria aCriteria = aSession.createCriteria(Component.class);
-			aCriteria.add(Expression.eq(COMPONENT_ID, componentName));
+			aCriteria.add(Expression.eq(COMPONENT_NAME, componentName));
 			return (Component) aCriteria.uniqueResult();
 		} finally {
 			if (aSession != null) {
@@ -76,6 +87,21 @@ public class DatabaseService implements IDatabaseManager {
 			}
 		}
 	}
+	
+	@Override
+	public ServiceInstance getServiceInstance(Long serviceInstanceId) {
+		Session aSession = null;
+		try {
+			aSession = HibernateUtil.getSessionFactory().openSession();
+			Criteria aCriteria = aSession.createCriteria(ServiceInstance.class);
+			aCriteria.add(Expression.eq(SERVICE_INSTANCE_ID, serviceInstanceId));
+			return (ServiceInstance) aCriteria.uniqueResult();
+		} finally {
+			if (aSession != null) {
+				aSession.close();
+			}
+		}
+	}
 
 	@Override
 	public ServiceInstance getServiceInstance(String serviceId,
@@ -96,7 +122,7 @@ public class DatabaseService implements IDatabaseManager {
 
 	@Override
 	public ServiceInstance createServiceInstance(String serviceId,
-			String exchangeID, String request, String response) {
+			String exchangeID, ServiceInstance targetServiceInstance, String request, String response) {
 		Session aSession = null;
 		ServiceInstance serviceInstance = null;
 		Transaction tx = null;
@@ -109,11 +135,17 @@ public class DatabaseService implements IDatabaseManager {
 			serviceInstance.setRequest(request);
 			serviceInstance.setResponse(response);
 			serviceInstance.setService(getServiceById(aSession, serviceId));
+			serviceInstance.setTargetServiceInstance(targetServiceInstance);
+			serviceInstance.setState(ServiceInstanceStateConstants.SERVICE_ACTIVE);
+			serviceInstance.setStartdate(new Date());
+			
 			
 			aSession.save(serviceInstance);
 			tx.commit();
 		} catch (Exception ex) {
-			tx.rollback();
+			if (tx != null) {
+				tx.rollback();
+			}
 		}
 		finally {
 			if (aSession != null) {
@@ -124,12 +156,19 @@ public class DatabaseService implements IDatabaseManager {
 	}
 
 	@Override
-	public void updateServiceInstance(ServiceInstance serviceInstance,
-			String response) {
+	public void updateServiceInstance(ServiceInstance serviceInstance) {
 		Session aSession = null;
+		Transaction tx = null;
 		try {
 			aSession = HibernateUtil.getSessionFactory().openSession();
-			// TODO Auto-generated method stub
+			tx = aSession.beginTransaction();
+			
+			aSession.saveOrUpdate(serviceInstance);
+			tx.commit();
+		} catch (Exception ex) {
+			if (tx != null) {
+				tx.rollback();
+			}
 		} finally {
 			if (aSession != null) {
 				aSession.close();
@@ -150,8 +189,9 @@ public class DatabaseService implements IDatabaseManager {
 			// Check if the service is already registered
 			service = getServiceById(aSession, serviceId);
 			if (service != null) {
-				// TODO do something
-				
+				// Service already registered: check if we must update it
+				// TODO
+				return service;				
 			}
 			Component component = getComponentByName(componentName);
 			
@@ -159,7 +199,6 @@ public class DatabaseService implements IDatabaseManager {
 			for (String propKey : properties.keySet()) {
 				
 				String propValue = properties.get(propKey);
-//			---
 				Property metaDBProperty = new Property();
 	
 				metaDBProperty.setCode(propKey);
@@ -167,25 +206,18 @@ public class DatabaseService implements IDatabaseManager {
 				aSession.save(metaDBProperty);
 				
 				propertiesSet.add(metaDBProperty);
-	
-				// Associate Property and Process
-//				PropertyProcessId propertyProcessId = new PropertyProcessId(metaDBProperty.getIdProperty(), metaDBProcess
-//						.getIdProcess());
-//				PropertyProcess metaDBPropertyProcess = new PropertyProcess(propertyProcessId, metaDBProcess, metaDBProperty);
-//				aSession.save(metaDBPropertyProcess);
-//			---
-			
 			}
 			
-			
-			service = new Service(serviceId, component, (int)ProcessExecutionStateConstants.NORMAL_EXECUTION, (Set)propertiesSet, (Set)null);
+			service = new Service(serviceId, component, (int)ProcessExecutionStateConstants.NORMAL_EXECUTION, true, new Date(), null, (Set)propertiesSet, (Set)null);
 //			service.setService(getServiceById(aSession, serviceId));
 			
 			aSession.save(service);
 			tx.commit();
 			return service;
 		} catch (Exception ex) {
-			tx.rollback();
+			if (tx != null) {
+				tx.rollback();
+			}
 		} finally {
 			if (aSession != null) {
 				aSession.close();
