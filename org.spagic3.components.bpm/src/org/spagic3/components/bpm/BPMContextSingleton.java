@@ -19,6 +19,7 @@ public class BPMContextSingleton {
 	
 	public static final String TOKEN_ID_PROPERTY = "Token";
 	
+	public static final String REQUIRE_BPM_SYNC_EXECUTION = "REQUIRE_BPM_SYNC_EXECUTION";
 	
 	
 	

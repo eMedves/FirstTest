@@ -12,9 +12,13 @@ public class BPMComponentActivator implements BundleActivator {
 	
 	private static InvokerServiceTracker invokerServiceTracker = null;
 	private static IDatasourceManagerTracker iDatasourceManagerTracker = null;
+	private static BundleContext ctx = null;
 	
+	
+
 	@Override
 	public void start(BundleContext context) throws Exception {
+		ctx = context;
 		System.setProperty("SPAGIC_HIBERNATE_OSGI_STRATEGY", "org.spagic3.components.bpm.OSGiSessionFactoryInitializer");
 		invokerServiceTracker = new InvokerServiceTracker(context);
 		iDatasourceManagerTracker = new IDatasourceManagerTracker(context);
@@ -35,6 +39,10 @@ public class BPMComponentActivator implements BundleActivator {
 	
 	public static IDataSourceManager getDataSourceManager(){
 		return (IDataSourceManager)iDatasourceManagerTracker.getService();
+	}
+	
+	public static BundleContext getCtx() {
+		return ctx;
 	}
 	
 }
