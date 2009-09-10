@@ -31,9 +31,6 @@ public class MonitorService implements EventHandler {
 
 	@Override
 	public void handleEvent(Event event) {
-		System.out.println("####################");
-		System.out.println("Received an event !!!!!!");
-		System.out.println(event);
 		for (String propertyName : event.getPropertyNames())
 			System.out.println(propertyName + " = " + event.getProperty(propertyName));
 		
@@ -85,17 +82,22 @@ public class MonitorService implements EventHandler {
 				}
 				
 				// Save the service response
-				dbManager.updateServiceInstance(senderServiceInstance, outBody);
+				senderServiceInstance.setResponse(outBody);
+				dbManager.updateServiceInstance(senderServiceInstance);
 				
 			} else {
 				// Request message
 				if (senderServiceInstance == null) {
 					// Input message not available, if not provided by the component itself
-					senderServiceInstance = dbManager.createServiceInstance(sender, exchangeID, null, null);				
+					senderServiceInstance = dbManager.createServiceInstance(sender, exchangeID, targetServiceInstance, null, null);				
 				}
 				
 				if (targetServiceInstance == null) {
-					targetServiceInstance = dbManager.createServiceInstance(target, exchangeID, inBody, null);
+					targetServiceInstance = dbManager.createServiceInstance(target, exchangeID, null, inBody, null);
+
+					// Update the start service instance with the target service instance
+					senderServiceInstance.setTargetServiceInstance(targetServiceInstance);
+					dbManager.updateServiceInstance(senderServiceInstance);
 				}
 			}
 			
