@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
+	name="org.spagic3.serviceregistration.DynamicRegistrationService">
+   <implementation class="org.spagic3.serviceregistration.DynamicRegistrationService"/>
+
+   <reference bind="bindDatabaseManager" cardinality="1..1" interface="org.spagic3.databaseManager.IDatabaseManager" name="IDatabaseManager" policy="static" unbind="unbindDatabaseManager"/>
+   <reference bind="bindServiceModelHelper" cardinality="1..1" interface="org.spagic3.service.model.IServiceModelHelper" name="IServiceModelHelper" policy="static" unbind="unbindServiceModelHelper"/>
+
+   <reference 
+   		name="services"
+   		bind="addService" 
+   		cardinality="0..n" 
+   		interface="org.spagic3.core.ISpagicService" 
+   		policy="dynamic" 
+   		unbind="removeService"/>
+   
+</scr:component>
