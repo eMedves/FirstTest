@@ -66,7 +66,14 @@ public class BPMComponent extends BaseSpagicService  {
 	  
 		  String xmlMessage = (String)exchange.getIn(false).getBody();
 		 
-	  	  Variable[] var = new Variable[2];
+		  Variable[] var = null;
+		  
+		  if (ExchangeUtils.isSync(exchange)){
+			   var = new Variable[3];
+		  }else{
+			  var = new Variable[2];
+		  }
+	  	 
 	  	  var[0] = new Variable();
 	  	  var[0].setName(BPMContextSingleton.XML_MESSAGE);
 	  	  var[0].setValue(xmlMessage);
@@ -84,6 +91,9 @@ public class BPMComponent extends BaseSpagicService  {
 	  	  }
 	  	 
 		  if (ExchangeUtils.isInAndOut(exchange) && ExchangeUtils.isSync(exchange)) {
+			 var[2] = new Variable();
+			 var[2].setName(BPMContextSingleton.REQUIRE_BPM_SYNC_EXECUTION);
+			 var[2].setValue("TRUE");
 			 long pid =  controlAPI.startByProcessName(process, var);
 			 Variable varOut = controlAPI.getGlobalVariable(pid, BPMContextSingleton.XML_MESSAGE);			 
 			 exchange.getOut(true).setBody(varOut.getValue());

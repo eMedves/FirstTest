@@ -9,6 +9,7 @@ import org.spagic3.components.bpm.BPMContextSingleton;
 import org.spagic3.core.ExchangeUtils;
 import org.spagic3.integration.api.IExchangeProvider;
 import org.spagic3.integration.api.IServiceRunner;
+import org.spagic3.integration.api.IWorkflowContextUpdater;
 
 public class SpagicOSGiJBPMCustomHandler implements ActionHandler {
 
@@ -48,7 +49,14 @@ public class SpagicOSGiJBPMCustomHandler implements ActionHandler {
 		exchange.setProperty(BPMContextSingleton.WORKFLOW_UPDATER_CLASS, workflowContextUpdaterClass);
 		runner.run(serviceId, exchange);
 		
-		
+		if (ExchangeUtils.isSync(exchange)){
+			String workflowContextUpdaterClass = (String) exchange.getProperty(BPMContextSingleton.WORKFLOW_UPDATER_CLASS);
+			
+			IWorkflowContextUpdater updater = (IWorkflowContextUpdater)Class.forName(workflowContextUpdaterClass).newInstance();;
+			updater.updateWorkflowContext(ctx, exchange);
+			
+
+		}
 	}
 	
 	public IServiceRunner getServiceRunner() throws Exception {

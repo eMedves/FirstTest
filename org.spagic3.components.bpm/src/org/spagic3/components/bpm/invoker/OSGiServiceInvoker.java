@@ -3,9 +3,14 @@ package org.spagic3.components.bpm.invoker;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.servicemix.nmr.api.Exchange;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.spagic3.components.bpm.BPMContextSingleton;
+import org.spagic3.components.bpm.activator.BPMComponentActivator;
 import org.spagic3.constants.SpagicConstants;
 import org.spagic3.core.AbstractSpagicService;
+import org.spagic3.core.ExchangeUtils;
+import org.spagic3.core.ISpagicService;
 import org.spagic3.integration.api.IWorkflowContextUpdater;
 
 public class OSGiServiceInvoker extends AbstractSpagicService implements IServiceInvoker{
@@ -19,9 +24,56 @@ public class OSGiServiceInvoker extends AbstractSpagicService implements IServic
 			System.out.println(" Storing exchange ["+exchange.getId()+"] Associated to ["+this.getSpagicId()+"] -> ["+serviceID+"]");
 			exchange.setProperty(SpagicConstants.SPAGIC_SENDER, this.getSpagicId());
 			exchange.setProperty(SpagicConstants.SPAGIC_TARGET, serviceID);
-			send(exchange);
+			if (ExchangeUtils.isSync(exchange)){
+				invokeSync(serviceID, exchange);
+				process(exchange);
+			}else{
+				send(exchange);
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void invokeSync(String serviceID, Exchange exchange) {
+		ServiceReference[] refs = null;
+		try {
+
+			refs = BPMComponentActivator.getCtx().getServiceReferences(
+					ISpagicService.class.getName(),
+					"(" + SpagicConstants.SPAGIC_ID_PROPERTY + "=" + serviceID
+							+ ")");
+		} catch (InvalidSyntaxException e) {
+			throw new IllegalStateException(e.getMessage(), e);
+		}
+
+		if (refs == null || (refs.length == 0))
+			throw new IllegalStateException("Service with spagic.id ["
+					+ serviceID + "] not found");
+		if (refs != null && (refs.length > 1))
+			throw new IllegalStateException(
+					"Founded more than one service with the same spagicId ["
+							+ serviceID + "]");
+
+		ISpagicService service = null;
+
+		if (refs[0] != null) {
+			service = (ISpagicService) BPMComponentActivator.getCtx()
+					.getService(refs[0]);
+
+			if (service != null) {
+				try {
+
+					service.process(exchange);
+
+				} finally {
+					BPMComponentActivator.getCtx().ungetService(refs[0]);
+				}
+			} else {
+				throw new IllegalStateException("Service is null");
+			}
+		} else {
+			throw new IllegalStateException("Service Reference is null");
 		}
 	}
 
@@ -35,10 +87,12 @@ public class OSGiServiceInvoker extends AbstractSpagicService implements IServic
 			
 			Long tokenId =(Long) storedExchange.getProperty(BPMContextSingleton.TOKEN_ID_PROPERTY);
 			responseExchange.setProperty(BPMContextSingleton.TOKEN_ID_PROPERTY, tokenId);
-			String workflowContextUpdaterClass = (String) storedExchange.getProperty(BPMContextSingleton.WORKFLOW_UPDATER_CLASS);
+			if (!ExchangeUtils.isSync(responseExchange)){
+				String workflowContextUpdaterClass = (String) storedExchange.getProperty(BPMContextSingleton.WORKFLOW_UPDATER_CLASS);
 			
-			IWorkflowContextUpdater updater = (IWorkflowContextUpdater)Class.forName(workflowContextUpdaterClass).newInstance();;
-			updater.updateWorkflowContext(null, responseExchange);
+				IWorkflowContextUpdater updater = (IWorkflowContextUpdater)Class.forName(workflowContextUpdaterClass).newInstance();;
+				updater.updateWorkflowContext(null, responseExchange);
+			}
 			
 		}catch (ClassNotFoundException cnfe) {
 				throw new IllegalStateException(cnfe.getMessage(), cnfe);

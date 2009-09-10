@@ -5,21 +5,39 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.servicemix.nmr.api.Exchange;
+import org.jbpm.graph.exe.ExecutionContext;
 import org.spagic.workflow.api.Variable;
 import org.spagic.workflow.api.jbpm.ProcessEngine;
 import org.spagic3.components.bpm.BPMContextSingleton;
 import org.spagic3.constants.SpagicConstants;
+import org.spagic3.core.ExchangeUtils;
 import org.spagic3.integration.api.IWorkflowContextUpdater;
 
 public class SetVariableAndContinueProcessUpdater implements IWorkflowContextUpdater {
 
-	
-
 
 	@Override
 	public void updateWorkflowContext(Object workflowContex, Exchange exchange) {
-		Long tokenId =(Long) exchange.getProperty(BPMContextSingleton.TOKEN_ID_PROPERTY);
+		if (workflowContex == null)
+			prepareVariablesAndSignal(exchange);
+		else
+			updateWorkflowContextAndSignal(workflowContex,exchange);
+	}
+	
+	public void updateWorkflowContextAndSignal(Object workflowContex,Exchange exchange) {
 		
+		ExecutionContext context = (ExecutionContext)workflowContex;
+		org.jbpm.graph.exe.ProcessInstance pi = context.getToken().getProcessInstance();
+		
+		Variable[] vars = extractVariablesFromExchange(exchange);
+		for (int i = 0; (vars != null && i < vars.length); i++) {
+			pi.getContextInstance().setVariable(vars[i].getName(), vars[i].getValue());
+		}
+		context.getJbpmContext().save(pi);
+		context.getToken().signal();
+	}
+	
+	public Variable[] extractVariablesFromExchange(Exchange exchange) {
 		List<Variable> vars = new ArrayList<Variable>();
 		
 		
@@ -48,11 +66,15 @@ public class SetVariableAndContinueProcessUpdater implements IWorkflowContextUpd
 				vars.add(v);
 			}
 		}
-		
 		Variable[] varArray = new Variable[vars.size()];
 		varArray = vars.toArray(varArray);
-		ProcessEngine.signalToken(tokenId, varArray);
-		
+		return varArray;
+	}
+	public void prepareVariablesAndSignal(Exchange exchange) {
+	
+			// If Exchange is Async we must signal with static method
+			Long tokenId =(Long) exchange.getProperty(BPMContextSingleton.TOKEN_ID_PROPERTY);
+			ProcessEngine.signalToken(tokenId, extractVariablesFromExchange(exchange));
 	}
 
 	@Override

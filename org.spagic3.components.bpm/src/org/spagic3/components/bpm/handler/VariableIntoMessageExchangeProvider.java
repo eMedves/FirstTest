@@ -21,7 +21,7 @@ public class VariableIntoMessageExchangeProvider implements IExchangeProvider {
 		exchange.getIn(true).setBody(xmlMessage);
 		exchange.setProperty(BPMContextSingleton.TOKEN_ID_PROPERTY, context.getToken().getId());
 		
-		
+		setSyncExecutionIfNeeded(context, exchange);
 		
 		return exchange;
 	}
