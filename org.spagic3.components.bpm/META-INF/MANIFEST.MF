@@ -13,6 +13,7 @@ Import-Package: org.apache.servicemix.nmr.api,
  org.slf4j;version="1.5.6",
  org.spagic3.constants,
  org.spagic3.core,
+ org.spagic3.core.resources,
  org.spagic3.core.routing,
  org.spagic3.datasource,
  org.spagic3.integration.api
@@ -40,6 +41,6 @@ Bundle-ClassPath: .,
  lib/spagic-workflow-api-2.5.1.jar,
  lib/spagic-workflow-jbpm-2.5.1.jar,
  lib/spagic-graph-utils.jar
-Service-Component: process_engine.xml, bpm_cf.xml, service_invoker.xml 
+Service-Component: process_engine.xml, bpm_cf.xml, service_invoker.xml, bpm_service.xml
 Export-Package: org.spagic3.components.bpm.invoker
 Bundle-Activator: org.spagic3.components.bpm.activator.BPMComponentActivator

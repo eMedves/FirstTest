@@ -19,9 +19,10 @@ import org.spagic3.core.ExchangeUtils;
 
 
 public class BPMComponent extends BaseSpagicService  {
+	protected Logger logger = LoggerFactory.getLogger(BPMComponent.class);
 	
 	public String process = null;
-	protected Logger logger = LoggerFactory.getLogger(BPMComponent.class);
+
 	
 	private final AtomicReference<IProcessEngine> processEngine = new AtomicReference<IProcessEngine>(null);
 	public static ConcurrentHashMap<Long, Exchange> exchangeMap = new ConcurrentHashMap<Long, Exchange>();
