@@ -38,14 +38,18 @@ public class DatabaseService implements IDatabaseManager {
 		System.out.println("DatabaseService: Metadb Datasource has been unbound");
 	}
 
+	private Component getComponentByName(Session aSession, String componentName) {
+		Criteria aCriteria = aSession.createCriteria(Component.class);
+		aCriteria.add(Expression.eq(COMPONENT_NAME, componentName));
+		return (Component) aCriteria.uniqueResult();
+	}
+
 	@Override
 	public Component getComponentByName(String componentName) {
 		Session aSession = null;
 		try {
 			aSession = HibernateUtil.getSessionFactory().openSession();
-			Criteria aCriteria = aSession.createCriteria(Component.class);
-			aCriteria.add(Expression.eq(COMPONENT_NAME, componentName));
-			return (Component) aCriteria.uniqueResult();
+			return getComponentByName(aSession, componentName);
 		} finally {
 			if (aSession != null) {
 				aSession.close();
@@ -208,9 +212,7 @@ public class DatabaseService implements IDatabaseManager {
 				propertiesSet.add(metaDBProperty);
 			}
 			
-			service = new Service(serviceId, component, (int)ProcessExecutionStateConstants.NORMAL_EXECUTION, true, new Date(), null, (Set)propertiesSet, (Set)null);
-//			service.setService(getServiceById(aSession, serviceId));
-			
+			service = new Service(serviceId, component, (int)ProcessExecutionStateConstants.NORMAL_EXECUTION, true, new Date(), null, (Set)propertiesSet, (Set)null);		
 			aSession.save(service);
 			tx.commit();
 			return service;
@@ -224,6 +226,54 @@ public class DatabaseService implements IDatabaseManager {
 			}
 		}
 		return service;
+	}
+
+	@Override
+	public Component registerComponent(String componentName,
+			String componentType,
+			Map<String, String> properties) {
+		Session aSession = null;
+		Component component = null;
+		Transaction tx = null;
+		try {
+			aSession = HibernateUtil.getSessionFactory().openSession();
+			tx = aSession.beginTransaction();
+			
+			// Check if the service is already registered
+			component = getComponentByName(aSession, componentName);
+			if (component != null) {
+				// Component already registered: check if we must update it
+				// TODO
+				return component;				
+			}
+			
+			Set<Property> propertiesSet = new HashSet<Property>(properties.size());
+			for (String propKey : properties.keySet()) {
+				
+				String propValue = properties.get(propKey);
+				Property metaDBProperty = new Property();
+	
+				metaDBProperty.setCode(propKey);
+				metaDBProperty.setValue(propValue);
+				aSession.save(metaDBProperty);
+				
+				propertiesSet.add(metaDBProperty);
+			}
+			
+			component = new Component(0L, componentName, (int)ProcessExecutionStateConstants.NORMAL_EXECUTION, (Set<Service>)null, propertiesSet);
+			aSession.save(component);
+			tx.commit();
+			return component;
+		} catch (Exception ex) {
+			if (tx != null) {
+				tx.rollback();
+			}
+		} finally {
+			if (aSession != null) {
+				aSession.close();
+			}
+		}
+		return component;
 	}
 
 }

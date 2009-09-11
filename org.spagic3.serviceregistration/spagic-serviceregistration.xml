@@ -7,11 +7,19 @@
    <reference bind="bindServiceModelHelper" cardinality="1..1" interface="org.spagic3.service.model.IServiceModelHelper" name="IServiceModelHelper" policy="static" unbind="unbindServiceModelHelper"/>
 
    <reference 
+   		name="components"
+   		bind="addComponent" 
+   		cardinality="0..n" 
+   		interface="org.osgi.service.component.ComponentFactory" 
+   		policy="dynamic" 
+   		unbind="removeComponent"/>
+
+   <reference 
    		name="services"
    		bind="addService" 
    		cardinality="0..n" 
    		interface="org.spagic3.core.ISpagicService" 
    		policy="dynamic" 
    		unbind="removeService"/>
-   
+   		   
 </scr:component>

@@ -1,5 +1,6 @@
 package org.spagic3.monitoring;
 
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.service.component.ComponentContext;
@@ -72,11 +73,15 @@ public class MonitorService implements EventHandler {
 		
 		if (status == SpagicConstants.STATUS_DONE) {
 
+			Date endDate = new Date();
+			
 			if (senderServiceInstance != null){
+				senderServiceInstance.setEnddate(endDate);
 				senderServiceInstance.setState(ServiceInstanceStateConstants.SERVICE_DONE);
 				dbManager.updateServiceInstance(senderServiceInstance);
 			}
 			if (targetServiceInstance != null){
+				targetServiceInstance.setEnddate(endDate);
 				targetServiceInstance.setState(ServiceInstanceStateConstants.SERVICE_DONE);
 				dbManager.updateServiceInstance(targetServiceInstance);
 			}

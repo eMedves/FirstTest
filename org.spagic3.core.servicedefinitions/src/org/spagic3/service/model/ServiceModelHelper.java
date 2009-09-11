@@ -72,4 +72,10 @@ public class ServiceModelHelper implements IServiceModelHelper {
 		}
 	}
 
+	@Override
+	public String getComponentType(String factoryName) {
+		// TODO Auto-generated method stub
+		return "";
+	}
+
 }

@@ -71,4 +71,14 @@ public interface IDatabaseManager {
 	 * @return The newly created service.
 	 */
 	public Service registerService(String serviceId, String componentName, Map<String, String> properties);
+	
+	/**
+	 * Create a new component definition with a specified componentId, and
+	 * a set of generic properties
+	 * @param componentName
+	 * @param properties
+	 * @return The newly created component
+	 */
+	public Component registerComponent(String componentName, String componentType, Map<String, String> properties);
+	
 }
