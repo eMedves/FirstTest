@@ -101,7 +101,7 @@ public class XsltComponent extends BaseSpagicService {
 
 			// return the transformed document
 			org.dom4j.Document transformedDoc = result.getDocument();
-			out.setBody(transformedDoc.asXML());
+			out.setBody(transformedDoc.getRootElement().asXML());
 			return true;
 		}catch (Throwable e) {
 			logger.error(e.getMessage(), e);
