@@ -83,13 +83,16 @@ public class SpagicConstants {
     //
     public final static String WF_NO_UPDATE_XML_MESSAGE = "WF_NO_UPDATE_XML_MESSAGE";
    
-    // If this property id valorized when the Workflow Process Instance is end the result is not porpagated to
+    //
+    //
+    //
+    // If this property id valorized when the Workflow Process Instance is end the result is not propagated to
     // the target connectors of orchestration service
+    //
+    //
     public final static String WF_IS_PROCESS_TERMINATED = "WF_IS_PROCESS_TERMINATED";
 
 	public static final String SYNC_EXCHANGE = "SYNC_EXCHANGE";
-
-	
 	
 	public static final String 	_IS_INTERNAL_EVENT = "_IS_INTERNAL_EVENT";
 	
