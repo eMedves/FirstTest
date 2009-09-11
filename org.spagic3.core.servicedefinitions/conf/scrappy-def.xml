@@ -16,6 +16,7 @@
 		<service label="SQL/JDBC" name="JBDCService" factory="spagic3.jdbcfactory"/>
 		<service label="StoredProcedure" name="StoredProcedureService" factory=""/>
 		<service label="Console" name="ConsoleService" factory="spagic3.consoleoutfactory"/>
+		<service label="BPMGateway" name="BPMGateway" factory="spagic3.bpmfactory"/>
 	</services>
 	
 	<definitions>
@@ -92,6 +93,8 @@
 		<def name="JBDCService" factory="spagic3.jdbcfactory">
 		</def>
 		<def name="ConsoleService" factory="spagic3.consoleoutfactory">
+		</def>
+		<def name="BPMGateway" factory="spagic3.bpmfactory">
 		</def>
 		
 	</definitions>
