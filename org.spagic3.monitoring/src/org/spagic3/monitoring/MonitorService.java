@@ -7,6 +7,7 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spagic.metadb.base.ServiceInstanceStateConstants;
 import org.spagic.metadb.model.Service;
 import org.spagic.metadb.model.ServiceInstance;
 import org.spagic3.constants.SpagicConstants;
@@ -17,6 +18,7 @@ import org.spagic3.databaseManager.IDatabaseManager;
 public class MonitorService implements EventHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(MonitorService.class);
+	@SuppressWarnings("unused")
 	private ComponentContext componentContext = null;
 	private final AtomicReference<IDatabaseManager> dbManager = new AtomicReference<IDatabaseManager>(null); 
 
@@ -46,10 +48,6 @@ public class MonitorService implements EventHandler {
 			return;
 		}
 		
-		if (status == SpagicConstants.STATUS_DONE) {
-			return;
-		}
-
 		IDatabaseManager dbManager = getDatabaseManager();
 		Service senderService = dbManager.getServiceById(sender);
 		if (senderService == null) {
@@ -72,7 +70,18 @@ public class MonitorService implements EventHandler {
 		ServiceInstance senderServiceInstance = dbManager.getServiceInstance(sender, exchangeID);
 		ServiceInstance targetServiceInstance = dbManager.getServiceInstance(target, exchangeID);
 		
-		if (status == SpagicConstants.STATUS_ACTIVE) {
+		if (status == SpagicConstants.STATUS_DONE) {
+
+			if (senderServiceInstance != null){
+				senderServiceInstance.setState(ServiceInstanceStateConstants.SERVICE_DONE);
+				dbManager.updateServiceInstance(senderServiceInstance);
+			}
+			if (targetServiceInstance != null){
+				targetServiceInstance.setState(ServiceInstanceStateConstants.SERVICE_DONE);
+				dbManager.updateServiceInstance(targetServiceInstance);
+			}
+			
+		} else if (status == SpagicConstants.STATUS_ACTIVE) {
 			
 			if (outBody != null) {
 				// Response message
@@ -81,34 +90,56 @@ public class MonitorService implements EventHandler {
 					return;
 				}
 				
-				// Save the service response
+				// Save the service response and change the process state
 				senderServiceInstance.setResponse(outBody);
+				senderServiceInstance.setState(ServiceInstanceStateConstants.SERVICE_DONE);
 				dbManager.updateServiceInstance(senderServiceInstance);
 				
 			} else {
 				// Request message
 				if (senderServiceInstance == null) {
-					// Input message not available, if not provided by the component itself
-					senderServiceInstance = dbManager.createServiceInstance(sender, exchangeID, targetServiceInstance, null, null);				
+					
+					// Create the service instance only if monitored
+					if (senderService.getMonitorEnabled()) {
+						// Input message not available, if not provided by the component itself
+						senderServiceInstance = dbManager.createServiceInstance(sender, exchangeID, targetServiceInstance, null, null);				
+					} else {
+						logger.info("Sender service: " + sender + " not monitored");
+					}
+					
 				}
 				
 				if (targetServiceInstance == null) {
-					targetServiceInstance = dbManager.createServiceInstance(target, exchangeID, null, inBody, null);
+
+					// Create the service instance only if monitored
+					if (targetService.getMonitorEnabled()) {
+						targetServiceInstance = dbManager.createServiceInstance(target, exchangeID, null, inBody, null);
+					} else {
+						logger.info("Target service: " + target + " not monitored");
+					}
 
 					// Update the start service instance with the target service instance
-					senderServiceInstance.setTargetServiceInstance(targetServiceInstance);
-					dbManager.updateServiceInstance(senderServiceInstance);
+					if (senderServiceInstance != null) {
+						senderServiceInstance.setTargetServiceInstance(targetServiceInstance);
+						dbManager.updateServiceInstance(senderServiceInstance);
+					}
 				}
-			}
-			
+			}			
 			
 		} else if (status == SpagicConstants.STATUS_ERROR) {
+			if ((senderServiceInstance == null) || (targetServiceInstance == null)) {
+				logger.error("Service instances not found");
+				return;
+			}
+			
+			senderServiceInstance.setState(ServiceInstanceStateConstants.SERVICE_FAULTED);
+			dbManager.updateServiceInstance(senderServiceInstance);
+			targetServiceInstance.setState(ServiceInstanceStateConstants.SERVICE_FAULTED);
+			dbManager.updateServiceInstance(targetServiceInstance);
 			
 		} else {
 			logger.warn("Unknown state: " + status);
 		}
-		
-
 		
 	}
 	

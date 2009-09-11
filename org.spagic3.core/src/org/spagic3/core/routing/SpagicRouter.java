@@ -1,5 +1,7 @@
 package org.spagic3.core.routing;
 
+import java.util.UUID;
+
 import org.apache.servicemix.nmr.api.Exchange;
 import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
@@ -23,10 +25,15 @@ public class SpagicRouter implements IMessageRouter {
 		String target = (String)exchange.getProperties().get(SpagicConstants.SPAGIC_TARGET);
 		
 		logger.info("Spagic Router SEND EXCHANGE ["+exchange.getId()+"] ["+sender+"] ["+target+"] Status ["+exchange.getStatus().toString()+"]");
+
+        String correlationId = (String)exchange.getProperty(SpagicConstants.CORRELATION_ID);
+        if (correlationId == null) {
+        	correlationId = UUID.randomUUID().toString();
+        	exchange.setProperty(SpagicConstants.CORRELATION_ID, correlationId);
+        }
+
 		// If target is not configured as a properties of the exchange
 		// Se if there's a connector routing map
-		
-		
 		if (target == null){
 			target = dynamicRouter.getTarget(sender);
 			exchange.setProperty(SpagicConstants.SPAGIC_TARGET, target);

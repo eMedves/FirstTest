@@ -3,7 +3,8 @@ package org.spagic3.constants;
 import java.net.URI;
 
 public class SpagicConstants {
-	public final static String CORRELATION_ID = "SPAGIC.CORRELATION_ID";
+//	public final static String CORRELATION_ID = "SPAGIC.CORRELATION_ID";
+	public final static String CORRELATION_ID = "CORRELATION_ID";
 	
 	public final static String SPAGIC_ID_PROPERTY = "spagic.id";
 	
