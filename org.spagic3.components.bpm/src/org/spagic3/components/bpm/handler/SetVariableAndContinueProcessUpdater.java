@@ -31,7 +31,7 @@ public class SetVariableAndContinueProcessUpdater implements IWorkflowContextUpd
 		
 		Variable[] vars = extractVariablesFromExchange(exchange);
 		for (int i = 0; (vars != null && i < vars.length); i++) {
-			pi.getContextInstance().setVariable(vars[i].getName(), vars[i].getValue());
+			pi.getContextInstance().setVariable(vars[i].getName(), vars[i].getValue(), context.getToken());
 		}
 		context.getJbpmContext().save(pi);
 		context.getToken().signal();

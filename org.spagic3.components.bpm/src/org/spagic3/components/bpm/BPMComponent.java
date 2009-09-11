@@ -13,6 +13,7 @@ import org.spagic.workflow.api.IControlAPI;
 import org.spagic.workflow.api.IProcessEngine;
 import org.spagic.workflow.api.IQueryAPI;
 import org.spagic.workflow.api.Variable;
+import org.spagic3.constants.SpagicConstants;
 import org.spagic3.core.BaseSpagicService;
 import org.spagic3.core.ExchangeUtils;
 
@@ -112,6 +113,8 @@ public class BPMComponent extends BaseSpagicService  {
 				if (!isProcessTerminated){
 					Exchange newExchange = createInOnlyExchange();
 					Message newIn = exchange.getIn(true);
+					
+					newExchange.setProperty(SpagicConstants.CORRELATION_ID, exchange.getProperty(SpagicConstants.CORRELATION_ID));
 					newIn.setBody(xmlMessage);
 					newExchange.setIn(newIn);
 					send(newExchange);
