@@ -40,6 +40,16 @@ public class ModelHelper {
 //				fieldDefinition.setEditable("true".equals(field.attributeValue("editable")));
 				fieldDefinition.setMandatory("true".equals(field.attributeValue("mandatory")));
 				fieldDefinition.setValidator(field.attributeValue("validator"));
+				int length = 0;
+				try {
+					Integer.parseInt(field.attributeValue("length"));
+				} catch (NumberFormatException nfe) {}
+				fieldDefinition.setLength(length);
+				int precision = 0;
+				try {
+					Integer.parseInt(field.attributeValue("precision"));
+				} catch (NumberFormatException nfe) {}
+				fieldDefinition.setPrecision(precision);
 				fieldDefinition.setCombo("true".equals(field.attributeValue("combo")));
 				addListItems(fieldDefinition, node);
 				formDefinition.addPart(fieldDefinition);
@@ -59,6 +69,16 @@ public class ModelHelper {
 				columnDefinition.setEditable("true".equals((column.attributeValue("editable"))));
 				columnDefinition.setMandatory("true".equals(column.attributeValue("mandatory")));
 				columnDefinition.setValidator(column.attributeValue("validator"));
+				int length = 0;
+				try {
+					Integer.parseInt(column.attributeValue("length"));
+				} catch (NumberFormatException nfe) {}
+				columnDefinition.setLength(length);
+				int precision = 0;
+				try {
+					Integer.parseInt(column.attributeValue("precision"));
+				} catch (NumberFormatException nfe) {}
+				columnDefinition.setPrecision(precision);
 				columnDefinition.setCombo("true".equals(column.attributeValue("combo")));
 				addListItems(columnDefinition, node);
 				tableDefinition.addColumn(columnDefinition);
@@ -69,7 +89,16 @@ public class ModelHelper {
 	}
 	
 	private void addListItems(InputModelPart inputPart, Node parentNode) {
-		
+		List<Node> items = evalXPathAsNodes(parentNode.asXML(), "/field/item | /column/item");
+		if (items != null) {
+			for (Node node : items) {
+				final Element item = (Element) node;
+				final ItemDefinition itemDefinition = new ItemDefinition();
+				itemDefinition.setName(item.attributeValue("name"));
+				itemDefinition.setValue(item.attributeValue("value"));
+				inputPart.addItem(itemDefinition);
+			}
+		}
 	}
 	
 	public String asXML(IModel model) {
@@ -96,12 +125,17 @@ public class ModelHelper {
 		} else if (part instanceof FieldDefinition) {
 			final FieldDefinition fieldDefinition = (FieldDefinition) part;
 			xml.append(indent).append("<field")
-				.append(" id=\"").append(fieldDefinition.getId()).append("\"")
-				.append(" name=\"").append(fieldDefinition.getName()).append("\"")
-				.append(" type=\"").append(fieldDefinition.getType()).append("\"")
-				.append(" defaultValue=\"").append(fieldDefinition.getDefaultValue()).append("\"")
+				.append(" id=\"").append(fieldDefinition.getId() != null 
+						? fieldDefinition.getId() : "").append("\"")
+				.append(" name=\"").append(fieldDefinition.getName() != null 
+						? fieldDefinition.getName() : "").append("\"")
+				.append(" type=\"").append(fieldDefinition.getType() != null 
+						? fieldDefinition.getType() : "").append("\"")
+				.append(" defaultValue=\"").append(fieldDefinition.getDefaultValue() != null 
+						? fieldDefinition.getDefaultValue() : "").append("\"")
 				.append(" mandatory=\"").append(fieldDefinition.isMandatory() ? "true" : "false").append("\"")
-				.append(" validator=\"").append(fieldDefinition.getValidator()).append("\"")
+				.append(" validator=\"").append(fieldDefinition.getValidator() != null 
+						? fieldDefinition.getValidator() : "").append("\"")
 				.append(" length=\"").append(fieldDefinition.getLength()).append("\"")
 				.append(" precision=\"").append(fieldDefinition.getPrecision()).append("\"")
 				.append(" combo=\"").append(fieldDefinition.isCombo() ? "true" : "false").append("\"");
@@ -122,13 +156,18 @@ public class ModelHelper {
 		} else if (part instanceof ColumnDefinition) {
 			final ColumnDefinition columnDefinition = (ColumnDefinition) part;
 			xml.append(indent).append("<column")
-				.append(" id=\"").append(columnDefinition.getId()).append("\"")
-				.append(" name=\"").append(columnDefinition.getName()).append("\"")
-				.append(" type=\"").append(columnDefinition.getType()).append("\"")
-				.append(" defaultValue=\"").append(columnDefinition.getDefaultValue()).append("\"")
+				.append(" id=\"").append(columnDefinition.getId() != null 
+						? columnDefinition.getId() : "").append("\"")
+				.append(" name=\"").append(columnDefinition.getName() != null 
+						? columnDefinition.getName() : "").append("\"")
+				.append(" type=\"").append(columnDefinition.getType() != null 
+						? columnDefinition.getType() : "").append("\"")
+				.append(" defaultValue=\"").append(columnDefinition.getDefaultValue() != null 
+						? columnDefinition.getDefaultValue() : "").append("\"")
 				.append(" editable=\"").append(columnDefinition.isEditable() ? "true" : "false").append("\"")
 				.append(" mandatory=\"").append(columnDefinition.isMandatory() ? "true" : "false").append("\"")
-				.append(" validator=\"").append(columnDefinition.getValidator()).append("\"")
+				.append(" validator=\"").append(columnDefinition.getValidator() != null 
+						? columnDefinition.getValidator() : "").append("\"")
 				.append(" length=\"").append(columnDefinition.getLength()).append("\"")
 				.append(" precision=\"").append(columnDefinition.getPrecision()).append("\"")
 				.append(" combo=\"").append(columnDefinition.isCombo() ? "true" : "false").append("\"");
@@ -144,8 +183,10 @@ public class ModelHelper {
 		} else if (part instanceof ItemDefinition) {
 			final ItemDefinition itemDefinition = (ItemDefinition) part;
 			xml.append(indent).append("<item")
-				.append(" name=\"").append(itemDefinition.getName()).append("\"")
-				.append(" value=\"").append(itemDefinition.getValue()).append("\"")
+				.append(" name=\"").append(itemDefinition.getName() != null 
+						? itemDefinition.getName() : "").append("\"")
+				.append(" value=\"").append(itemDefinition.getValue() != null 
+						? itemDefinition.getValue() : "").append("\"")
 				.append("/>\n");
 		}
 	}

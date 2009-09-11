@@ -21,7 +21,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
-import org.spagic3.ui.formeditor.model.ColumnDefinition;
 import org.spagic3.ui.formeditor.model.FieldDefinition;
 import org.spagic3.ui.formeditor.model.InputModelPart;
 

@@ -1,5 +1,6 @@
 package org.spagic3.ui.formeditor.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InputModelPart extends NamedModelPart {
@@ -13,7 +14,7 @@ public class InputModelPart extends NamedModelPart {
 	private int precision;
 	
 	private boolean combo;
-	private List<ItemDefinition> items;
+	private List<ItemDefinition> items = new ArrayList<ItemDefinition>();
 
 	
 	public String getType() {

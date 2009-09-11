@@ -126,14 +126,14 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 	}
 	
 	void updateXML() {
-//		String xmlFromModel = modelHelper.asXML(model);
-//		String actualXML = xmlEditor.getDocumentProvider()
-//				.getDocument(xmlEditor.getEditorInput()).get();
-//		if (!xmlFromModel.equals(actualXML)) {
-//			xmlEditor.getDocumentProvider()
-//					.getDocument(xmlEditor.getEditorInput())
-//							.set(xmlFromModel);
-//		}
+		String xmlFromModel = modelHelper.asXML(model);
+		String actualXML = xmlEditor.getDocumentProvider()
+				.getDocument(xmlEditor.getEditorInput()).get();
+		if (!xmlFromModel.equals(actualXML)) {
+			xmlEditor.getDocumentProvider()
+					.getDocument(xmlEditor.getEditorInput())
+							.set(xmlFromModel);
+		}
 	}
 	
 	private void createFormEditorPage() {
