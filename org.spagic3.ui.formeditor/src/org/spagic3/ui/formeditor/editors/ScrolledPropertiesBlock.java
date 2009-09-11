@@ -1,7 +1,5 @@
 package org.spagic3.ui.formeditor.editors;
 
-import java.awt.FlowLayout;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -35,7 +33,6 @@ import org.spagic3.ui.formeditor.model.FieldDefinition;
 import org.spagic3.ui.formeditor.model.FormDefinition;
 import org.spagic3.ui.formeditor.model.IModelListener;
 import org.spagic3.ui.formeditor.model.IModelPart;
-import org.spagic3.ui.formeditor.model.InputModelPart;
 import org.spagic3.ui.formeditor.model.NamedModelPart;
 import org.spagic3.ui.formeditor.model.TableDefinition;
 /**
@@ -50,8 +47,7 @@ public class ScrolledPropertiesBlock extends MasterDetailsBlock implements IMode
 	private Button addTableButton;
 	private Button addColumnButton;
 	private Button removeButton;
-	
-	
+
 	public ScrolledPropertiesBlock(FormPage page) {
 		this.page = page;
 	}
@@ -255,8 +251,6 @@ public class ScrolledPropertiesBlock extends MasterDetailsBlock implements IMode
 				}
 			}
 		});
-
-		
 		
 		viewer = new TreeViewer(tree);
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -314,10 +308,8 @@ public class ScrolledPropertiesBlock extends MasterDetailsBlock implements IMode
 		return !containsATable;
 	}
 	
-	
 	public void modelChanged(Object[] objects) {
 		viewer.refresh();
-//		viewer.setSelection(viewer.getSelection()); //TODO check stack overflow!!!
 	}
 	
 	protected void createToolBarActions(IManagedForm managedForm) {

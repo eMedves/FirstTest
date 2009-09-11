@@ -69,8 +69,7 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 	public void doSaveAs() {
 		IEditorPart editor = getEditor(xmlEditorPageIndex);
 		editor.doSaveAs();
-//		setPageText(xmlEditorPageIndex, editor.getTitle());
-		setInput(editor.getEditorInput());
+		setInput(new FormEditorInput((IFileEditorInput) editor.getEditorInput()));
 		updateTitle();
 	}
 
