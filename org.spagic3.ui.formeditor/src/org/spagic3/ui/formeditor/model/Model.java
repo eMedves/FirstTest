@@ -15,7 +15,7 @@ public class Model implements IModel {
 	
 	public Model() {
 		modelListeners = new ArrayList<IModelListener>();
-		initialize();
+		parts = new ArrayList<IModelPart>();
 	}
 	
 	public void addModelListener(IModelListener listener) {
@@ -37,24 +37,13 @@ public class Model implements IModel {
 		return parts.toArray(new IModelPart[0]);
 	}
 	
-	private void initialize() {
-		parts = new ArrayList<IModelPart>();
-		FormDefinition formDefinition = new FormDefinition();
-		formDefinition.setModel(this);
-		FieldDefinition fieldDefinition = new FieldDefinition();
-		fieldDefinition.setId("field1");
-		fieldDefinition.setName("Field 1");
-		formDefinition.addPart(fieldDefinition);
-		addContent(formDefinition);
-	}
-	
-	public boolean addContent(IModelPart e) {
+	public boolean addPart(IModelPart e) {
 		e.setModel(this);
 		e.setParent(null);
 		return parts.add(e);
 	}
 	
-	public boolean removeContent(IModelPart o) {
+	public boolean removePart(IModelPart o) {
 		o.setModel(null);
 		o.setParent(null);
 		return parts.remove(o);

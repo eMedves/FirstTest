@@ -8,7 +8,6 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPersistableElement;
 import org.spagic3.ui.formeditor.model.IModel;
-import org.spagic3.ui.formeditor.model.Model;
 
 public class FormEditorInput implements IEditorInput {
 
@@ -16,12 +15,15 @@ public class FormEditorInput implements IEditorInput {
 	private IFileEditorInput fileEditorInput;
 		
 	public FormEditorInput(IFileEditorInput fileEditorInput) {
-		this.model = new Model();
 		this.fileEditorInput = fileEditorInput;
 	}
 
 	public IModel getModel() {
 		return model;
+	}
+
+	public void setModel(IModel model) {
+		this.model = model;
 	}
 
 	public IFileEditorInput getFileEditorInput() {

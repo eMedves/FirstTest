@@ -21,6 +21,8 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.spagic3.ui.formeditor.Activator;
 import org.spagic3.ui.formeditor.FormEditorInput;
+import org.spagic3.ui.formeditor.model.IModel;
+import org.spagic3.ui.formeditor.model.ModelHelper;
 
 public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implements IResourceChangeListener {
 
@@ -28,6 +30,9 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 	private FormPage formEditor;
 	private int xmlEditorPageIndex;
 	private int formPageIndex;
+	
+	private ModelHelper modelHelper;
+	private IModel model;
 	
 	public FormEditor() {
 		super();
@@ -39,6 +44,8 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 		if (!(editorInput instanceof IFileEditorInput))
 			throw new PartInitException("Invalid Input: Must be IFileEditorInput");
 		super.init(site, new FormEditorInput((IFileEditorInput) editorInput));
+
+		modelHelper = new ModelHelper();
 	}
 
 	public void dispose() {
@@ -99,8 +106,27 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 		}
 	}
 	
-	void refreshXML() {
-//		String xmlFromModel = helper.asXML(model);
+	void updateModel() {
+		try {
+			String xmlEditorText =
+				xmlEditor.getDocumentProvider()
+						.getDocument(xmlEditor.getEditorInput())
+								.get();
+	
+			model = modelHelper.buildFromXML(xmlEditorText);
+			((FormEditorInput) getEditorInput()).setModel(model);
+		} catch (Exception e) {
+			ErrorDialog.openError(
+					getSite().getShell(),
+					"Error updating model: maybe not an xml file",
+					null,
+					new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+							IStatus.ERROR, e.getMessage(), e));
+		}
+	}
+	
+	void updateXML() {
+//		String xmlFromModel = modelHelper.asXML(model);
 //		String actualXML = xmlEditor.getDocumentProvider()
 //				.getDocument(xmlEditor.getEditorInput()).get();
 //		if (!xmlFromModel.equals(actualXML)) {
@@ -112,17 +138,7 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 	
 	private void createFormEditorPage() {
 		try {
-			String xmlEditorText =
-				xmlEditor.getDocumentProvider()
-						.getDocument(xmlEditor.getEditorInput())
-								.get();
-			
-//			TODO create master detail page from xml
-//			XPath xpath = XPathFactory.newInstance().newXPath();
-//			String expression = "/scrappy/definitions/def[@factory=\"spagic3.httpserverfactory\"]/@name";
-//			InputSource inputSource = new InputSource("C:\\Progetti\\Spagic3\\software\\trunk\\org.spagic3.core.servicedefinitions\\conf\\scrappy-def.xml");
-//			String str = (String) xpath.evaluate(expression, inputSource, XPathConstants.STRING);
-			
+			updateModel();
 			formEditor = new MasterDetailsPage(this);
 			formPageIndex = addPage(formEditor);
 			setPageText(formPageIndex, "Form");
@@ -146,7 +162,7 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 	protected void pageChange(int pageIndex) {
 		super.pageChange(pageIndex);
 		if (pageIndex == xmlEditorPageIndex) {
-			refreshXML();
+			updateXML();
 		} else if (pageIndex == formPageIndex) {
 		}
 	}
