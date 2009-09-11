@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
@@ -43,7 +44,7 @@ public class DeploymentService implements IDeploymentService {
 	public void addComponentFactory(ServiceReference componentFactoryReference) {
 		
 		String componentFactoryIdentifier = (String) componentFactoryReference
-				.getProperty("component.factory");
+				.getProperty(ComponentConstants.COMPONENT_FACTORY);
 		
 		logger.info(" Component Factory ["+componentFactoryIdentifier+"] -- REGISTERED");
 		this.factories.put(componentFactoryIdentifier,
@@ -67,7 +68,7 @@ public class DeploymentService implements IDeploymentService {
 	public void removeComponentFactory(
 			ServiceReference componentFactoryReference) {
 		String componentFactoryIdentifier = (String) componentFactoryReference
-				.getProperty("component.factory");
+				.getProperty(ComponentConstants.COMPONENT_FACTORY);
 		
 		logger.info(" Component Factory ["+componentFactoryIdentifier+"] -- UNREGISTERED");
 		factories.remove(componentFactoryIdentifier);
