@@ -41,6 +41,7 @@ import org.jbpm.graph.exe.Token;
 import org.jbpm.instantiation.XmlInstantiator;
 import org.jbpm.jpdl.xml.JpdlXmlReader;
 import org.jbpm.jpdl.xml.Parsable;
+import org.spagic3.constants.SpagicConstants;
 
 public class Join extends Node implements Parsable {
 
@@ -135,8 +136,10 @@ public class Join extends Node implements Parsable {
         boolean reactivateParent = true;
         
         String xmlMessage = (String)executionContext.getContextInstance().getVariable("XML_MESSAGE", token);
-        
-        if (xmlMessage != null){
+        String noUpdateToXMLMessage = (String) executionContext.getContextInstance().getVariable("WF_NO_UPDATE_XML_MESSAGE", token);
+		
+		boolean noUpdate = noUpdateToXMLMessage != null ? Boolean.valueOf(noUpdateToXMLMessage) : false;
+        if ((xmlMessage != null) && (!noUpdate)){
         	aggregateTokens.add(token.getFullName());
             aggregatedParts.add(xmlMessage);
         	

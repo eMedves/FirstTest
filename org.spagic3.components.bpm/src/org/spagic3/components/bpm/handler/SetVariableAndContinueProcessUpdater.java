@@ -52,6 +52,11 @@ public class SetVariableAndContinueProcessUpdater implements IWorkflowContextUpd
 			String responseXMLMessage = (String)exchange.getOut(true).getBody();
 			var.setValue(responseXMLMessage);
 			vars.add(var);
+		}else{
+			Variable var = new Variable();
+			var.setName(SpagicConstants.WF_NO_UPDATE_XML_MESSAGE);
+			var.setValue(noUpdateToXMLMessage);
+			vars.add(var);
 		}
 		
 		
