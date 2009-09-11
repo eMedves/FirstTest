@@ -5,15 +5,15 @@ import java.util.List;
 
 public class InputModelPart extends NamedModelPart {
 
-	private String type;
-	private String defaultValue;
-	private boolean editable; 
-	private boolean mandatory;
-	private String validator;
-	private int length;
-	private int precision;
+	private String type = "java.lang.String";
+	private String defaultValue = "";
+	private boolean editable = true; 
+	private boolean mandatory = false;
+	private String validator = "string";
+	private int length = 0;
+	private int precision = 0;
 	
-	private boolean combo;
+	private boolean combo = false;
 	private List<ItemDefinition> items = new ArrayList<ItemDefinition>();
 
 	

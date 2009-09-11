@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -33,13 +34,13 @@ public class ModelHelper {
 			for (Node node : fields) {
 				final Element field = (Element) node;
 				final FieldDefinition fieldDefinition = new FieldDefinition();
-				fieldDefinition.setId(field.attributeValue("id"));
-				fieldDefinition.setName(field.attributeValue("name"));
-				fieldDefinition.setType(field.attributeValue("type"));
-				fieldDefinition.setDefaultValue(field.attributeValue("defaultValue"));
+				fieldDefinition.setId(StringEscapeUtils.unescapeXml(field.attributeValue("id")));
+				fieldDefinition.setName(StringEscapeUtils.unescapeXml(field.attributeValue("name")));
+				fieldDefinition.setType(StringEscapeUtils.unescapeXml(field.attributeValue("type")));
+				fieldDefinition.setDefaultValue(StringEscapeUtils.unescapeXml(field.attributeValue("defaultValue")));
 //				fieldDefinition.setEditable("true".equals(field.attributeValue("editable")));
 				fieldDefinition.setMandatory("true".equals(field.attributeValue("mandatory")));
-				fieldDefinition.setValidator(field.attributeValue("validator"));
+				fieldDefinition.setValidator(StringEscapeUtils.unescapeXml(field.attributeValue("validator")));
 				int length = 0;
 				try {
 					Integer.parseInt(field.attributeValue("length"));
@@ -62,13 +63,13 @@ public class ModelHelper {
 			for (Node node : columns) {
 				final Element column = (Element) node;
 				final ColumnDefinition columnDefinition = new ColumnDefinition();
-				columnDefinition.setId(column.attributeValue("id"));
-				columnDefinition.setName(column.attributeValue("name"));
-				columnDefinition.setType(column.attributeValue("type"));
-				columnDefinition.setDefaultValue(column.attributeValue("defaultValue"));
+				columnDefinition.setId(StringEscapeUtils.unescapeXml(column.attributeValue("id")));
+				columnDefinition.setName(StringEscapeUtils.unescapeXml(column.attributeValue("name")));
+				columnDefinition.setType(StringEscapeUtils.unescapeXml(column.attributeValue("type")));
+				columnDefinition.setDefaultValue(StringEscapeUtils.unescapeXml(column.attributeValue("defaultValue")));
 				columnDefinition.setEditable("true".equals((column.attributeValue("editable"))));
 				columnDefinition.setMandatory("true".equals(column.attributeValue("mandatory")));
-				columnDefinition.setValidator(column.attributeValue("validator"));
+				columnDefinition.setValidator(StringEscapeUtils.unescapeXml(column.attributeValue("validator")));
 				int length = 0;
 				try {
 					Integer.parseInt(column.attributeValue("length"));
@@ -94,8 +95,8 @@ public class ModelHelper {
 			for (Node node : items) {
 				final Element item = (Element) node;
 				final ItemDefinition itemDefinition = new ItemDefinition();
-				itemDefinition.setName(item.attributeValue("name"));
-				itemDefinition.setValue(item.attributeValue("value"));
+				itemDefinition.setName(StringEscapeUtils.unescapeXml(item.attributeValue("name")));
+				itemDefinition.setValue(StringEscapeUtils.unescapeXml(item.attributeValue("value")));
 				inputPart.addItem(itemDefinition);
 			}
 		}
@@ -126,16 +127,16 @@ public class ModelHelper {
 			final FieldDefinition fieldDefinition = (FieldDefinition) part;
 			xml.append(indent).append("<field")
 				.append(" id=\"").append(fieldDefinition.getId() != null 
-						? fieldDefinition.getId() : "").append("\"")
+						? StringEscapeUtils.escapeXml(fieldDefinition.getId()) : "").append("\"")
 				.append(" name=\"").append(fieldDefinition.getName() != null 
-						? fieldDefinition.getName() : "").append("\"")
+						? StringEscapeUtils.escapeXml(fieldDefinition.getName()) : "").append("\"")
 				.append(" type=\"").append(fieldDefinition.getType() != null 
-						? fieldDefinition.getType() : "").append("\"")
+						? StringEscapeUtils.escapeXml(fieldDefinition.getType()) : "").append("\"")
 				.append(" defaultValue=\"").append(fieldDefinition.getDefaultValue() != null 
-						? fieldDefinition.getDefaultValue() : "").append("\"")
+						? StringEscapeUtils.escapeXml(fieldDefinition.getDefaultValue()) : "").append("\"")
 				.append(" mandatory=\"").append(fieldDefinition.isMandatory() ? "true" : "false").append("\"")
 				.append(" validator=\"").append(fieldDefinition.getValidator() != null 
-						? fieldDefinition.getValidator() : "").append("\"")
+						? StringEscapeUtils.escapeXml(fieldDefinition.getValidator()) : "").append("\"")
 				.append(" length=\"").append(fieldDefinition.getLength()).append("\"")
 				.append(" precision=\"").append(fieldDefinition.getPrecision()).append("\"")
 				.append(" combo=\"").append(fieldDefinition.isCombo() ? "true" : "false").append("\"");
@@ -157,17 +158,17 @@ public class ModelHelper {
 			final ColumnDefinition columnDefinition = (ColumnDefinition) part;
 			xml.append(indent).append("<column")
 				.append(" id=\"").append(columnDefinition.getId() != null 
-						? columnDefinition.getId() : "").append("\"")
+						? StringEscapeUtils.escapeXml(columnDefinition.getId()) : "").append("\"")
 				.append(" name=\"").append(columnDefinition.getName() != null 
-						? columnDefinition.getName() : "").append("\"")
+						? StringEscapeUtils.escapeXml(columnDefinition.getName()) : "").append("\"")
 				.append(" type=\"").append(columnDefinition.getType() != null 
-						? columnDefinition.getType() : "").append("\"")
+						? StringEscapeUtils.escapeXml(columnDefinition.getType()) : "").append("\"")
 				.append(" defaultValue=\"").append(columnDefinition.getDefaultValue() != null 
-						? columnDefinition.getDefaultValue() : "").append("\"")
+						? StringEscapeUtils.escapeXml(columnDefinition.getDefaultValue()) : "").append("\"")
 				.append(" editable=\"").append(columnDefinition.isEditable() ? "true" : "false").append("\"")
 				.append(" mandatory=\"").append(columnDefinition.isMandatory() ? "true" : "false").append("\"")
 				.append(" validator=\"").append(columnDefinition.getValidator() != null 
-						? columnDefinition.getValidator() : "").append("\"")
+						? StringEscapeUtils.escapeXml(columnDefinition.getValidator()) : "").append("\"")
 				.append(" length=\"").append(columnDefinition.getLength()).append("\"")
 				.append(" precision=\"").append(columnDefinition.getPrecision()).append("\"")
 				.append(" combo=\"").append(columnDefinition.isCombo() ? "true" : "false").append("\"");
@@ -184,9 +185,9 @@ public class ModelHelper {
 			final ItemDefinition itemDefinition = (ItemDefinition) part;
 			xml.append(indent).append("<item")
 				.append(" name=\"").append(itemDefinition.getName() != null 
-						? itemDefinition.getName() : "").append("\"")
+						? StringEscapeUtils.escapeXml(itemDefinition.getName()) : "").append("\"")
 				.append(" value=\"").append(itemDefinition.getValue() != null 
-						? itemDefinition.getValue() : "").append("\"")
+						? StringEscapeUtils.escapeXml(itemDefinition.getValue()) : "").append("\"")
 				.append("/>\n");
 		}
 	}

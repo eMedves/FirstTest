@@ -116,9 +116,11 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 		//type combo
 		typeCombo = new Combo(client, SWT.READ_ONLY); //SWT.DROP_DOWN
 		typeCombo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
-		typeCombo.add("java.lang.String");
-		typeCombo.add("java.lang.Integer");
-		typeCombo.add("java.lang.Date");
+		typeCombo.add("String");
+		typeCombo.add("Date");
+		typeCombo.add("Long");
+		typeCombo.add("Double");
+		typeCombo.add("Boolean");
 		gd = new GridData();
 		gd.widthHint = 183;
 		typeCombo.setLayoutData(gd);
@@ -201,9 +203,11 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 		//validator combo
 		validatorCombo = new Combo(client, SWT.READ_ONLY); //SWT.DROP_DOWN
 		validatorCombo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
-		validatorCombo.add("string");
-		validatorCombo.add("number");
-		validatorCombo.add("e-mail");
+		validatorCombo.add("Number");
+		validatorCombo.add("Text");
+		validatorCombo.add("Number & Text");
+		validatorCombo.add("Telephone Number");
+		validatorCombo.add("E-mail");
 		gd = new GridData();
 		gd.widthHint = 183;
 		validatorCombo.setLayoutData(gd);

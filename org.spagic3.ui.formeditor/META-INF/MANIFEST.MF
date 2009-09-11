@@ -15,4 +15,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .,
  lib/dom4j.jar,
- lib/jaxen-1.1.1.jar
+ lib/jaxen-1.1.1.jar,
+ lib/commons-lang-2.4.jar

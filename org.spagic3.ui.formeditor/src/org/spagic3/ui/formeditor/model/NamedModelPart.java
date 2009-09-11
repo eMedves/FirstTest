@@ -2,8 +2,8 @@ package org.spagic3.ui.formeditor.model;
 
 public class NamedModelPart implements IModelPart {
 
-	private String id;
-	private String name;
+	private String id = "";
+	private String name = "";
 	private IModel model;
 	private IModelPart parent;
 
