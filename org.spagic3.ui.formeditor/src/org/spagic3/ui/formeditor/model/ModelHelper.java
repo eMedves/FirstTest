@@ -73,9 +73,81 @@ public class ModelHelper {
 	}
 	
 	public String asXML(IModel model) {
-		
-		
-		return null;
+		StringBuffer xml = new StringBuffer();
+		appendXML(xml, model, "");
+		return xml.toString();
+	}
+	
+	private void appendXML(StringBuffer xml, Object part, String indent) {
+		if (part instanceof IModel) {
+			final IModel model = (IModel) part;
+			for (IModelPart modelPart : model.getParts()) {
+				appendXML(xml, modelPart, "");
+			}
+		} else if (part instanceof FormDefinition) {
+			final FormDefinition formDefinition = (FormDefinition) part;
+			xml.append(indent).append("<formdefinition")
+				.append(" dynamyc=\"").append(formDefinition.isDynamic() ? "true" : "false").append("\"")
+				.append(">\n");
+			for (IModelPart formParts : formDefinition.getParts()) {
+				appendXML(xml, formParts, indent + "\t");
+			}
+			xml.append(indent).append("</formdefinition>\n");
+		} else if (part instanceof FieldDefinition) {
+			final FieldDefinition fieldDefinition = (FieldDefinition) part;
+			xml.append(indent).append("<field")
+				.append(" id=\"").append(fieldDefinition.getId()).append("\"")
+				.append(" name=\"").append(fieldDefinition.getName()).append("\"")
+				.append(" type=\"").append(fieldDefinition.getType()).append("\"")
+				.append(" defaultValue=\"").append(fieldDefinition.getDefaultValue()).append("\"")
+				.append(" mandatory=\"").append(fieldDefinition.isMandatory() ? "true" : "false").append("\"")
+				.append(" validator=\"").append(fieldDefinition.getValidator()).append("\"")
+				.append(" length=\"").append(fieldDefinition.getLength()).append("\"")
+				.append(" precision=\"").append(fieldDefinition.getPrecision()).append("\"")
+				.append(" combo=\"").append(fieldDefinition.isCombo() ? "true" : "false").append("\"");
+			if (fieldDefinition.getItems().isEmpty()) {
+				xml.append("/>\n");
+			} else {
+				xml.append(">\n");
+				for (ItemDefinition itemDefinition : fieldDefinition.getItems()) {
+					appendXML(xml, itemDefinition, indent + "\t");
+				}
+				xml.append(indent).append("</field>\n");
+			}
+		} else if (part instanceof TableDefinition) {
+			final TableDefinition tableDefinition = (TableDefinition) part;
+			for (ColumnDefinition columnDefinition : tableDefinition.getColumns()) {
+				appendXML(xml, columnDefinition, indent);
+			}
+		} else if (part instanceof ColumnDefinition) {
+			final ColumnDefinition columnDefinition = (ColumnDefinition) part;
+			xml.append(indent).append("<column")
+				.append(" id=\"").append(columnDefinition.getId()).append("\"")
+				.append(" name=\"").append(columnDefinition.getName()).append("\"")
+				.append(" type=\"").append(columnDefinition.getType()).append("\"")
+				.append(" defaultValue=\"").append(columnDefinition.getDefaultValue()).append("\"")
+				.append(" editable=\"").append(columnDefinition.isEditable() ? "true" : "false").append("\"")
+				.append(" mandatory=\"").append(columnDefinition.isMandatory() ? "true" : "false").append("\"")
+				.append(" validator=\"").append(columnDefinition.getValidator()).append("\"")
+				.append(" length=\"").append(columnDefinition.getLength()).append("\"")
+				.append(" precision=\"").append(columnDefinition.getPrecision()).append("\"")
+				.append(" combo=\"").append(columnDefinition.isCombo() ? "true" : "false").append("\"");
+			if (columnDefinition.getItems().isEmpty()) {
+				xml.append("/>\n");
+			} else {
+				xml.append(">\n");
+				for (ItemDefinition itemDefinition : columnDefinition.getItems()) {
+					appendXML(xml, itemDefinition, indent + "\t");
+				}
+				xml.append(indent).append("</column>\n");
+			}
+		} else if (part instanceof ItemDefinition) {
+			final ItemDefinition itemDefinition = (ItemDefinition) part;
+			xml.append(indent).append("<item")
+				.append(" name=\"").append(itemDefinition.getName()).append("\"")
+				.append(" value=\"").append(itemDefinition.getValue()).append("\"")
+				.append("/>\n");
+		}
 	}
 	
 	public static List<Node> evalXPathAsNodes(String xml, String xpath) {

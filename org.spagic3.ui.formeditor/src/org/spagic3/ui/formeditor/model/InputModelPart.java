@@ -9,12 +9,12 @@ public class InputModelPart extends NamedModelPart {
 	private boolean editable; 
 	private boolean mandatory;
 	private String validator;
+	private int length;
+	private int precision;
 	
 	private boolean combo;
 	private List<ItemDefinition> items;
 
-	private int length;
-	private int precision;
 	
 	public String getType() {
 		return type;
@@ -78,6 +78,10 @@ public class InputModelPart extends NamedModelPart {
 
 	public void setCombo(boolean combo) {
 		this.combo = combo;
+	}
+
+	public List<ItemDefinition> getItems() {
+		return items;
 	}
 
 	public boolean addItem(ItemDefinition e) {

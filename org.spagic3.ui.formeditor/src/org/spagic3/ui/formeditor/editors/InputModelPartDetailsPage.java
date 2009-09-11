@@ -21,6 +21,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
+import org.spagic3.ui.formeditor.model.ColumnDefinition;
 import org.spagic3.ui.formeditor.model.FieldDefinition;
 import org.spagic3.ui.formeditor.model.InputModelPart;
 
@@ -46,6 +47,10 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 	private Button mandatoryButton;
 	private Label validatorLabel;
 	private Combo validatorCombo;
+	private Label lengthLabel;
+	private Text lengthText;
+	private Label precisionLabel;
+	private Text precisionText;
 	private Label comboLabel;
 	private Button comboButton;
 	
@@ -212,6 +217,54 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 				}
 			}
 		});
+		
+		//length label
+		lengthLabel = toolkit.createLabel(client, "Length");
+		gd = new GridData();
+		gd.widthHint = 100;
+		lengthLabel.setLayoutData(gd);
+		
+		//length text
+		lengthText = toolkit.createText(client, "", SWT.SINGLE);
+		gd = new GridData();
+		gd.widthHint = 200;
+		lengthText.setLayoutData(gd);
+		lengthText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				if (input != null) {
+					int length = 0;
+					try {
+						Integer.parseInt(lengthText.getText());
+					} catch (NumberFormatException nfe) {}
+					input.setLength(length);
+					input.getModel().fireModelChanged(new Object[]{input});
+				}
+			}
+		});
+
+		//precision label
+		precisionLabel = toolkit.createLabel(client, "Precision");
+		gd = new GridData();
+		gd.widthHint = 100;
+		precisionLabel.setLayoutData(gd);
+		
+		//precision text
+		precisionText = toolkit.createText(client, "", SWT.SINGLE);
+		gd = new GridData();
+		gd.widthHint = 200;
+		precisionText.setLayoutData(gd);
+		precisionText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				if (input != null) {
+					int precision = 0;
+					try {
+						Integer.parseInt(precisionText.getText());
+					} catch (NumberFormatException nfe) {}
+					input.setPrecision(precision);
+					input.getModel().fireModelChanged(new Object[]{input});
+				}
+			}
+		});
 
 		//combo label
 		comboLabel = toolkit.createLabel(client, "Combo");
@@ -246,14 +299,25 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 	
 	private void update() {
 		if (input != null) {
-			titleSection.setText(input instanceof FieldDefinition 
+			boolean isField = input instanceof FieldDefinition;
+			titleSection.setText(isField
 					? "Field definition details" : "Column definition details");
 			nameText.setText(input.getName() != null ? input.getName() : "");
 			typeCombo.setText(input.getType() != null ? input.getType() : "");
 			defaultText.setText(input.getDefaultValue() != null ? input.getDefaultValue() : "");
-			editableButton.setSelection(input.isEditable());
+			if (isField) {
+				editableLabel.setEnabled(false);
+				editableButton.setEnabled(false);
+				editableButton.setSelection(false);
+			} else {
+				editableLabel.setEnabled(true);
+				editableButton.setEnabled(true);
+				editableButton.setSelection(input.isEditable());
+			}
 			mandatoryButton.setSelection(input.isMandatory());
 			validatorCombo.setText(input.getValidator() != null ? input.getValidator() : "");
+			lengthText.setText(String.valueOf(input.getLength()));
+			precisionText.setText(String.valueOf(input.getPrecision()));
 			comboButton.setSelection(input.isCombo());
 		}
 	}
