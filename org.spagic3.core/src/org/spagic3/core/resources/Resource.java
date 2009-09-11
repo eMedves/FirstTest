@@ -27,6 +27,7 @@ public class Resource implements IResource {
 		customProtocols.add("rule");
 		customProtocols.add("script");
 		customProtocols.add("resource");
+		customProtocols.add("properties");
 	}
 	
 	
