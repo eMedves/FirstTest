@@ -31,6 +31,8 @@ public class DatabaseService implements IDatabaseManager {
 	public final static String SERVICE_INSTANCE_ID = "idServiceInstance".intern();
 	public final static String SERVICE_INSTANCE_SERVICE_ID = "service.idService".intern();
 	public final static String SERVICE_INSTANCE_MESSAGE_ID = "messageId".intern();
+	public final static String SERVICE_INSTANCE_CORRELATION_ID = "correlationId".intern();
+	
 	
 	public void bindMetaDB(javax.sql.DataSource ds){
 		System.out.println("DatabaseService: Metadb Datasource has been bound");
@@ -110,7 +112,7 @@ public class DatabaseService implements IDatabaseManager {
 	}
 
 	@Override
-	public ServiceInstance getServiceInstance(String serviceId,
+	public ServiceInstance getServiceInstanceByMessageId(String serviceId,
 			String exchangeID) {
 		Session aSession = null;
 		try {
@@ -125,10 +127,28 @@ public class DatabaseService implements IDatabaseManager {
 			}
 		}
 	}
+	
+	@Override
+	public ServiceInstance getServiceInstanceByCorrelationId(String serviceId,
+			String correlationID) {
+		Session aSession = null;
+		try {
+			aSession = HibernateUtil.getSessionFactory().openSession();
+			Criteria aCriteria = aSession.createCriteria(ServiceInstance.class);
+			aCriteria.add(Expression.eq(SERVICE_INSTANCE_SERVICE_ID, serviceId));
+			aCriteria.add(Expression.eq(SERVICE_INSTANCE_CORRELATION_ID, correlationID));
+			return (ServiceInstance) aCriteria.uniqueResult();
+		} finally {
+			if (aSession != null) {
+				aSession.close();
+			}
+		}
+	}
 
 	@Override
 	public ServiceInstance createServiceInstance(String serviceId,
-			String exchangeID, ServiceInstance targetServiceInstance, String request, String response) {
+			String exchangeID, String correlationId, 
+			ServiceInstance targetServiceInstance, String request, String response) {
 		Session aSession = null;
 		ServiceInstance serviceInstance = null;
 		Transaction tx = null;
@@ -138,13 +158,13 @@ public class DatabaseService implements IDatabaseManager {
 			
 			serviceInstance = new ServiceInstance();
 			serviceInstance.setMessageId(exchangeID);
+			serviceInstance.setCorrelationId(correlationId);	
 			serviceInstance.setRequest(request);
 			serviceInstance.setResponse(response);
 			serviceInstance.setService(getServiceById(aSession, serviceId));
 			serviceInstance.setTargetServiceInstance(targetServiceInstance);
 			serviceInstance.setState(ServiceInstanceStateConstants.SERVICE_ACTIVE);
 			serviceInstance.setStartdate(new Date());
-			
 			
 			aSession.save(serviceInstance);
 			tx.commit();

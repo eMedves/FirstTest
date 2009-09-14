@@ -39,12 +39,20 @@ public interface IDatabaseManager {
 	
 	/**
 	 * Retrieves a specified Service instance
-	 * @param serviceId 
-	 * @param exchangeID
+	 * @param serviceId The related service
+	 * @param exchangeID The message id
 	 * @return The service instance found, or null if not found
 	 */
-	public ServiceInstance getServiceInstance(String serviceId, String exchangeID);
-
+	public ServiceInstance getServiceInstanceByMessageId(String serviceId, String exchangeID);
+	
+	/**
+	 * Retrieves a specified Service instance
+	 * @param serviceId The related service
+	 * @param exchangeID The correlation id
+	 * @return The service instance found, or null if not found
+	 */
+	public ServiceInstance getServiceInstanceByCorrelationId(String serviceId, String exchangeID);
+	
 	/**
 	 * Creates a new service instance
 	 * @param serviceId Service Id
@@ -53,7 +61,7 @@ public interface IDatabaseManager {
 	 * @param response Response sent by the service instance (can be null)
 	 * @return The new service instance
 	 */
-	public ServiceInstance createServiceInstance(String serviceId, String exchangeID, ServiceInstance targetServiceInstance, String request, String response);
+	public ServiceInstance createServiceInstance(String serviceId, String exchangeID, String correlationId, ServiceInstance targetServiceInstance, String request, String response);
 
 	/**
 	 * Updates an existing service instance

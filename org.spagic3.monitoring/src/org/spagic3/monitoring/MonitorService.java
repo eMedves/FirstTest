@@ -39,6 +39,7 @@ public class MonitorService implements EventHandler {
 		
 		Boolean internalEvent = (Boolean) event.getProperty(SpagicConstants._IS_INTERNAL_EVENT);
 		String exchangeID = (String) event.getProperty(SpagicConstants.EXCHANGE_ID);
+		String correlationID = (String) event.getProperty(SpagicConstants.EXCHANGE_PROPERTY + "." + SpagicConstants.CORRELATION_ID);
 		String status = (String) event.getProperty(SpagicConstants.EXCHANGE_STATUS);
 		String sender = (String) event.getProperty(SpagicConstants.EXCHANGE_PROPERTY + "." + SpagicConstants.SPAGIC_SENDER);
 		String target = (String) event.getProperty(SpagicConstants.EXCHANGE_PROPERTY + "." + SpagicConstants.SPAGIC_TARGET);
@@ -68,8 +69,8 @@ public class MonitorService implements EventHandler {
 		}
 		
 		// Search for the service instance with specified exchange id
-		ServiceInstance senderServiceInstance = dbManager.getServiceInstance(sender, exchangeID);
-		ServiceInstance targetServiceInstance = dbManager.getServiceInstance(target, exchangeID);
+		ServiceInstance senderServiceInstance = dbManager.getServiceInstanceByCorrelationId(sender, correlationID);
+		ServiceInstance targetServiceInstance = dbManager.getServiceInstanceByCorrelationId(target, correlationID);
 		
 		if (status == SpagicConstants.STATUS_DONE) {
 
@@ -107,7 +108,7 @@ public class MonitorService implements EventHandler {
 					// Create the service instance only if monitored
 					if (senderService.getMonitorEnabled()) {
 						// Input message not available, if not provided by the component itself
-						senderServiceInstance = dbManager.createServiceInstance(sender, exchangeID, targetServiceInstance, null, null);				
+						senderServiceInstance = dbManager.createServiceInstance(sender, exchangeID, correlationID, targetServiceInstance, null, null);				
 					} else {
 						logger.info("Sender service: " + sender + " not monitored");
 					}
@@ -118,7 +119,7 @@ public class MonitorService implements EventHandler {
 
 					// Create the service instance only if monitored
 					if (targetService.getMonitorEnabled()) {
-						targetServiceInstance = dbManager.createServiceInstance(target, exchangeID, null, inBody, null);
+						targetServiceInstance = dbManager.createServiceInstance(target, exchangeID, correlationID, null, inBody, null);
 					} else {
 						logger.info("Target service: " + target + " not monitored");
 					}
