@@ -34,9 +34,10 @@ public class SpagicConstants {
 	public final static String STATUS_DONE = "DONE";
 	public final static String STATUS_ERROR = "ERROR";
 	
-	
-	
-	
+	public static final String SERVICE_TYPE_UNDEFINED = "UNDEFINED";
+	public static final String SERVICE_TYPE_CONNECTOR = "CONNECTOR";
+	public static final String SERVICE_TYPE_SERVICE = "SERVICE";
+		
 	public static final String SOAP_FAULT_CODE = "spagic.soap.fault.code";
     public static final String SOAP_FAULT_SUBCODE = "spagic.soap.fault.subcode";
     public static final String SOAP_FAULT_REASON = "spagic.soap.fault.reason";
