@@ -11,12 +11,14 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Expression;
 import org.spagic.metadb.base.ProcessExecutionStateConstants;
 import org.spagic.metadb.base.ServiceInstanceStateConstants;
+import org.spagic.metadb.base.TypeServiceConstants;
 import org.spagic.metadb.dbutils.HibernateUtil;
 import org.spagic.metadb.model.Component;
 import org.spagic.metadb.model.Property;
 import org.spagic.metadb.model.Service;
 import org.spagic.metadb.model.ServiceInstance;
 import org.spagic.metadb.model.TransitionInstance;
+import org.spagic3.constants.SpagicConstants;
 
 public class DatabaseService implements IDatabaseManager {
 	
@@ -260,7 +262,14 @@ public class DatabaseService implements IDatabaseManager {
 				propertiesSet.add(metaDBProperty);
 			}
 			
-			component = new Component(0L, componentName, (int)ProcessExecutionStateConstants.NORMAL_EXECUTION, (Set<Service>)null, propertiesSet);
+			long idComponentType = 0;
+			if (componentType.equals(SpagicConstants.SERVICE_TYPE_CONNECTOR)) {
+				idComponentType = TypeServiceConstants.OSGI_CONNECTOR;
+			} else if (componentType.equals(SpagicConstants.SERVICE_TYPE_SERVICE)) {
+				idComponentType = TypeServiceConstants.OSGI_SERVICE;
+			}
+			
+			component = new Component(idComponentType, componentName, (int)ProcessExecutionStateConstants.NORMAL_EXECUTION, (Set<Service>)null, propertiesSet);
 			aSession.save(component);
 			tx.commit();
 			return component;

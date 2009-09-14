@@ -26,5 +26,6 @@ Bundle-ClassPath: .,
 Import-Package: org.osgi.framework;version="1.5.0",
  org.osgi.util.tracker;version="1.4.2",
  org.slf4j;version="1.5.6",
+ org.spagic3.constants,
  org.spagic3.datasource
 Bundle-Activator: org.spagic3.databaseManager.activator.DatabaseComponentActivator
