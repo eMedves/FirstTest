@@ -2,10 +2,6 @@ package org.spagic3.service.model;
 
 public interface IServiceModelHelper {
 	
-	public static final String TYPE_UNDEFINED = "UNDEFINED";
-	public static final String TYPE_CONNECTOR = "CONNECTOR";
-	public static final String TYPE_SERVICE = "SERVICE";
-
 	/**
 	 * Retrieves the component name starting from the factory name.
 	 * @param factoryName
@@ -16,7 +12,7 @@ public interface IServiceModelHelper {
 	/**
 	 * Retrieves the component type starting from the factory name.
 	 * @param factoryName
-	 * @return TYPE_CONNECTOR, TYPE_SERVICE or TYPE_UNDEFINED
+	 * @return SERVICE_TYPE_CONNECTOR, SERVICE_TYPE_SERVICE or SERVICE_TYPE_UNDEFINED
 	 */
 	public String getComponentType(String factoryName);
 

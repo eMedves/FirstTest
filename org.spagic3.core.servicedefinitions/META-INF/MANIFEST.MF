@@ -11,7 +11,8 @@ Bundle-ClassPath: lib/dom4j.jar,
  lib/jaxen-1.1.1.jar,
  .
 Import-Package: org.eclipse.core.runtime;version="3.4.0",
- org.osgi.framework;version="1.4.0"
+ org.osgi.framework;version="1.4.0",
+ org.spagic3.constants
 Bundle-Activator: org.spagic3.service.model.Activator
 Export-Package: org.dom4j,
  org.dom4j.bean,

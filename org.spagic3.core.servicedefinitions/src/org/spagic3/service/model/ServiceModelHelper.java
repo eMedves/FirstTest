@@ -8,6 +8,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
+import org.spagic3.constants.SpagicConstants;
 
 public class ServiceModelHelper implements IServiceModelHelper {
 	
@@ -74,8 +75,26 @@ public class ServiceModelHelper implements IServiceModelHelper {
 
 	@Override
 	public String getComponentType(String factoryName) {
-		// TODO Auto-generated method stub
-		return "";
+		
+		// Search first within connectors
+		String componentName = evalXPathAsString(scappyDefDocument, 
+				"(/scrappy/connectors/connector[@factory=\"" + 
+				factoryName + 
+				"\"]/@name)");
+		if ((componentName != null) && (componentName.length() > 0)) {
+			return SpagicConstants.SERVICE_TYPE_CONNECTOR;
+		}
+
+		// Search within services
+		componentName = evalXPathAsString(scappyDefDocument, 
+				"(/scrappy/services/service[@factory=\"" + 
+				factoryName + 
+				"\"]/@name)");
+		if ((componentName != null) && (componentName.length() > 0)) {
+			return SpagicConstants.SERVICE_TYPE_SERVICE;
+		}
+		
+		return SpagicConstants.SERVICE_TYPE_UNDEFINED;
 	}
 
 }
