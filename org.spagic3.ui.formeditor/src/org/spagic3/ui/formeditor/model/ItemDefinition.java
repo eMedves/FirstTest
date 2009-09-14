@@ -2,8 +2,8 @@ package org.spagic3.ui.formeditor.model;
 
 public class ItemDefinition implements IModelPart {
 
-	private String name;
-	private String value;
+	private String name = "";
+	private String value = "";
 	private IModel model;
 	private IModelPart parent;
 	

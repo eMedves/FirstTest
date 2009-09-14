@@ -10,12 +10,16 @@ import java.util.List;
  */
 public class Model implements IModel {
 	
-	private List<IModelListener> modelListeners;
+	protected List<IModelListener> modelListeners;
 	private List<IModelPart> parts;
 	
 	public Model() {
 		modelListeners = new ArrayList<IModelListener>();
 		parts = new ArrayList<IModelPart>();
+	}
+	
+	public List<IModelListener> getListeners() {
+		return modelListeners;
 	}
 	
 	public void addModelListener(IModelListener listener) {
@@ -27,10 +31,14 @@ public class Model implements IModel {
 		modelListeners.remove(listener);
 	}
 	
-	public void fireModelChanged(Object[] objects) {
+	public void fireModelChanged(Object[] objects, ModelChangeType type) {
 		for (int i = 0; i < modelListeners.size(); i++) {
-			((IModelListener) modelListeners.get(i)).modelChanged(objects);
+			((IModelListener) modelListeners.get(i)).modelChanged(objects, type);
 		}
+	}
+	
+	public void addListeners(IModel model) {
+		this.modelListeners.addAll(model.getListeners());		
 	}
 	
 	public IModelPart[] getParts() {

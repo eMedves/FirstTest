@@ -23,6 +23,7 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.spagic3.ui.formeditor.model.FieldDefinition;
 import org.spagic3.ui.formeditor.model.InputModelPart;
+import org.spagic3.ui.formeditor.model.ModelChangeType;
 
 /**
  * @author dejan
@@ -99,10 +100,11 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 		nameText.setLayoutData(gd);
 		nameText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				if (input != null) {
+				if (input != null 
+						&& !(nameText.getText() == null ? input.getName() == null : nameText.getText().equals(input.getName()))) {
 					input.setId(nameText.getText().replaceAll("\\s+", "").toLowerCase());
 					input.setName(nameText.getText());
-					input.getModel().fireModelChanged(new Object[]{input});
+					input.getModel().fireModelChanged(new Object[]{input, "name"}, ModelChangeType.CHANGE_PROPERTY);
 				}
 			}
 		});
@@ -127,9 +129,10 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 		typeCombo.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {}
 			public void widgetSelected(SelectionEvent e) {
-				if (input != null) {
+				if (input != null 
+						&& !(typeCombo.getText() == null ? input.getType() == null : typeCombo.getText().equals(input.getType()))) {
 					input.setType(typeCombo.getText());
-					input.getModel().fireModelChanged(new Object[]{input});
+					input.getModel().fireModelChanged(new Object[]{input, "type"}, ModelChangeType.CHANGE_PROPERTY);
 				}
 			}
 		});
@@ -147,9 +150,10 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 		defaultText.setLayoutData(gd);
 		defaultText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				if (input != null) {
+				if (input != null 
+						&& !(defaultText.getText() == null ? input.getDefaultValue() == null : defaultText.getText().equals(input.getDefaultValue()))) {
 					input.setDefaultValue(defaultText.getText());
-					input.getModel().fireModelChanged(new Object[]{input});
+					input.getModel().fireModelChanged(new Object[]{input, "defaultValue"}, ModelChangeType.CHANGE_PROPERTY);
 				}
 			}
 		});
@@ -167,9 +171,10 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 		editableButton.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {}
 			public void widgetSelected(SelectionEvent e) {
-				if (input != null) {
+				if (input != null 
+						&& editableButton.getSelection() != input.isEditable()) {
 					input.setEditable(editableButton.getSelection());
-					input.getModel().fireModelChanged(new Object[]{input});
+					input.getModel().fireModelChanged(new Object[]{input, "editable"}, ModelChangeType.CHANGE_PROPERTY);
 				}
 			}
 		});
@@ -187,9 +192,10 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 		mandatoryButton.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {}
 			public void widgetSelected(SelectionEvent e) {
-				if (input != null) {
+				if (input != null 
+						&& mandatoryButton.getSelection() != input.isMandatory()) {
 					input.setMandatory(mandatoryButton.getSelection());
-					input.getModel().fireModelChanged(new Object[]{input});
+					input.getModel().fireModelChanged(new Object[]{input, "mandatory"}, ModelChangeType.CHANGE_PROPERTY);
 				}
 			}
 		});
@@ -214,9 +220,10 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 		validatorCombo.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {}
 			public void widgetSelected(SelectionEvent e) {
-				if (input != null) {
+				if (input != null 
+						&& !(validatorCombo.getText() == null ? input.getValidator() == null : validatorCombo.getText().equals(input.getValidator()))) {
 					input.setValidator(validatorCombo.getText());
-					input.getModel().fireModelChanged(new Object[]{input});
+					input.getModel().fireModelChanged(new Object[]{input, "validator"}, ModelChangeType.CHANGE_PROPERTY);
 				}
 			}
 		});
@@ -234,13 +241,14 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 		lengthText.setLayoutData(gd);
 		lengthText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				if (input != null) {
-					int length = 0;
-					try {
-						Integer.parseInt(lengthText.getText());
-					} catch (NumberFormatException nfe) {}
+				int length = 0;
+				try {
+					length = Integer.parseInt(lengthText.getText());
+				} catch (NumberFormatException nfe) {}
+				if (input != null
+						&& length != input.getLength()) {
 					input.setLength(length);
-					input.getModel().fireModelChanged(new Object[]{input});
+					input.getModel().fireModelChanged(new Object[]{input, "length"}, ModelChangeType.CHANGE_PROPERTY);
 				}
 			}
 		});
@@ -258,13 +266,14 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 		precisionText.setLayoutData(gd);
 		precisionText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				if (input != null) {
-					int precision = 0;
-					try {
-						Integer.parseInt(precisionText.getText());
-					} catch (NumberFormatException nfe) {}
+				int precision = 0;
+				try {
+					precision = Integer.parseInt(precisionText.getText());
+				} catch (NumberFormatException nfe) {}
+				if (input != null
+						&& precision != input.getPrecision()) {
 					input.setPrecision(precision);
-					input.getModel().fireModelChanged(new Object[]{input});
+					input.getModel().fireModelChanged(new Object[]{input, "precision"}, ModelChangeType.CHANGE_PROPERTY);
 				}
 			}
 		});
@@ -282,9 +291,10 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 		comboButton.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {}
 			public void widgetSelected(SelectionEvent e) {
-				if (input != null) {
+				if (input != null 
+						&& comboButton.getSelection() != input.isCombo()) {
 					input.setCombo(comboButton.getSelection());
-					input.getModel().fireModelChanged(new Object[]{input});
+					input.getModel().fireModelChanged(new Object[]{input, "combo"}, ModelChangeType.CHANGE_PROPERTY);
 				}
 			}
 		});

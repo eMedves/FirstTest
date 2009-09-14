@@ -33,6 +33,7 @@ import org.spagic3.ui.formeditor.model.FieldDefinition;
 import org.spagic3.ui.formeditor.model.FormDefinition;
 import org.spagic3.ui.formeditor.model.IModelListener;
 import org.spagic3.ui.formeditor.model.IModelPart;
+import org.spagic3.ui.formeditor.model.ModelChangeType;
 import org.spagic3.ui.formeditor.model.NamedModelPart;
 import org.spagic3.ui.formeditor.model.TableDefinition;
 /**
@@ -177,7 +178,7 @@ public class ScrolledPropertiesBlock extends MasterDetailsBlock implements IMode
 						final FormDefinition formDefinition = (FormDefinition) selected;
 						final FieldDefinition fieldDefinition = new FieldDefinition();
 						formDefinition.addPart(fieldDefinition);
-						formDefinition.getModel().fireModelChanged(new Object[]{fieldDefinition});
+						formDefinition.getModel().fireModelChanged(new Object[]{fieldDefinition, formDefinition}, ModelChangeType.CHANGE_ADD);
 						viewer.setExpandedState(formDefinition, true);
 					}
 				}
@@ -196,7 +197,7 @@ public class ScrolledPropertiesBlock extends MasterDetailsBlock implements IMode
 						final FormDefinition formDefinition = (FormDefinition) selected;
 						final TableDefinition tableDefinition = new TableDefinition();
 						formDefinition.addPart(tableDefinition);
-						formDefinition.getModel().fireModelChanged(new Object[]{tableDefinition});
+						formDefinition.getModel().fireModelChanged(new Object[]{tableDefinition, formDefinition}, ModelChangeType.CHANGE_ADD);
 						addTableButton.setEnabled(
 								shouldEnableAddTableButton(formDefinition));
 					}
@@ -216,7 +217,7 @@ public class ScrolledPropertiesBlock extends MasterDetailsBlock implements IMode
 						final TableDefinition tableDefinition = (TableDefinition) selected;
 						final ColumnDefinition columnDefinition = new ColumnDefinition();
 						tableDefinition.addColumn(columnDefinition);
-						tableDefinition.getModel().fireModelChanged(new Object[]{columnDefinition});
+						tableDefinition.getModel().fireModelChanged(new Object[]{columnDefinition, tableDefinition}, ModelChangeType.CHANGE_ADD);
 						viewer.setExpandedState(tableDefinition, true);
 					}
 				}
@@ -236,17 +237,17 @@ public class ScrolledPropertiesBlock extends MasterDetailsBlock implements IMode
 					} else if (selected instanceof FieldDefinition) {
 						final FormDefinition parent = (FormDefinition) selected.getParent();
 						parent.removePart(selected);
-						parent.getModel().fireModelChanged(new Object[]{selected});
+						parent.getModel().fireModelChanged(new Object[]{selected, parent}, ModelChangeType.CHANGE_REMOVE);
 					} else if (selected instanceof TableDefinition) {
 						final FormDefinition parent = (FormDefinition) selected.getParent();
 						parent.removePart(selected);
-						parent.getModel().fireModelChanged(new Object[]{selected});
+						parent.getModel().fireModelChanged(new Object[]{selected, parent}, ModelChangeType.CHANGE_REMOVE);
 						addTableButton.setEnabled(
 								shouldEnableAddTableButton(parent));
 					} else if (selected instanceof ColumnDefinition) {
 						final TableDefinition parent = (TableDefinition) selected.getParent();
 						parent.removeColumn((ColumnDefinition) selected);
-						parent.getModel().fireModelChanged(new Object[]{selected});
+						parent.getModel().fireModelChanged(new Object[]{selected, parent}, ModelChangeType.CHANGE_REMOVE);
 					}
 				}
 			}
@@ -308,8 +309,12 @@ public class ScrolledPropertiesBlock extends MasterDetailsBlock implements IMode
 		return !containsATable;
 	}
 	
-	public void modelChanged(Object[] objects) {
-		viewer.refresh();
+	public void modelChanged(Object[] objects, ModelChangeType type) {
+		if (type != ModelChangeType.CHANGE_PROPERTY 
+				|| (type == ModelChangeType.CHANGE_PROPERTY 
+						&& "name".equals(objects[1]))) {
+			viewer.refresh();
+		}
 	}
 	
 	protected void createToolBarActions(IManagedForm managedForm) {
@@ -340,8 +345,8 @@ public class ScrolledPropertiesBlock extends MasterDetailsBlock implements IMode
 	
 	protected void registerPages(DetailsPart detailsPart) {
 		detailsPart.registerPage(FormDefinition.class, new NoPropertiesDetailsPage());
-		detailsPart.registerPage(TableDefinition.class, new NoPropertiesDetailsPage());
 		detailsPart.registerPage(FieldDefinition.class, new InputModelPartDetailsPage());
+		detailsPart.registerPage(TableDefinition.class, new NoPropertiesDetailsPage());
 		detailsPart.registerPage(ColumnDefinition.class, new InputModelPartDetailsPage());
 	}
 	

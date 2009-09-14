@@ -5,7 +5,7 @@ import java.util.List;
 
 public class InputModelPart extends NamedModelPart {
 
-	private String type = "java.lang.String";
+	private String type = "String";
 	private String defaultValue = "";
 	private boolean editable = true; 
 	private boolean mandatory = false;

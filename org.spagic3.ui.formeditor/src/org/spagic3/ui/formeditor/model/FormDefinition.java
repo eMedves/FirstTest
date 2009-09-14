@@ -5,7 +5,7 @@ import java.util.List;
 
 public class FormDefinition implements IModelPart {
 
-	private boolean dynamic;
+	private boolean dynamic = false;
 	private List<IModelPart> parts = new ArrayList<IModelPart>();
 	private IModel model;
 	private IModelPart parent;

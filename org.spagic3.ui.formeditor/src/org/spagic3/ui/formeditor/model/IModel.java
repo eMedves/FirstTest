@@ -1,17 +1,23 @@
 package org.spagic3.ui.formeditor.model;
 
+import java.util.List;
+
 public interface IModel {
+		
+	List<IModelListener> getListeners();
 
 	void addModelListener(IModelListener listener);
 	
 	void removeModelListener(IModelListener listener);
 	
-	void fireModelChanged(Object[] objects);
+	void fireModelChanged(Object[] objects, ModelChangeType type);
+	
+	void addListeners(IModel model);
 	
 	IModelPart[] getParts();
 	
-	public boolean addPart(IModelPart e);	
+	boolean addPart(IModelPart e);	
 	
-	public boolean removePart(IModelPart o);
+	boolean removePart(IModelPart o);
 	
 }

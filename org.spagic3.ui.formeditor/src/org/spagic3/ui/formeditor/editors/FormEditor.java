@@ -22,14 +22,16 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.spagic3.ui.formeditor.Activator;
 import org.spagic3.ui.formeditor.FormEditorInput;
 import org.spagic3.ui.formeditor.model.IModel;
+import org.spagic3.ui.formeditor.model.IModelListener;
+import org.spagic3.ui.formeditor.model.ModelChangeType;
 import org.spagic3.ui.formeditor.model.ModelHelper;
 
-public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implements IResourceChangeListener {
+public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implements IResourceChangeListener, IModelListener {
 
 	private XMLEditor xmlEditor;
 	private FormPage formEditor;
 	private int xmlEditorPageIndex;
-	private int formPageIndex;
+	private int formEditorPageIndex;
 	
 	private ModelHelper modelHelper;
 	private IModel model;
@@ -44,7 +46,6 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 		if (!(editorInput instanceof IFileEditorInput))
 			throw new PartInitException("Invalid Input: Must be IFileEditorInput");
 		super.init(site, new FormEditorInput((IFileEditorInput) editorInput));
-
 		modelHelper = new ModelHelper();
 	}
 
@@ -55,28 +56,28 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 	
 	protected FormToolkit createToolkit(Display display) {
 		// Create a toolkit that shares colors between editors.
-		return new FormToolkit(Activator.getDefault().getFormColors(
-				display));
+		return new FormToolkit(Activator.getDefault().getFormColors(display));
 	}
 	
 	public boolean isSaveAsAllowed() {
 		return true;
 	}
 	
-	
-	@Override
 	public boolean isDirty() {
 		return xmlEditor.isDirty();
 	}
 
 	public void doSave(IProgressMonitor monitor) {
+		updateXML();
 		getEditor(xmlEditorPageIndex).doSave(monitor);
 	}
 
 	public void doSaveAs() {
+		updateXML();
 		IEditorPart editor = getEditor(xmlEditorPageIndex);
 		editor.doSaveAs();
 		setInput(new FormEditorInput((IFileEditorInput) editor.getEditorInput()));
+		updateModel();
 		updateTitle();
 	}
 
@@ -106,15 +107,28 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 		}
 	}
 	
-	void updateModel() {
+	private String getXMLEditorText() {
+		return xmlEditor.getDocumentProvider()
+				.getDocument(xmlEditor.getEditorInput()).get();
+	}
+
+	private void setXMLEditorText(String xmlText) {
+		xmlEditor.getDocumentProvider()
+				.getDocument(xmlEditor.getEditorInput())
+						.set(xmlText);
+	}
+
+	private void updateModel() {
 		try {
-			String xmlEditorText =
-				xmlEditor.getDocumentProvider()
-						.getDocument(xmlEditor.getEditorInput())
-								.get();
-	
-			model = modelHelper.buildFromXML(xmlEditorText);
+			IModel oldModel = model;
+			model = modelHelper.buildFromXML(getXMLEditorText());
 			((FormEditorInput) getEditorInput()).setModel(model);
+			if (oldModel != null) {
+				model.addListeners(oldModel);
+			} else {
+				model.addModelListener(this);
+			}
+			model.fireModelChanged(new Object[] {model, oldModel}, ModelChangeType.CHANGE_NEW);
 		} catch (Exception e) {
 			ErrorDialog.openError(
 					getSite().getShell(),
@@ -124,15 +138,21 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 							IStatus.ERROR, e.getMessage(), e));
 		}
 	}
+
+	public void modelChanged(Object[] objects, ModelChangeType type) {
+		if (type != ModelChangeType.CHANGE_NEW) {
+			makeXMLEditorTextDirty();
+		}
+	}
+
+	private void makeXMLEditorTextDirty() {
+		setXMLEditorText(" - out of date - \n" + getXMLEditorText());
+	}
 	
-	void updateXML() {
+	private void updateXML() {
 		String xmlFromModel = modelHelper.asXML(model);
-		String actualXML = xmlEditor.getDocumentProvider()
-				.getDocument(xmlEditor.getEditorInput()).get();
-		if (!xmlFromModel.equals(actualXML)) {
-			xmlEditor.getDocumentProvider()
-					.getDocument(xmlEditor.getEditorInput())
-							.set(xmlFromModel);
+		if (xmlFromModel != null && !xmlFromModel.equals(getXMLEditorText())) {
+			setXMLEditorText(xmlFromModel);
 		}
 	}
 	
@@ -140,9 +160,9 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 		try {
 			updateModel();
 			formEditor = new MasterDetailsPage(this);
-			formPageIndex = addPage(formEditor);
-			setPageText(formPageIndex, "Form");
-			setActivePage(formPageIndex);
+			formEditorPageIndex = addPage(formEditor);
+			setPageText(formEditorPageIndex, "Form");
+			setActivePage(formEditorPageIndex);
 		} catch (PartInitException e) {
 			ErrorDialog.openError(
 					getSite().getShell(),
@@ -163,7 +183,11 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 		super.pageChange(pageIndex);
 		if (pageIndex == xmlEditorPageIndex) {
 			updateXML();
-		} else if (pageIndex == formPageIndex) {
+		} else if (pageIndex == formEditorPageIndex) {
+			if (getXMLEditorText() != null 
+					&& !getXMLEditorText().equals(modelHelper.asXML(model))) {
+				updateModel();
+			}
 		}
 	}
 	
@@ -171,7 +195,7 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 		int active = getActivePage();
 		if (active == xmlEditorPageIndex) {
 			xmlEditor.setFocus();
-		} else if (active == formPageIndex) {
+		} else if (active == formEditorPageIndex) {
 			formEditor.setFocus();
 		}
 	}

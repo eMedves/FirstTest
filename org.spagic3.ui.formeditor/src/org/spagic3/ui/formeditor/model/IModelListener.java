@@ -8,6 +8,6 @@ package org.spagic3.ui.formeditor.model;
  */
 public interface IModelListener {
 	
-	void modelChanged(Object[] objects);
+	void modelChanged(Object[] objects, ModelChangeType type);
 
 }
