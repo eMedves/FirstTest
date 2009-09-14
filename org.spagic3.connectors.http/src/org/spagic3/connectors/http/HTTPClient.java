@@ -70,7 +70,7 @@ public class HTTPClient extends AbstractSpagicConnector{
     private IHTTPOutputProtocolAdapter protocolAdapter = null;
    
     public void init(){
-		System.out.println("-- HTTP Cliebt Component Init --");
+		System.out.println("-- HTTP Client Component Init --");
 		this.locationURI = propertyConfigurator.getString("locationURI");
 		this.clientTimeout = propertyConfigurator.getLong("timeout", (long)60000);
 		this.mep = propertyConfigurator.getString("mep", SpagicConstants.IN_OUT_MEP);
