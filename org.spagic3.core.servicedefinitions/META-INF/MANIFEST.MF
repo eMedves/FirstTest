@@ -29,3 +29,4 @@ Export-Package: org.dom4j,
  org.dom4j.xpath,
  org.dom4j.xpp,
  org.spagic3.service.model
+Bundle-ActivationPolicy: lazy
