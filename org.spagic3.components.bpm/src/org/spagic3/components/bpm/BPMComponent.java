@@ -19,10 +19,9 @@ import org.spagic3.core.ExchangeUtils;
 
 
 public class BPMComponent extends BaseSpagicService  {
-	protected Logger logger = LoggerFactory.getLogger(BPMComponent.class);
 	
 	public String process = null;
-
+	protected Logger logger = LoggerFactory.getLogger(BPMComponent.class);
 	
 	private final AtomicReference<IProcessEngine> processEngine = new AtomicReference<IProcessEngine>(null);
 	public static ConcurrentHashMap<Long, Exchange> exchangeMap = new ConcurrentHashMap<Long, Exchange>();
@@ -90,16 +89,22 @@ public class BPMComponent extends BaseSpagicService  {
 	  		 done(exchange);
 	  		 long pid =  controlAPI.startByProcessName(process, var);
 	  		 exchangeMap.put(pid, exchange);
+	  	  } else if (ExchangeUtils.isInAndOut(exchange)){
+			if (ExchangeUtils.isSync(exchange)) {
+				var[2] = new Variable();
+				var[2].setName(BPMContextSingleton.REQUIRE_BPM_SYNC_EXECUTION);
+				var[2].setValue("TRUE");
+				long pid = controlAPI.startByProcessName(process, var);
+				Variable varOut = controlAPI.getGlobalVariable(pid,
+						BPMContextSingleton.XML_MESSAGE);
+				exchange.getOut(true).setBody(varOut.getValue());
+			} else {
+				long pid = controlAPI.startByProcessName(process, var);
+				exchangeMap.put(pid, exchange);
+			}
+					  
 	  	  }
 	  	 
-		  if (ExchangeUtils.isInAndOut(exchange) && ExchangeUtils.isSync(exchange)) {
-			 var[2] = new Variable();
-			 var[2].setName(BPMContextSingleton.REQUIRE_BPM_SYNC_EXECUTION);
-			 var[2].setValue("TRUE");
-			 long pid =  controlAPI.startByProcessName(process, var);
-			 Variable varOut = controlAPI.getGlobalVariable(pid, BPMContextSingleton.XML_MESSAGE);			 
-			 exchange.getOut(true).setBody(varOut.getValue());
-		  }
 	  	}
 	}
 
