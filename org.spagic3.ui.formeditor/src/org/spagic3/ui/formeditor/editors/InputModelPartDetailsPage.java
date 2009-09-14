@@ -17,6 +17,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -33,9 +34,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
-import org.spagic3.ui.formeditor.editors.ScrolledPropertiesBlock.MasterContentProvider;
-import org.spagic3.ui.formeditor.editors.ScrolledPropertiesBlock.MasterLabelProvider;
 import org.spagic3.ui.formeditor.model.FieldDefinition;
+import org.spagic3.ui.formeditor.model.IModelPart;
 import org.spagic3.ui.formeditor.model.InputModelPart;
 import org.spagic3.ui.formeditor.model.ItemDefinition;
 import org.spagic3.ui.formeditor.model.ModelChangeType;
@@ -72,6 +72,9 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 	private Label itemsLabel;
 	private Table itemsTable;
 	private TableViewer itemsViewer;
+	private Button addItemButton;
+	private Button removeItemButton;
+
 	
 	public InputModelPartDetailsPage() {
 	}
@@ -122,7 +125,7 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 		Composite client = toolkit.createComposite(titleSection);
 		GridLayout glayout = new GridLayout();
 		glayout.marginWidth = glayout.marginHeight = 2;
-		glayout.numColumns = 2;
+		glayout.numColumns = 3;
 		client.setLayout(glayout);
 		
 		//name label
@@ -146,6 +149,7 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 				}
 			}
 		});
+		createSpacer(toolkit, client, 1);
 
 		//type label
 		typeLabel = toolkit.createLabel(client, "Type");
@@ -174,6 +178,7 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 				}
 			}
 		});
+		createSpacer(toolkit, client, 1);
 		
 		//default label
 		defaultLabel = toolkit.createLabel(client, "Default value");
@@ -195,6 +200,7 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 				}
 			}
 		});
+		createSpacer(toolkit, client, 1);
 
 		//editable label
 		editableLabel = toolkit.createLabel(client, "Editable");
@@ -216,6 +222,7 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 				}
 			}
 		});
+		createSpacer(toolkit, client, 1);
 
 		//mandatory label
 		mandatoryLabel = toolkit.createLabel(client, "Mandatory");
@@ -237,6 +244,7 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 				}
 			}
 		});
+		createSpacer(toolkit, client, 1);
 		
 		//validator label
 		validatorLabel = toolkit.createLabel(client, "Validator");
@@ -265,6 +273,7 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 				}
 			}
 		});
+		createSpacer(toolkit, client, 1);
 		
 		//length label
 		lengthLabel = toolkit.createLabel(client, "Length");
@@ -290,6 +299,7 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 				}
 			}
 		});
+		createSpacer(toolkit, client, 1);
 
 		//precision label
 		precisionLabel = toolkit.createLabel(client, "Precision");
@@ -315,6 +325,7 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 				}
 			}
 		});
+		createSpacer(toolkit, client, 1);
 
 		//combo label
 		comboLabel = toolkit.createLabel(client, "Combo");
@@ -333,9 +344,11 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 						&& comboButton.getSelection() != input.isCombo()) {
 					input.setCombo(comboButton.getSelection());
 					input.getModel().fireModelChanged(new Object[]{input, "combo"}, ModelChangeType.CHANGE_PROPERTY);
+					enableComboPart();
 				}
 			}
 		});
+		createSpacer(toolkit, client, 1);
 		
 		//items label
 		itemsLabel = toolkit.createLabel(client, "Combo items");
@@ -365,13 +378,13 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 			itemsViewer.setInput(input.getItems());
 		}
 		
-		TableViewerColumn itemsLabelColumnViewer = new TableViewerColumn(itemsViewer, itemsLabelColumn);
-		itemsLabelColumnViewer.setLabelProvider(new ColumnLabelProvider() {
+		TableViewerColumn itemsLabelViewerColumn = new TableViewerColumn(itemsViewer, itemsLabelColumn);
+		itemsLabelViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			public String getText(Object element) {
 				return ((ItemDefinition) element).getName();
 			}
 		});
-		itemsLabelColumnViewer.setEditingSupport(new EditingSupport(itemsViewer) {
+		itemsLabelViewerColumn.setEditingSupport(new EditingSupport(itemsViewer) {
 			TextCellEditor editor = null;
 			protected boolean canEdit(Object element) {
 				return true;
@@ -399,13 +412,13 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 			}
 		});
 
-		TableViewerColumn itemsValueColumnViewer = new TableViewerColumn(itemsViewer, itemsValueColumn);
-		itemsValueColumnViewer.setLabelProvider(new ColumnLabelProvider() {
+		TableViewerColumn itemsValueViewerColumn = new TableViewerColumn(itemsViewer, itemsValueColumn);
+		itemsValueViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			public String getText(Object element) {
 				return ((ItemDefinition) element).getValue();
 			}
 		});
-		itemsValueColumnViewer.setEditingSupport(new EditingSupport(itemsViewer) {
+		itemsValueViewerColumn.setEditingSupport(new EditingSupport(itemsViewer) {
 			TextCellEditor editor = null;
 			protected boolean canEdit(Object element) {
 				return true;
@@ -432,6 +445,46 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 				}
 			}
 		});
+		
+		//items buttons
+		Composite itemsButtons = toolkit.createComposite(client);
+		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+		itemsButtons.setLayoutData(gd);
+		itemsButtons.setLayout(new FillLayout(SWT.VERTICAL));
+
+		addItemButton = toolkit.createButton(itemsButtons, "Add Item", SWT.PUSH);
+		addItemButton.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+			public void widgetSelected(SelectionEvent e) {
+				if (input != null) {
+					final ItemDefinition itemDefinition = new ItemDefinition();
+					input.addItem(itemDefinition);
+					input.getModel().fireModelChanged(new Object[]{itemDefinition, input}, ModelChangeType.CHANGE_ADD);
+					itemsViewer.refresh();
+					itemsTable.select(itemsTable.getItemCount() - 1);
+					itemsTable.showSelection();
+				}
+			}
+		});
+		
+		removeItemButton = toolkit.createButton(itemsButtons, "Remove", SWT.PUSH);
+		removeItemButton.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+			public void widgetSelected(SelectionEvent e) {
+				IStructuredSelection selection = (IStructuredSelection) itemsViewer.getSelection();
+				if (selection.size() == 1) {
+					final IModelPart selected = (IModelPart) selection.getFirstElement();
+					if (input != null) {
+						final ItemDefinition itemDefinition = (ItemDefinition) selected;
+						input.removeItem(itemDefinition);
+						input.getModel().fireModelChanged(new Object[]{itemDefinition, input}, ModelChangeType.CHANGE_REMOVE);
+						itemsViewer.refresh();
+					}
+				}
+			}
+		});
 
 		toolkit.paintBordersFor(titleSection);
 		titleSection.setClient(client);
@@ -442,6 +495,20 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 		GridData gd = new GridData();
 		gd.horizontalSpan = span;
 		spacer.setLayoutData(gd);
+	}
+	
+	private void enableComboPart() {
+		if (comboButton.getSelection()) {
+			itemsLabel.setEnabled(true);
+			itemsTable.setEnabled(true);
+			addItemButton.setEnabled(true);
+			removeItemButton.setEnabled(true);
+		} else {
+			itemsLabel.setEnabled(false);
+			itemsTable.setEnabled(false);
+			addItemButton.setEnabled(false);
+			removeItemButton.setEnabled(false);
+		}
 	}
 	
 	private void update() {
@@ -466,6 +533,7 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 			lengthText.setText(String.valueOf(input.getLength()));
 			precisionText.setText(String.valueOf(input.getPrecision()));
 			comboButton.setSelection(input.isCombo());
+			enableComboPart();
 			itemsViewer.setInput(input.getItems());
 		}
 	}

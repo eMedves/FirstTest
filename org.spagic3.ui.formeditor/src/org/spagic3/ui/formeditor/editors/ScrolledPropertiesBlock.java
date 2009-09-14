@@ -33,6 +33,7 @@ import org.spagic3.ui.formeditor.model.FieldDefinition;
 import org.spagic3.ui.formeditor.model.FormDefinition;
 import org.spagic3.ui.formeditor.model.IModelListener;
 import org.spagic3.ui.formeditor.model.IModelPart;
+import org.spagic3.ui.formeditor.model.ItemDefinition;
 import org.spagic3.ui.formeditor.model.ModelChangeType;
 import org.spagic3.ui.formeditor.model.NamedModelPart;
 import org.spagic3.ui.formeditor.model.TableDefinition;
@@ -310,7 +311,8 @@ public class ScrolledPropertiesBlock extends MasterDetailsBlock implements IMode
 	}
 	
 	public void modelChanged(Object[] objects, ModelChangeType type) {
-		if (type != ModelChangeType.CHANGE_PROPERTY 
+		if ((type != ModelChangeType.CHANGE_PROPERTY 
+						&& !(objects[0] instanceof ItemDefinition))
 				|| (type == ModelChangeType.CHANGE_PROPERTY 
 						&& "name".equals(objects[1]))) {
 			viewer.refresh();
