@@ -28,6 +28,8 @@ import org.spagic3.ui.formeditor.model.ModelHelper;
 
 public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implements IResourceChangeListener, IModelListener {
 
+	
+	private static String OUT_OF_DATE_XML_PREFIX = " - out of date - \n";
 	private XMLEditor xmlEditor;
 	private FormPage formEditor;
 	private int xmlEditorPageIndex;
@@ -68,12 +70,16 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 	}
 
 	public void doSave(IProgressMonitor monitor) {
-		updateXML();
+		if (isXMLEditorTextOutOfDate()) {
+			updateXML();
+		}
 		getEditor(xmlEditorPageIndex).doSave(monitor);
 	}
 
 	public void doSaveAs() {
-		updateXML();
+		if (isXMLEditorTextOutOfDate()) {
+			updateXML();
+		}
 		IEditorPart editor = getEditor(xmlEditorPageIndex);
 		editor.doSaveAs();
 		setInput(new FormEditorInput((IFileEditorInput) editor.getEditorInput()));
@@ -141,12 +147,16 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 
 	public void modelChanged(Object[] objects, ModelChangeType type) {
 		if (type != ModelChangeType.CHANGE_NEW) {
-			makeXMLEditorTextDirty();
+			markXMLEditorTextOutOfDate();
 		}
 	}
 
-	private void makeXMLEditorTextDirty() {
-		setXMLEditorText(" - out of date - \n" + getXMLEditorText());
+	private void markXMLEditorTextOutOfDate() {
+		setXMLEditorText(OUT_OF_DATE_XML_PREFIX + getXMLEditorText());
+	}
+	
+	private boolean isXMLEditorTextOutOfDate() {
+		return getXMLEditorText().startsWith(OUT_OF_DATE_XML_PREFIX);
 	}
 	
 	private void updateXML() {

@@ -1,18 +1,30 @@
 package org.spagic3.ui.formeditor.editors;
 
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ui.forms.IFormPart;
@@ -21,8 +33,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
+import org.spagic3.ui.formeditor.editors.ScrolledPropertiesBlock.MasterContentProvider;
+import org.spagic3.ui.formeditor.editors.ScrolledPropertiesBlock.MasterLabelProvider;
 import org.spagic3.ui.formeditor.model.FieldDefinition;
 import org.spagic3.ui.formeditor.model.InputModelPart;
+import org.spagic3.ui.formeditor.model.ItemDefinition;
 import org.spagic3.ui.formeditor.model.ModelChangeType;
 
 /**
@@ -54,6 +69,10 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 	private Label comboLabel;
 	private Button comboButton;
 	
+	private Label itemsLabel;
+	private Table itemsTable;
+	private TableViewer itemsViewer;
+	
 	public InputModelPartDetailsPage() {
 	}
 
@@ -64,6 +83,25 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 		this.mform = mform;
 	}
 	
+	
+	class DetailLabelProvider extends LabelProvider
+	implements ITableLabelProvider {
+		public Image getColumnImage(Object element, int index) {
+			return null;
+		}
+		public String getColumnText(Object element, int index) {
+			ItemDefinition itemDefinition = (ItemDefinition) element;
+			switch (index) {
+				case 0 :
+					return itemDefinition.getName();
+				case 1 :
+					return itemDefinition.getValue();
+				default :
+					return "<unknown(" + index + ")>";
+			}
+		}	
+	}
+		
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.forms.IDetailsPage#createContents(org.eclipse.swt.widgets.Composite)
 	 */
@@ -299,6 +337,102 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 			}
 		});
 		
+		//items label
+		itemsLabel = toolkit.createLabel(client, "Combo items");
+		gd = new GridData();
+		gd.widthHint = 100;
+		itemsLabel.setLayoutData(gd);
+
+		//items table
+		itemsTable = toolkit.createTable(client, SWT.V_SCROLL);
+		gd = new GridData();
+		gd.heightHint = 80;
+		gd.widthHint = 192;
+		itemsTable.setLayoutData(gd);
+		itemsTable.setHeaderVisible(true);
+		itemsTable.setLinesVisible(true);
+		TableColumn itemsLabelColumn = new TableColumn(itemsTable, SWT.LEFT);
+		itemsLabelColumn.setText("Name");
+		itemsLabelColumn.setWidth(96);
+		TableColumn itemsValueColumn = new TableColumn(itemsTable, SWT.LEFT);
+		itemsValueColumn.setText("Value");
+		itemsValueColumn.setWidth(96);
+
+		itemsViewer = new TableViewer(itemsTable);
+		itemsViewer.setContentProvider(new ArrayContentProvider());
+		itemsViewer.setLabelProvider(new DetailLabelProvider());
+		if (input != null) {
+			itemsViewer.setInput(input.getItems());
+		}
+		
+		TableViewerColumn itemsLabelColumnViewer = new TableViewerColumn(itemsViewer, itemsLabelColumn);
+		itemsLabelColumnViewer.setLabelProvider(new ColumnLabelProvider() {
+			public String getText(Object element) {
+				return ((ItemDefinition) element).getName();
+			}
+		});
+		itemsLabelColumnViewer.setEditingSupport(new EditingSupport(itemsViewer) {
+			TextCellEditor editor = null;
+			protected boolean canEdit(Object element) {
+				return true;
+			}
+			protected CellEditor getCellEditor(Object element) {
+				if (editor == null) {
+					Composite table = (Composite) itemsViewer.getControl();
+					editor = new TextCellEditor(table);
+				}
+				return editor;
+			}
+			protected Object getValue(Object element) {
+				return ((ItemDefinition) element).getName();
+			}
+			protected void setValue(Object element, Object value) {
+				final ItemDefinition itemDefinition = (ItemDefinition) element;
+				if (!(itemDefinition.getName() == null ? value == null
+						: itemDefinition.getName().equals((String) value))) {
+					itemDefinition.setName((String) value);
+					itemDefinition.getModel().fireModelChanged(
+							new Object[] {itemDefinition, "name"}, 
+							ModelChangeType.CHANGE_PROPERTY);
+					itemsViewer.refresh(element);
+				}
+			}
+		});
+
+		TableViewerColumn itemsValueColumnViewer = new TableViewerColumn(itemsViewer, itemsValueColumn);
+		itemsValueColumnViewer.setLabelProvider(new ColumnLabelProvider() {
+			public String getText(Object element) {
+				return ((ItemDefinition) element).getValue();
+			}
+		});
+		itemsValueColumnViewer.setEditingSupport(new EditingSupport(itemsViewer) {
+			TextCellEditor editor = null;
+			protected boolean canEdit(Object element) {
+				return true;
+			}
+			protected CellEditor getCellEditor(Object element) {
+				if (editor == null) {
+					Composite table = (Composite) itemsViewer.getControl();
+					editor = new TextCellEditor(table);
+				}
+				return editor;
+			}
+			protected Object getValue(Object element) {
+				return ((ItemDefinition) element).getValue();
+			}
+			protected void setValue(Object element, Object value) {
+				final ItemDefinition itemDefinition = (ItemDefinition) element;
+				if (!(itemDefinition.getValue() == null ? value == null
+						: itemDefinition.getValue().equals((String) value))) {
+					itemDefinition.setValue((String) value);
+					itemDefinition.getModel().fireModelChanged(
+							new Object[] {itemDefinition, "name"}, 
+							ModelChangeType.CHANGE_PROPERTY);
+					itemsViewer.refresh(element);
+				}
+			}
+		});
+
 		toolkit.paintBordersFor(titleSection);
 		titleSection.setClient(client);
 	}
@@ -332,6 +466,7 @@ public class InputModelPartDetailsPage implements IDetailsPage {
 			lengthText.setText(String.valueOf(input.getLength()));
 			precisionText.setText(String.valueOf(input.getPrecision()));
 			comboButton.setSelection(input.isCombo());
+			itemsViewer.setInput(input.getItems());
 		}
 	}
 

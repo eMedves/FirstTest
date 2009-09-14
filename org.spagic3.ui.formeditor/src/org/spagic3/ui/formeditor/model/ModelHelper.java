@@ -27,13 +27,14 @@ public class ModelHelper {
 		Document document = DocumentHelper.parseText(xml);
 		IModel model = new Model();
 		FormDefinition formDefinition = new FormDefinition();
-		formDefinition.setDynamic(false);
 		formDefinition.setModel(model);
+		formDefinition.setDynamic(false);
 		List<Node> fields = evalXPathAsNodes(document, "/formdefinition/field");
 		if (fields != null) {
 			for (Node node : fields) {
 				final Element field = (Element) node;
 				final FieldDefinition fieldDefinition = new FieldDefinition();
+				formDefinition.addPart(fieldDefinition);
 				fieldDefinition.setId(StringEscapeUtils.unescapeXml(field.attributeValue("id")));
 				fieldDefinition.setName(StringEscapeUtils.unescapeXml(field.attributeValue("name")));
 				fieldDefinition.setType(StringEscapeUtils.unescapeXml(field.attributeValue("type")));
@@ -53,7 +54,6 @@ public class ModelHelper {
 				fieldDefinition.setPrecision(precision);
 				fieldDefinition.setCombo("true".equals(field.attributeValue("combo")));
 				addListItems(fieldDefinition, node);
-				formDefinition.addPart(fieldDefinition);
 			}
 		}
 		List<Node> columns = evalXPathAsNodes(document, "/formdefinition/column");
@@ -63,6 +63,7 @@ public class ModelHelper {
 			for (Node node : columns) {
 				final Element column = (Element) node;
 				final ColumnDefinition columnDefinition = new ColumnDefinition();
+				tableDefinition.addColumn(columnDefinition);
 				columnDefinition.setId(StringEscapeUtils.unescapeXml(column.attributeValue("id")));
 				columnDefinition.setName(StringEscapeUtils.unescapeXml(column.attributeValue("name")));
 				columnDefinition.setType(StringEscapeUtils.unescapeXml(column.attributeValue("type")));
@@ -82,7 +83,6 @@ public class ModelHelper {
 				columnDefinition.setPrecision(precision);
 				columnDefinition.setCombo("true".equals(column.attributeValue("combo")));
 				addListItems(columnDefinition, node);
-				tableDefinition.addColumn(columnDefinition);
 			}
 		}
 		model.addPart(formDefinition);
@@ -95,9 +95,9 @@ public class ModelHelper {
 			for (Node node : items) {
 				final Element item = (Element) node;
 				final ItemDefinition itemDefinition = new ItemDefinition();
+				inputPart.addItem(itemDefinition);
 				itemDefinition.setName(StringEscapeUtils.unescapeXml(item.attributeValue("name")));
 				itemDefinition.setValue(StringEscapeUtils.unescapeXml(item.attributeValue("value")));
-				inputPart.addItem(itemDefinition);
 			}
 		}
 	}

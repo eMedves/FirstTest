@@ -108,7 +108,7 @@ public class ScrolledPropertiesBlock extends MasterDetailsBlock implements IMode
 
 	}
 	
-	class MasterLabelProvider extends LabelProvider  {
+	class MasterLabelProvider extends LabelProvider {
 		
 		public Image getImage(Object element) {
 			if (element instanceof FormDefinition) {
