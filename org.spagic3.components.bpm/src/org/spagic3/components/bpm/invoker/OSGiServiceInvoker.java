@@ -2,9 +2,13 @@ package org.spagic3.components.bpm.invoker;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+
 import org.apache.servicemix.nmr.api.Exchange;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.spagic3.components.bpm.BPMComponent;
 import org.spagic3.components.bpm.BPMContextSingleton;
 import org.spagic3.components.bpm.activator.BPMComponentActivator;
 import org.spagic3.constants.SpagicConstants;
@@ -16,12 +20,13 @@ import org.spagic3.integration.api.IWorkflowContextUpdater;
 public class OSGiServiceInvoker extends AbstractSpagicService implements IServiceInvoker{
 
 	private ConcurrentHashMap<String, Exchange> storedExchanges = new ConcurrentHashMap<String, Exchange>();
+	private Logger logger = LoggerFactory.getLogger(OSGiServiceInvoker.class);
 	
 	@Override
 	public void invokeService(String serviceID, Exchange exchange) {
 		try{
 			storedExchanges.put(exchange.getId(), exchange);
-			System.out.println(" Storing exchange ["+exchange.getId()+"] Associated to ["+this.getSpagicId()+"] -> ["+serviceID+"]");
+			logger.info(" Storing exchange ["+exchange.getId()+"] Associated to ["+this.getSpagicId()+"] -> ["+serviceID+"]");
 			exchange.setProperty(SpagicConstants.SPAGIC_SENDER, this.getSpagicId());
 			exchange.setProperty(SpagicConstants.SPAGIC_TARGET, serviceID);
 			if (ExchangeUtils.isSync(exchange)){
@@ -80,9 +85,9 @@ public class OSGiServiceInvoker extends AbstractSpagicService implements IServic
 	@Override
 	public void process(Exchange responseExchange) {
 		try{
-			System.out.println("============== ["+ responseExchange.getProperty(SpagicConstants.SPAGIC_SENDER) + "] -> ["+responseExchange.getProperty(SpagicConstants.SPAGIC_TARGET) +"]");
+			logger.info(" ============= ["+ responseExchange.getProperty(SpagicConstants.SPAGIC_SENDER) + "] -> ["+responseExchange.getProperty(SpagicConstants.SPAGIC_TARGET) +"]");
 			String id  = responseExchange.getId();
-			System.out.println(" Removing ["+responseExchange.getId()+"]");
+			logger.info("  Removing ["+responseExchange.getId()+"]");
 			Exchange storedExchange = storedExchanges.remove(id);
 			
 			Long tokenId =(Long) storedExchange.getProperty(BPMContextSingleton.TOKEN_ID_PROPERTY);
