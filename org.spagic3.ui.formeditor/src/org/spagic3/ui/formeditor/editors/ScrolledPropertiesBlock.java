@@ -346,7 +346,7 @@ public class ScrolledPropertiesBlock extends MasterDetailsBlock implements IMode
 	}
 	
 	protected void registerPages(DetailsPart detailsPart) {
-		detailsPart.registerPage(FormDefinition.class, new NoPropertiesDetailsPage());
+		detailsPart.registerPage(FormDefinition.class, new FormDefinitionDetailPage());
 		detailsPart.registerPage(FieldDefinition.class, new InputModelPartDetailsPage());
 		detailsPart.registerPage(TableDefinition.class, new NoPropertiesDetailsPage());
 		detailsPart.registerPage(ColumnDefinition.class, new InputModelPartDetailsPage());

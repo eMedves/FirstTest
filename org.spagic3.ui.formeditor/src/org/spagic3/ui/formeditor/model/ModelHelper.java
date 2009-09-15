@@ -28,7 +28,8 @@ public class ModelHelper {
 		IModel model = new Model();
 		FormDefinition formDefinition = new FormDefinition();
 		formDefinition.setModel(model);
-		formDefinition.setDynamic(false);
+		String dynamic = evalXPathAsString(document, "/formdefinition/@dynamic");
+		formDefinition.setDynamic("true".equals(dynamic));
 		List<Node> fields = evalXPathAsNodes(document, "/formdefinition/field");
 		if (fields != null) {
 			for (Node node : fields) {
@@ -117,7 +118,7 @@ public class ModelHelper {
 		} else if (part instanceof FormDefinition) {
 			final FormDefinition formDefinition = (FormDefinition) part;
 			xml.append(indent).append("<formdefinition")
-				.append(" dynamyc=\"").append(formDefinition.isDynamic() ? "true" : "false").append("\"")
+				.append(" dynamic=\"").append(formDefinition.isDynamic() ? "true" : "false").append("\"")
 				.append(">\n");
 			for (IModelPart formParts : formDefinition.getParts()) {
 				appendXML(xml, formParts, indent + "\t");
@@ -140,7 +141,7 @@ public class ModelHelper {
 				.append(" length=\"").append(fieldDefinition.getLength()).append("\"")
 				.append(" precision=\"").append(fieldDefinition.getPrecision()).append("\"")
 				.append(" combo=\"").append(fieldDefinition.isCombo() ? "true" : "false").append("\"");
-			if (fieldDefinition.getItems().isEmpty()) {
+			if (!fieldDefinition.isCombo() || fieldDefinition.getItems().isEmpty()) {
 				xml.append("/>\n");
 			} else {
 				xml.append(">\n");
@@ -172,7 +173,7 @@ public class ModelHelper {
 				.append(" length=\"").append(columnDefinition.getLength()).append("\"")
 				.append(" precision=\"").append(columnDefinition.getPrecision()).append("\"")
 				.append(" combo=\"").append(columnDefinition.isCombo() ? "true" : "false").append("\"");
-			if (columnDefinition.getItems().isEmpty()) {
+			if (!columnDefinition.isCombo() || columnDefinition.getItems().isEmpty()) {
 				xml.append("/>\n");
 			} else {
 				xml.append(">\n");

@@ -127,6 +127,12 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 	private void updateModel() {
 		try {
 			IModel oldModel = model;
+
+			//TODO remove on wizard creation
+			if (getXMLEditorText() == null || "".equals(getXMLEditorText())) {
+				setXMLEditorText("<formdefinition dynamyc=\"false\"/>");
+			}
+			
 			model = modelHelper.buildFromXML(getXMLEditorText());
 			((FormEditorInput) getEditorInput()).setModel(model);
 			if (oldModel != null) {
