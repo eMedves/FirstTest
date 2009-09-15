@@ -37,6 +37,8 @@ public class MonitorService implements EventHandler {
 		for (String propertyName : event.getPropertyNames())
 			System.out.println(propertyName + " = " + event.getProperty(propertyName));
 		
+		IDatabaseManager dbManager = getDatabaseManager();
+
 		Boolean internalEvent = (Boolean) event.getProperty(SpagicConstants._IS_INTERNAL_EVENT);
 		String exchangeID = (String) event.getProperty(SpagicConstants.EXCHANGE_ID);
 		String correlationID = (String) event.getProperty(SpagicConstants.EXCHANGE_PROPERTY + "." + SpagicConstants.CORRELATION_ID);
@@ -46,11 +48,24 @@ public class MonitorService implements EventHandler {
 		String inBody  = (String) event.getProperty(SpagicConstants.INBODY);
 		String outBody  = (String) event.getProperty(SpagicConstants.OUTBODY);
 		
-		if (internalEvent != null) {
+		if ((internalEvent != null) && internalEvent) {
+			
+			// Check if the internal event is of interest for the monitoring
+			if (event.getProperty(SpagicConstants._INTERNAL_EVENT_TYPE).equals(SpagicConstants._INTERNAL_EVENT_PROCESS_STARTED)) {
+				String exchangeId = (String) event.getProperty(SpagicConstants._INTERNAL_EVENT_REFERRING_ID);
+				Long processId = (Long) event.getProperty(SpagicConstants._INTERNAL_EVENT_PROCESS_ID);
+
+				
+				
+				ServiceInstance serviceInstance = dbManager.getServiceInstanceByMessageId(exchangeId);
+
+//				senderServiceInstance.setState(ServiceInstanceStateConstants.SERVICE_DONE);
+//				dbManager.updateServiceInstance(serviceInstance);
+			}
+			
 			return;
 		}
 		
-		IDatabaseManager dbManager = getDatabaseManager();
 		Service senderService = dbManager.getServiceById(sender);
 		if (senderService == null) {
 			logger.info("Sender service: " + sender + " not found");
