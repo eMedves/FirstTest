@@ -86,7 +86,7 @@ public class BPMService extends BaseSpagicService {
 	
 	public void init() {
 		log.info(" Initializing BPM Service ");
-		IResource res = propertyConfigurator.getResource("properties://jbpmse.properties");
+		IResource res = propertyConfigurator.getResource("properties://jbpmse.properties", null);
 		if (res != null){
 			try {
 				jbpmNotifyProps.load(res.openStream());
@@ -166,9 +166,9 @@ public class BPMService extends BaseSpagicService {
 		String method = cmdObj.getCompleteMethodName();
 		ResultObject resObject = new ResultObject();
 		try {
-			boolean executed = executeControApi(method, cmdObj, resObject);
+			boolean executed = executeControlAPI(method, cmdObj, resObject);
 			if (!executed)
-				executed = executeControExtendAPI(method, cmdObj, resObject);
+				executed = executeControlExtendAPI(method, cmdObj, resObject);
 			if (!executed)
 				executed = executeQueryApi(method, cmdObj, resObject);
 			if (!executed) {
@@ -184,11 +184,20 @@ public class BPMService extends BaseSpagicService {
 		return resObject;
 	}
 
-	protected boolean executeControApi(String methodName, CmdObject commandObject, ResultObject resultObject) {
+	protected boolean executeControlAPI(String methodName, CmdObject commandObject, ResultObject resultObject) {
 		boolean executed = false;
 		if (methodName.equalsIgnoreCase(CmdObject.START_BY_PROCESS_NAME)) {
 			String processName = (String) commandObject.parametersMap.get(PARAM_PROCESSNAME);
 			long pid = getControlAPI().startByProcessName(processName);
+			if (notifyUrl != null) {
+				getControlAPI().setGlobalVariable(pid, "_SPAGIC_NOTIFY_URL", notifyUrl);
+			}
+			resultObject.setResult(pid);
+			executed = true;
+		} else if (methodName.equalsIgnoreCase(CmdObject.START_BY_PROCESS_NAME_AND_VARIABLES)) {
+			String processName = (String) commandObject.parametersMap.get(PARAM_PROCESSNAME);
+			Variable[] variables = (Variable[]) commandObject.parametersMap.get("variables");
+			long pid = getControlAPI().startByProcessName(processName, variables);
 			if (notifyUrl != null) {
 				getControlAPI().setGlobalVariable(pid, "_SPAGIC_NOTIFY_URL", notifyUrl);
 			}
@@ -362,7 +371,7 @@ public class BPMService extends BaseSpagicService {
 		return executed;
 	}
 
-	protected boolean executeControExtendAPI(String methodName, CmdObject commandObject, ResultObject resultObject) {
+	protected boolean executeControlExtendAPI(String methodName, CmdObject commandObject, ResultObject resultObject) {
 		boolean executed = false;
 		if (methodName.equalsIgnoreCase(CmdObject.FORCE_TOKEN_WITH_SINGLE_TOKEN)) {
 			long processInstanceId = (Long) commandObject.parametersMap.get(PARAM_PROCESSINSTANCEID);
