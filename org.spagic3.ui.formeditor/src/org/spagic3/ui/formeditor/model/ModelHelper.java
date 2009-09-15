@@ -1,5 +1,6 @@
 package org.spagic3.ui.formeditor.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,8 @@ import org.dom4j.xpath.DefaultXPath;
 
 public class ModelHelper {
 	
+	private static final String IS_NULL_OR_EMPTY = "is null or empty";
+	private static final String IS_NEGATIVE = "is negative.";
 	private static Map<String, String> namespaceMap;
 
 	static {
@@ -190,6 +193,67 @@ public class ModelHelper {
 				.append(" value=\"").append(itemDefinition.getValue() != null 
 						? StringEscapeUtils.escapeXml(itemDefinition.getValue()) : "").append("\"")
 				.append("/>\n");
+		}
+	}
+	
+	public List<String> warningFields(IModel model) {
+		List<String> warningFields = new ArrayList<String>();
+		appendWarningFields(warningFields, model, "");
+		return warningFields;
+	}
+	
+	private void appendWarningFields(List<String> warningFields, Object part, String path) {
+		if (part instanceof IModel) {
+			final IModel model = (IModel) part;
+			for (IModelPart modelPart : model.getParts()) {
+				appendWarningFields(warningFields, modelPart, path);
+			}
+		} else if (part instanceof FormDefinition) {
+			final FormDefinition formDefinition = (FormDefinition) part;
+			for (IModelPart formParts : formDefinition.getParts()) {
+				appendWarningFields(warningFields, formParts, path + "form > ");
+			}
+		} else if (part instanceof FieldDefinition) {
+			final FieldDefinition fieldDefinition = (FieldDefinition) part;
+			final String name = fieldDefinition.getName();
+			String thisPath;
+			if (name == null || "".equals(name)) {
+				thisPath = path + "field > ";
+				warningFields.add(thisPath + "Name " + IS_NULL_OR_EMPTY);
+			} else {
+				thisPath = path + "field(" + name + ") > ";
+			}
+			final String type = fieldDefinition.getType();
+			if (type == null || "".equals(type)) {
+				warningFields.add(thisPath + "Type " + IS_NULL_OR_EMPTY);
+			}
+			if (fieldDefinition.getLength() < 0) {
+				warningFields.add(thisPath + "Length " + IS_NEGATIVE);
+			}
+		} else if (part instanceof TableDefinition) {
+			final TableDefinition tableDefinition = (TableDefinition) part;
+			for (ColumnDefinition columnDefinition : tableDefinition.getColumns()) {
+				appendWarningFields(warningFields, columnDefinition, path + "table > ");
+			}
+		} else if (part instanceof ColumnDefinition) {
+			final ColumnDefinition columnDefinition = (ColumnDefinition) part;
+			final String name = columnDefinition.getName();
+			String thisPath;
+			if (name == null || "".equals(name)) {
+				thisPath = path + "column > ";
+				warningFields.add(thisPath + "Name " + IS_NULL_OR_EMPTY);
+			} else {
+				thisPath = path + "column(" + name + ") > ";
+			}
+			final String type = columnDefinition.getType();
+			if (type == null || "".equals(type)) {
+				warningFields.add(thisPath + "Type " + IS_NULL_OR_EMPTY);
+			}
+			if (columnDefinition.getLength() < 0) {
+				warningFields.add(thisPath + "Length " + IS_NEGATIVE);
+			}
+		} else if (part instanceof ItemDefinition) {
+//			final ItemDefinition itemDefinition = (ItemDefinition) part;
 		}
 	}
 	

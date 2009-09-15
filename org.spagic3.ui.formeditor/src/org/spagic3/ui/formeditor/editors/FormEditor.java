@@ -1,5 +1,7 @@
 package org.spagic3.ui.formeditor.editors;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -68,11 +70,30 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 	public boolean isDirty() {
 		return xmlEditor.isDirty();
 	}
+	
+	private void warnForMandatoryFields() {
+		List<String> warningFields = modelHelper.warningFields(model);
+		if (!warningFields.isEmpty() ) {
+			StringBuffer message = new StringBuffer("\tthere are the following warning(s) on save operation.\n");
+			message.append("\nWarnings:\n");
+			for (String warning : warningFields) {
+				message.append("\t" + warning + "\n");
+			}
+			ErrorDialog.openError(
+					getSite().getShell(),
+					"Warning",
+					"Some warning for empty mandatory fields or out of range values.",
+					new Status(IStatus.WARNING, Activator.PLUGIN_ID,
+							IStatus.WARNING, message.toString(), null));
+		}
+	}
+
 
 	public void doSave(IProgressMonitor monitor) {
 		if (isXMLEditorTextOutOfDate()) {
 			updateXML();
 		}
+		warnForMandatoryFields();
 		getEditor(xmlEditorPageIndex).doSave(monitor);
 	}
 
@@ -80,6 +101,7 @@ public class FormEditor extends org.eclipse.ui.forms.editor.FormEditor implement
 		if (isXMLEditorTextOutOfDate()) {
 			updateXML();
 		}
+		warnForMandatoryFields();
 		IEditorPart editor = getEditor(xmlEditorPageIndex);
 		editor.doSaveAs();
 		setInput(new FormEditorInput((IFileEditorInput) editor.getEditorInput()));
