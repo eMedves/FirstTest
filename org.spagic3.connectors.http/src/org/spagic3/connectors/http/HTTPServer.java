@@ -27,6 +27,8 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ContextHandler;
 import org.mortbay.util.ajax.Continuation;
 import org.mortbay.util.ajax.ContinuationSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spagic3.connectors.http.adapters.IHTTPInputProtocolAdapter;
 import org.spagic3.connectors.http.adapters.PlainHTTPInputProtocolAdapter;
 import org.spagic3.connectors.http.adapters.SOAPInputProtocolAdapter;
@@ -34,14 +36,13 @@ import org.spagic3.connectors.http.ssl.SslParameters;
 import org.spagic3.constants.SpagicConstants;
 import org.spagic3.core.AbstractSpagicConnector;
 import org.spagic3.core.PropertyConfigurator;
-import org.spagic3.core.SpagicUtils;
 import org.spagic3.core.resources.IResource;
 
 
 
 public class HTTPServer extends AbstractSpagicConnector {
 	
-	
+	private Logger logger = LoggerFactory.getLogger(HTTPServer.class);
 	private String locationURI = null;
 	private boolean ssl = false; 
 	private SslParameters sslParameters = null;
@@ -83,9 +84,9 @@ public class HTTPServer extends AbstractSpagicConnector {
 	
 	
 	public void init(){
-		System.out.println("-- HTTP Server Component Init --");
+		logger.info("-- HTTP Server Component Init --");
 		this.locationURI = propertyConfigurator.getString("locationURI");
-		this.timeout = propertyConfigurator.getLong("timeout", (long)30000);
+		this.timeout = propertyConfigurator.getLong("timeout", (long)60000);
 		this.mep = propertyConfigurator.getString("mep", SpagicConstants.IN_OUT_MEP);
 		this.isSoap = propertyConfigurator.getBoolean("isSoap", false);
 		
