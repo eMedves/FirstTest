@@ -88,9 +88,12 @@ public class Fork extends Node implements Parsable {
   }
 
   public void execute(ExecutionContext executionContext) {
+	
+	/*
 	System.out.println(" ****************************************************** ");
 	System.out.println(" * SPAGIC -> CUSTOMIZED FORKS                         * ");
 	System.out.println(" ****************************************************** ");
+	*/
 	Token token = executionContext.getToken();
     
     // phase one: collect all the transitionNames

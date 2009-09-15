@@ -99,10 +99,11 @@ public class Join extends Node implements Parsable {
   }
 
   public void execute(ExecutionContext executionContext) {
-	  
+	/*
 	System.out.println(" ********************************************* ");
 	System.out.println(" SPAGIC -> CUSTOMIZED JOIN");
 	System.out.println(" ********************************************* ");
+    */
     Token token = executionContext.getToken();
     
     boolean isAbleToReactivateParent = token.isAbleToReactivateParent();
