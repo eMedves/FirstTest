@@ -24,7 +24,6 @@ public class H2DatabaseActivator implements BundleActivator {
 	private static final String SETUP_SQL_NAME = "setup-h2.sql";
 	/**
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 * 
 	 */
 	public void start(BundleContext context) throws Exception {
 		
