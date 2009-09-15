@@ -58,7 +58,6 @@ public class NmrOutInterceptor extends AbstractInterceptor {
     	org.apache.servicemix.nmr.api.Message nm = message.getContent(org.apache.servicemix.nmr.api.Message.class);
 
         Document doc = DocumentHelper.parseText((String)nm.getBody());
-       
         message.setContent(Document.class,  doc);
         fromNMSAttachments(message, nm);
         fromNMSHeaders(message, nm);
