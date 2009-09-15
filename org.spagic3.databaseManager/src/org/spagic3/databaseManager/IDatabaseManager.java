@@ -39,11 +39,10 @@ public interface IDatabaseManager {
 	
 	/**
 	 * Retrieves a specified Service instance
-	 * @param serviceId The related service
 	 * @param exchangeID The message id
 	 * @return The service instance found, or null if not found
 	 */
-	public ServiceInstance getServiceInstanceByMessageId(String serviceId, String exchangeID);
+	public ServiceInstance getServiceInstanceByMessageId(String exchangeID);
 	
 	/**
 	 * Retrieves a specified Service instance

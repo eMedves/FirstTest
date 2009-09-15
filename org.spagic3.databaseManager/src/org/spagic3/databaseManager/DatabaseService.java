@@ -112,13 +112,11 @@ public class DatabaseService implements IDatabaseManager {
 	}
 
 	@Override
-	public ServiceInstance getServiceInstanceByMessageId(String serviceId,
-			String exchangeID) {
+	public ServiceInstance getServiceInstanceByMessageId(String exchangeID) {
 		Session aSession = null;
 		try {
 			aSession = HibernateUtil.getSessionFactory().openSession();
 			Criteria aCriteria = aSession.createCriteria(ServiceInstance.class);
-			aCriteria.add(Expression.eq(SERVICE_INSTANCE_SERVICE_ID, serviceId));
 			aCriteria.add(Expression.eq(SERVICE_INSTANCE_MESSAGE_ID, exchangeID));
 			return (ServiceInstance) aCriteria.uniqueResult();
 		} finally {
