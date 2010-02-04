@@ -32,3 +32,4 @@ Import-Package: org.apache.commons.codec.binary,
  org.spagic3.core.resources,
  org.spagic3.core.routing
 Service-Component: hl7_cf.xml
+Require-Bundle: org.spagic3.components.hl7.transformations;bundle-version="1.0.0"
