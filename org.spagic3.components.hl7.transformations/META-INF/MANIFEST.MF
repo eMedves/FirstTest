@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Transformations
+Bundle-SymbolicName: org.spagic3.components.hl7.transformations
+Bundle-Version: 1.0.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: lib/,
+ .
+Export-Package: org.spagic.components.hl7
