@@ -1,13 +1,10 @@
 package org.spagic3.components.hl7;
 
 import javax.annotation.PostConstruct;
-import javax.xml.transform.Source;
-
-import org.apache.servicemix.nmr.api.Exchange;
-import org.apache.servicemix.nmr.api.Message;
 
 import org.apache.commons.codec.binary.Base64;
-
+import org.apache.servicemix.nmr.api.Exchange;
+import org.apache.servicemix.nmr.api.Message;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
@@ -26,9 +23,9 @@ import com.eng.IMessageTransformer;
  * 
  */
 public class HL7Component extends BaseSpagicService {
-	 	
+	 
 		private static final Logger log = LoggerFactory.getLogger(HL7Component.class);
-		
+
 
 	    private String  transformationClass;
 	    private String 	transformationType;
@@ -38,21 +35,9 @@ public class HL7Component extends BaseSpagicService {
 	    
 	  
 	    
-	    private void checkParameters() throws Exception {
-	    	log.debug("HL7Component::checkParameters ->  Type ["+transformationType+"]");
-	    	log.debug("HL7Component::checkParameters ->  Tranformation Class Name ["+transformationClass+"]");
-	    	
-	    	if ((transformationClass == null) || (transformationClass.trim().length() == 0)){
-	    		throw new Exception("Transformation Class Name Must be spacified");
-	    	}
-	    	if ((transformationType == null) || (transformationType.trim().length() == 0)){
-	    		throw new Exception("Transformation Type Must be spacified");
-	    	}
-	    	if (!transformationType.equalsIgnoreCase("plain2xml") && !transformationType.equalsIgnoreCase("xml2plain")){
-		    		throw new Exception(" Transformation Type Must be plain2xml or xml2plain");
-		    }
-	    	
-	    	log.debug("HL7Component::checkParameters ->  Tranformation Check is OK");
+	    private void loadParameters() throws Exception {
+			transformationClass = propertyConfigurator.getString("TransformationClass");
+			transformationType = propertyConfigurator.getString("TransformationType");
 	    }
 	   
 	    public void initTransformer() throws Exception  {
@@ -72,7 +57,7 @@ public class HL7Component extends BaseSpagicService {
 	    @PostConstruct
 	    public void init()   {
 	    	try{
-	    		checkParameters();
+	    		loadParameters();
 	    		initTransformer();}
 	    	catch(Throwable e){
 	    		logger.error(e.getMessage(), e);
@@ -82,7 +67,7 @@ public class HL7Component extends BaseSpagicService {
 	   
 	    public boolean run (Exchange exchange, Message in, Message out) throws Exception {
 	    
-	    		
+	    
 	    		//SourceTransformer sourceTransformer = new SourceTransformer();
 	    		try {
 	    			log.debug("HL7 Getting Input Payload");
@@ -96,7 +81,7 @@ public class HL7Component extends BaseSpagicService {
 	    				//Node domNode = sourceTransformer.toDOMNode(new StringSource(payloadInput));
 	    				transfomerInput = getPlainHL7(payloadInput);  
 	    			}
-	    		
+	    
 	    			if (transformationType.equalsIgnoreCase("xml2plain")){
 	    				transfomerInput = payloadInput; 
 	    			}
@@ -111,7 +96,7 @@ public class HL7Component extends BaseSpagicService {
 	    			}else if (transformationType.equalsIgnoreCase("xml2plain")){
 	    				outMsg = wrapInPlainHL7Element(transfomerOutput);
 	    			}
-	    		
+	    
 	    			if (outMsg != null) {
 	    				log.debug("Response: " + out.getBody());
 	    				out.setBody(outMsg);
@@ -122,15 +107,15 @@ public class HL7Component extends BaseSpagicService {
 	    				fault.setBody("<ERROR>Tranformation produced a null message  </ERROR>");
 	    				//fault.setHeader("", payloadInput);
 	    				throw new Exception("HL7Tranformation Failed ");
-	    				
+	    
 	    			}
 	    		}catch(Exception e){
 	    			e.printStackTrace();
 	    			log.error("Exception in HL7 Component",e);
 	    			Message fault = exchange.getFault(true);
 	    			fault.setBody("<ERROR>Tranformation produced a null message  </ERROR>");
-	    			
-	    		
+	    
+	    
 	    			throw new Exception("HL7Tranformation Failed ");
 	    		}
 	   
@@ -150,13 +135,13 @@ public class HL7Component extends BaseSpagicService {
 	    public String getPlainHL7(String payloadInput) throws Exception {
 	    	log.debug("getPlainHL7 from input message....");
 	    	log.debug("getPlainHL7 from input message payload input is " + payloadInput);
-	    	
+	    
 	    	Document payloadDocument = DocumentHelper.parseText(payloadInput);
-	    	
+	    
 	    	log.debug("getPlainHL7 -> getting HL7 Node....");
 	    	Node plainHL7Node = payloadDocument.selectSingleNode(hl7containerElement);
 	    	String base64encoded = plainHL7Node.valueOf("@base64encoded");
-	    	
+	    
 	    	log.debug("getPlainHL7 -> evaluating base64 encoded attribute value is ["+base64encoded+"]");
 	    	boolean mustDecode = false;
 	    	if (base64encoded != null && base64encoded.trim().length() > 0){
@@ -173,8 +158,8 @@ public class HL7Component extends BaseSpagicService {
 	    	}
 	    }
 	    
-		
-		
+
+
 		public String getTransformationType() {
 			return transformationType;
 		}
@@ -198,6 +183,6 @@ public class HL7Component extends BaseSpagicService {
 			this.hl7containerElement = hl7containerElement;
 		}
 
-	
-		
+
+
 }
