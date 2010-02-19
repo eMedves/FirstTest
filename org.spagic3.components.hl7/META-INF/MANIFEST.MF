@@ -29,7 +29,7 @@ Import-Package: org.apache.commons.codec.binary,
  org.osgi.util.tracker;version="1.4.2",
  org.slf4j;version="1.5.6",
  org.spagic3.core,
- org.spagic3.core.resources,
  org.spagic3.core.routing
 Service-Component: hl7_cf.xml
-Require-Bundle: org.spagic3.components.hl7.transformations;bundle-version="1.0.0"
+Require-Bundle: org.spagic3.components.hl7.transformations;bundle-version="1.0.0",
+ org.spagic3.util;bundle-version="1.0.0"
