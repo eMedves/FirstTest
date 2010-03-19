@@ -1,0 +1,74 @@
+Manifest-Version: 1.0
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: OSGi/Minimum-1.1
+Bundle-SymbolicName: org.eclipse.equinox.event
+Bundle-Activator: org.eclipse.equinox.internal.event.Activator
+Export-Package: org.eclipse.equinox.internal.event;x-internal:=true,or
+ g.eclipse.equinox.internal.event.mapper;x-internal:=true
+Bundle-Version: 1.1.100.v20090520-1800
+Bundle-Vendor: %bundleVendor
+Bundle-Name: %bundleName
+Bundle-Copyright: %bundleCopyright
+Export-Service: org.osgi.service.event.EventAdmin
+Import-Package: org.eclipse.osgi.framework.eventmgr;version="1.1.0",or
+ g.eclipse.osgi.util,org.osgi.framework,org.osgi.service.event,org.osg
+ i.service.log,org.osgi.util.tracker
+Bundle-ManifestVersion: 2
+
+Name: org/eclipse/equinox/internal/event/mapper/EventRedeliverer.class
+SHA1-Digest: WtdP1lNrzQz5V2K5x+ZMsJq3yBs=
+
+Name: org/eclipse/equinox/internal/event/mapper/ServiceEventAdapter.cl
+ ass
+SHA1-Digest: 1La0XsFoY241/DflzwfUgUNF8hA=
+
+Name: org/eclipse/equinox/internal/event/Activator.class
+SHA1-Digest: T0AAr4IqtNx9z+y/tWwbTFjTG40=
+
+Name: META-INF/eclipse.inf
+SHA1-Digest: KyT9FF7C7t86NoBoa2kZT3ZJBfw=
+
+Name: org/eclipse/equinox/internal/event/mapper/Constants.class
+SHA1-Digest: oKUntpQaseWXQ4C5VeLI9w1TkcE=
+
+Name: org/eclipse/equinox/internal/event/mapper/FrameworkEventAdapter.
+ class
+SHA1-Digest: Qm9VjNysZ+5uR+6FBihYNGpP/pY=
+
+Name: about.html
+SHA1-Digest: +/ZbB4iOoCwiJmEdG+67tzzJKc4=
+
+Name: org/eclipse/equinox/internal/event/LogMessages.properties
+SHA1-Digest: RrdufdPQqYff7qjVxTeK5G53SjQ=
+
+Name: plugin.properties
+SHA1-Digest: EFrmvVJWjmms57ew4aLRiPddlDs=
+
+Name: org/eclipse/equinox/internal/event/ExternalMessages.properties
+SHA1-Digest: lbUH7YYOIZKPkbqyjVpPdpEKqh8=
+
+Name: org/eclipse/equinox/internal/event/mapper/EventAdapter.class
+SHA1-Digest: sCiQ2s7tRkBQ1jj+XGxpUCYeNDg=
+
+Name: org/eclipse/equinox/internal/event/EventHandlerWrapper.class
+SHA1-Digest: Sk4TRxtLqrcnMl2SzDTKFsWXN1A=
+
+Name: org/eclipse/equinox/internal/event/mapper/BundleEventAdapter.cla
+ ss
+SHA1-Digest: SurcvQzl/7e22EQUXG926YRp6FY=
+
+Name: org/eclipse/equinox/internal/event/EventHandlerTracker.class
+SHA1-Digest: N8orLxBsH3/MSaNZUfUi6ql0WE4=
+
+Name: org/eclipse/equinox/internal/event/EventAdminMsg.class
+SHA1-Digest: bjAA6BIBL6Ijv1fqpzmU+LVzgOo=
+
+Name: org/eclipse/equinox/internal/event/LogTracker.class
+SHA1-Digest: 9BM5elJoVhQ3QpZm3nrqdm4lcLw=
+
+Name: org/eclipse/equinox/internal/event/EventAdminImpl.class
+SHA1-Digest: 2kD/0v1eYO6kHHz4+mN44OszWDI=
+
+Name: org/eclipse/equinox/internal/event/LogTrackerMsg.class
+SHA1-Digest: LfFUTqAGvplTRCW8Zit88jt5BeM=
+
