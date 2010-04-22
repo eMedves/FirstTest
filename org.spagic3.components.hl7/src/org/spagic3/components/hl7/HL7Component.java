@@ -3,14 +3,14 @@ package org.spagic3.components.hl7;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.servicemix.nmr.api.Exchange;
-import org.apache.servicemix.nmr.api.Message;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spagic3.core.BaseSpagicService;
+import org.spagic3.nmr.api.Exchange;
+import org.spagic3.nmr.api.Message;
 
 import com.eng.IMessageTransformer;
 
