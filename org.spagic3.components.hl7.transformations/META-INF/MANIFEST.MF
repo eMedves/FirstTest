@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Transformations
 Bundle-SymbolicName: org.spagic3.components.hl7.transformations
-Bundle-Version: 1.0.0
+Bundle-Version: 3.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  lib/eselhl7231.jar,
@@ -77,5 +77,5 @@ Export-Package: com.altova,
  com.mapforce.ORU_R01.hl7;uses:="com.altova.types,com.altova.xml,org.w3c.dom",
  com.mapforce.OUL_R22;uses:="com.altova.xml",
  com.mapforce.OUL_R22.hl7;uses:="com.altova.types,com.altova.xml,org.w3c.dom"
-Bundle-Vendor: Engineering Ing. Informatica
+Bundle-Vendor: Engineering Group
 
