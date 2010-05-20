@@ -4,6 +4,9 @@
 	<comment></comment>
 	<projects>
 		<project>org.spagic3.client.proxy</project>
+		<project>org.eclipse.equinox.servletbridge</project>
+		<project>org.spagic3.servletbridge</project>
+		<project>org.spagic3.invm.server</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

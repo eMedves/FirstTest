@@ -3,14 +3,19 @@
 	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
 	id="InvokerRemote" version="2.5">
-  <display-name>InvokerRemote</display-name>
-  <context-param>
+	<display-name>InvokerRemote</display-name>
+  <!-- context-param>
   	<param-name>spagic.remote.proxy.url</param-name>
   	<param-value>http://localhost:9096/client_remote/</param-value>
+  </context-param-->
+  <context-param>
+  	<param-name>spagic.invm.proxy.enabled</param-name>
+  	<param-value>true</param-value>
   </context-param>
-  <servlet id="bridge">
+
+	<servlet id="bridge">
 		<servlet-name>equinoxbridgeservlet</servlet-name>
-		<servlet-class>org.eclipse.equinox.servletbridge.SpagicServlet</servlet-class>
+		<servlet-class>org.spagic3.equinox.servletbridge.SpagicServlet</servlet-class>
 		<init-param>
 			<param-name>commandline</param-name>
 			<param-value>-console</param-value>			
@@ -27,7 +32,7 @@
 		  -->
 		<init-param>
 			<param-name>extendedFrameworkExports</param-name>
-			<param-value>org.spagic3.client.api</param-value>			
+			<param-value>org.spagic3.equinox.servletbridge,org.spagic3.client.api</param-value>						
 		</init-param>
 
 		<init-param>
