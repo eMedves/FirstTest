@@ -71,7 +71,7 @@ public class HL7Component extends BaseSpagicService {
 	    		//SourceTransformer sourceTransformer = new SourceTransformer();
 	    		try {
 	    			log.debug("HL7 Getting Input Payload");
-	    			String payloadInput = (String)in.getBody();
+	    			String payloadInput = in.getBodyText();
 	          
 	            
 	    			String transfomerInput = null;
