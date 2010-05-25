@@ -3,6 +3,7 @@ package org.spagic3.invokerremote;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -58,14 +59,21 @@ public class SpagicProxyServlet extends HttpServlet {
 				requestMessage = requestMessage.trim();
 				ClientMessage message = new ClientMessage("testMessage", requestMessage);
 				// ATTACHMENT EXAMPLE
-//				File file1 = new File("D:/tmp/attachment_test/send_by_web/by_web.pdf");
-//				DataSource ds1 = new FileDataSource(file1);
-//				DataHandler dh = new DataHandler(ds1);
-//
-//		
-//				message.setAttachment("a1",  SpagicInvoker.fromDataHandler(dh));
+				File file1 = new File("C:/DB Test.adb");
+				DataSource ds1 = new FileDataSource(file1);
+				DataHandler dh = new DataHandler(ds1);
+
+		
+				message.setAttachment("a1",  SpagicInvoker.fromDataHandler(dh));
 				
-				ClientMessage responseFromSpagic = invoker.invokeAndWait(spagicServiceID,message);
+				Date before = new Date();
+				ClientMessage responseFromSpagic = null;
+				for (int i = 0; i < 1000; i++) {
+					responseFromSpagic = invoker.invokeAndWait(spagicServiceID, message);
+				}
+				Date after = new Date();
+				long time = after.getTime() - before.getTime();
+				System.out.println("Time spent: " + time + " msec");
 				xmlResponse.append(responseFromSpagic.getBody());
 			}
 		}

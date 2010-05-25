@@ -6,7 +6,7 @@
 	<display-name>InvokerRemote</display-name>
   <!-- context-param>
   	<param-name>spagic.remote.proxy.url</param-name>
-  	<param-value>http://localhost:9096/client_remote/</param-value>
+  	<param-value>http://0.0.0.0:9090/client_remote/</param-value>
   </context-param-->
   <context-param>
   	<param-name>spagic.invm.proxy.enabled</param-name>
