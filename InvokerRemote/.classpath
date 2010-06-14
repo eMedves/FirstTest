@@ -13,7 +13,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.spagic3.client.proxy"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.spagic3.client.api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.ebpm.clientproxy"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.ebpm.client.api"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
