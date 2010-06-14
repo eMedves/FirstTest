@@ -1,20 +1,16 @@
 package org.spagic3.invokerremote;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.spagic3.client.api.ClientMessage;
-import org.spagic3.client.proxy.SpagicInvoker;
+import org.eclipse.ebpm.client.api.ClientMessage;
+import org.eclipse.ebpm.clientproxy.SpagicInvoker;
 /**
  * Servlet implementation class SpagicProxyServlet
  */
@@ -59,12 +55,12 @@ public class SpagicProxyServlet extends HttpServlet {
 				requestMessage = requestMessage.trim();
 				ClientMessage message = new ClientMessage("testMessage", requestMessage);
 				// ATTACHMENT EXAMPLE
-				File file1 = new File("C:/DB Test.adb");
-				DataSource ds1 = new FileDataSource(file1);
-				DataHandler dh = new DataHandler(ds1);
-
-		
-				message.setAttachment("a1",  SpagicInvoker.fromDataHandler(dh));
+//				File file1 = new File("D:/tmp/attachment_test/send_by_web/by_web.pdf");
+//				DataSource ds1 = new FileDataSource(file1);
+//				DataHandler dh = new DataHandler(ds1);
+//
+//		
+//				message.setAttachment("a1",  SpagicInvoker.fromDataHandler(dh));
 				
 				Date before = new Date();
 				ClientMessage responseFromSpagic = null;
