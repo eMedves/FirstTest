@@ -3,16 +3,16 @@
     <wb-module deploy-name="InvokerRemote">
         <wb-resource deploy-path="/" source-path="/WebContent"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <dependent-module archiveName="org.spagic3.client.proxy.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.spagic3.client.proxy/org.spagic3.client.proxy">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="org.eclipse.equinox.servletbridge.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.eclipse.equinox.servletbridge/org.eclipse.equinox.servletbridge">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="org.spagic3.servletbridge.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.spagic3.servletbridge/org.spagic3.servletbridge">
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/org.eclipse.ebpm.invm.server/org.eclipse.ebpm.invm.server">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="org.spagic3.invm.server.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.spagic3.invm.server/org.spagic3.invm.server">
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/org.eclipse.ebpm.clientproxy/org.eclipse.ebpm.clientproxy">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/org.eclipse.ebpm.servletbridge/org.eclipse.ebpm.servletbridge">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path"/>
