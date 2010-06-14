@@ -15,7 +15,7 @@
 
 	<servlet id="bridge">
 		<servlet-name>equinoxbridgeservlet</servlet-name>
-		<servlet-class>org.spagic3.equinox.servletbridge.SpagicServlet</servlet-class>
+		<servlet-class>org.eclipse.ebpm.servletbridge.SpagicServlet</servlet-class>
 		<init-param>
 			<param-name>commandline</param-name>
 			<param-value>-console</param-value>			
@@ -32,7 +32,7 @@
 		  -->
 		<init-param>
 			<param-name>extendedFrameworkExports</param-name>
-			<param-value>org.spagic3.equinox.servletbridge,org.spagic3.client.api</param-value>						
+			<param-value>org.eclipse.ebpm.servletbridge,org.eclipse.ebpm.client.api</param-value>						
 		</init-param>
 
 		<init-param>
