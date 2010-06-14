@@ -6,11 +6,11 @@ import org.apache.commons.codec.binary.Base64;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.eclipse.ebpm.core.BaseSpagicService;
+import org.eclipse.ebpm.messaging.api.Exchange;
+import org.eclipse.ebpm.messaging.api.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spagic3.core.BaseSpagicService;
-import org.spagic3.nmr.api.Exchange;
-import org.spagic3.nmr.api.Message;
 
 import com.eng.IMessageTransformer;
 

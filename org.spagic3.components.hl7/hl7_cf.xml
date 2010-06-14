@@ -5,11 +5,11 @@
 	
    <implementation class="org.spagic3.components.hl7.HL7Component"/>
    <reference bind="setMessageRouter" cardinality="1..1" 
-   		interface="org.spagic3.core.routing.IMessageRouter" 
+   		interface="org.eclipse.ebpm.core.routing.IMessageRouter" 
    		name="IMessageRouter" 
    		policy="dynamic" unbind="unsetMessageRouter"/>
    <service>
-      <provide interface="org.spagic3.core.ISpagicService"/>
+      <provide interface="org.eclipse.ebpm.core.ISpagicService"/>
       <provide interface="org.osgi.service.event.EventHandler"/>
    </service>
    

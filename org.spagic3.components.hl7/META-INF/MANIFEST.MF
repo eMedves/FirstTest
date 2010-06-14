@@ -22,14 +22,14 @@ Import-Package: org.apache.commons.codec.binary,
  org.dom4j.util;version="1.6.1",
  org.dom4j.xpath;version="1.6.1",
  org.dom4j.xpp;version="1.6.1",
+ org.eclipse.ebpm.core,
+ org.eclipse.ebpm.core.routing,
+ org.eclipse.ebpm.messaging.api,
  org.osgi.framework;version="1.5.0",
  org.osgi.service.cm;version="1.2.1",
  org.osgi.service.event;version="1.2.0",
  org.osgi.util.tracker;version="1.4.2",
- org.slf4j;version="1.5.6",
- org.spagic3.core,
- org.spagic3.core.routing,
- org.spagic3.nmr.api
+ org.slf4j;version="1.5.6"
 Service-Component: hl7_cf.xml
 Require-Bundle: org.spagic3.components.hl7.transformations;bundle-version="1.0.0",
- org.spagic3.util;bundle-version="1.0.0"
+ org.eclipse.ebpm.util;bundle-version="1.0.0"
