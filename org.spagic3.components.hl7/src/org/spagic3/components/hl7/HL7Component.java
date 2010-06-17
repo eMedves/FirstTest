@@ -5,6 +5,7 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.codec.binary.Base64;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.dom4j.Node;
 import org.eclipse.ebpm.core.BaseSpagicService;
 import org.eclipse.ebpm.messaging.api.Exchange;
@@ -139,8 +140,8 @@ public class HL7Component extends BaseSpagicService {
 	    	Document payloadDocument = DocumentHelper.parseText(payloadInput);
 	    
 	    	log.debug("getPlainHL7 -> getting HL7 Node....");
-	    	Node plainHL7Node = payloadDocument.selectSingleNode(hl7containerElement);
-	    	String base64encoded = plainHL7Node.valueOf("@base64encoded");
+	    	Element plainHL7Node = payloadDocument.getRootElement();
+	    	String base64encoded = plainHL7Node.attributeValue("base64encoded");
 	    
 	    	log.debug("getPlainHL7 -> evaluating base64 encoded attribute value is ["+base64encoded+"]");
 	    	boolean mustDecode = false;
