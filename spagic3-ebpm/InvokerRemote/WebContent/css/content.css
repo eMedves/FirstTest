@@ -1,0 +1,23 @@
+HTML, BODY, DIV, SPAN,
+H1, H2, H3, H4, H5, H6, P, BLOCKQUOTE, PRE,
+A, ABBR, ACRONYM, ADDRESS, BIG, CITE, CODE,
+DEL, DFN, EM, FONT,
+SMALL, STRIKE, STRONG, B, SUB, SUP, TT, VAR,
+DL, DT, DD, OL, UL, LI,
+FIELDSET, FORM, LABEL, LEGEND,
+TABLE, CAPTION, TBODY, TFOOT, THEAD, TR, TH, TD, INPUT, TEXTAREA
+{ font-weight: normal;
+font-style: normal;
+font-size: 11px;
+font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+.title1 {
+	font-size: 15px;
+	font-weight: bold;
+}
+
+.title2{
+	font-weight: bold;
+
+}
