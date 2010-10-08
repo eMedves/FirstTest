@@ -4,8 +4,7 @@ Bundle-Name: Transformations
 Bundle-SymbolicName: org.spagic3.components.hl7.transformations
 Bundle-Version: 3.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ClassPath: .,
- lib/eselhl7231.jar,
+Bundle-ClassPath: lib/eselhl7231.jar,
  lib/eselhl725.jar,
  lib/commonsaltova.jar
 Export-Package: com.altova,
