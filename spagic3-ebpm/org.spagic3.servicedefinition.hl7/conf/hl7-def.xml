@@ -6,7 +6,7 @@
 	
 	<services>
 		<service label="HL7-XML" name="HL72XML" factory="spagic3.hl7factory"/>
-		<service label="XML-HL7" name="XML2HL7" factory="spagic3.xmlfactory"/>
+		<service label="XML-HL7" name="XML2HL7" factory="spagic3.hl7xmlfactory"/>
 	</services>
 	
 	<definitions>
@@ -26,7 +26,7 @@
 
 		</def>
 		
-		<def name="XML2HL7" factory="spagic3.xmlfactory">
+		<def name="XML2HL7" factory="spagic3.hl7xmlfactory">
 			<property label="Transformation XML->HL7" 
 					  name="TransformationClass" 
 					  mandatory="true"  
