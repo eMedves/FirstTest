@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scrappy>
+	<!--  This element will be visualized when we choose File, New, Spagic3 -->
+	<connectors>
+	</connectors>
+	
+	<services>
+		<service label="HL7-XML" name="HL72XML" factory="spagic3.hl7factory"/>
+		<service label="XML-HL7" name="XML2HL7" factory="spagic3.xmlfactory"/>
+	</services>
+	
+	<definitions>
+		<def name="HL72XML" factory="spagic3.hl7factory">
+			<property label="Transformation HL7->XML" 
+					  name="TransformationClass" 
+					  mandatory="true"  
+					  editor="combo" 
+					  combo="HL72XMLCombo"/>
+			
+			<property label="Transformation Type" 
+				name="TransformationType" 
+				editable="false"
+				mandatory="true" 
+				default="plain2xml" 
+				editor="text"/>
+
+		</def>
+		
+		<def name="XML2HL7" factory="spagic3.xmlfactory">
+			<property label="Transformation XML->HL7" 
+					  name="TransformationClass" 
+					  mandatory="true"  
+					  editor="combo" 
+					  combo="XML2HL7Combo"/>
+					  
+			<property label="Transformation Type" 
+					  name="TransformationType" 
+					  editable="false"
+					  mandatory="true" 
+					  default="xml2plain" 
+					  editor="text"/>
+
+		</def>
+	</definitions>
+	
+	<combo-providers>		
+	</combo-providers>
+</scrappy>
