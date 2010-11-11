@@ -12,8 +12,25 @@ import org.eclipse.ebpm.util.resources.Resource;
 public class JBFCaller {
 	
 	private Properties properties = null;
+	private boolean balanced  = false;
 	
+	public boolean isBalanced() {
+		return balanced;
+	}
+
+	public void setBalanced(boolean balanced) {
+		this.balanced = balanced;
+	}
+
 	public JBFCaller(String spagicUri){
+		this(spagicUri,false);
+	}
+	
+	public JBFCaller(Properties properties){
+		this(properties,false);
+	}
+	
+	public JBFCaller(String spagicUri,  boolean balanced){
 		IResource resource = new Resource(spagicUri);
 		this.properties = new Properties();
 		try{
@@ -21,9 +38,15 @@ public class JBFCaller {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+		this.balanced = balanced;
+		
 	}
-	public JBFCaller(Properties properties){
+	
+	
+	
+	public JBFCaller(Properties properties, boolean balanced){
 		this.properties = properties;
+		this.balanced = balanced;
 	}
 	
 	public boolean  handleError( int code, JBFHelper helper, ProcessContext pc, Exchange exchange, Message in, Message out){
@@ -56,7 +79,7 @@ public class JBFCaller {
 	public void call(Exchange exchange, Message in, Message out){
 		ProcessContext pc = new ProcessContext(exchange);
 		JBFHelper jbfHelper = new JBFHelper(properties);
-		
+		jbfHelper.setBalanced(balanced);
 	
 		// OPEN SESSION 
 		int openSession = jbfHelper.openSession();

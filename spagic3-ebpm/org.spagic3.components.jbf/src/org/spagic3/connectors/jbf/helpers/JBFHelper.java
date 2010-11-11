@@ -30,7 +30,7 @@ import org.dom4j.Node;
 public class JBFHelper {
 
 	private Properties properties = null;
-	
+	private boolean balanced  = false;
 	
 	private String sessionId = null;
 	private String cookieOpenSession = null;
@@ -160,21 +160,26 @@ public class JBFHelper {
 //					CookieOpenSession[0]);
 //			// get cookie per bilanciamento joem 30 11 2009
    		 
-   		 this.cookieOpenSession = response.getMimeHeaders().getHeader("Set-Cookie")[0];
-   		 
-   		if (isErrorResponse(body)){
-   			setJbfError(retrieveConnectionError(body));
-   			setJbfResponse(connectionRefused());
-   			return JBFConstants.JBF_CONNECTION_ERROR;
-		}else if (isException(body)){
-			setJbfError(retrieveExceptionDescription(body));
-			setJbfResponse(retrieveRealResponse(body));
-			return JBFConstants.JBF_APPLICATION_ERROR;
-   		 }else{
-   			 this.sessionId = retrieveSessionId(body);
-   			 return JBFConstants.JBF_OK;
-   		 }
-		}catch (Throwable e) {
+			if (isBalanced()) {
+				this.cookieOpenSession = response.getMimeHeaders().getHeader(
+						"Set-Cookie")[0];
+			}
+
+			if (isErrorResponse(body)) {
+				setJbfError(retrieveConnectionError(body));
+				setJbfResponse(connectionRefused());
+				return JBFConstants.JBF_CONNECTION_ERROR;
+				
+			} else if (isException(body)) {
+				setJbfError(retrieveExceptionDescription(body));
+				setJbfResponse(retrieveRealResponse(body));
+				return JBFConstants.JBF_APPLICATION_ERROR;
+				
+			} else {
+				this.sessionId = retrieveSessionId(body);
+				return JBFConstants.JBF_OK;
+			}
+		} catch (Throwable e) {
 			throw new RuntimeException("Error Invoking Spagic", e);
 		}
 	}
@@ -256,7 +261,7 @@ public class JBFHelper {
    		 requestElement.addTextNode(el.asXML());
    		 message.getMimeHeaders().addHeader("SOAPAction", "");
    		 
-   		 if (this.cookieOpenSession != null){
+   		 if ((this.cookieOpenSession != null) && isBalanced()){
    			message.getMimeHeaders().setHeader("Cookie", cookieOpenSession);
    		 }
    		
@@ -364,6 +369,14 @@ public class JBFHelper {
 			return null;
 			
 		}
+	}
+	
+	public boolean isBalanced() {
+		return balanced;
+	}
+
+	public void setBalanced(boolean balanced) {
+		this.balanced = balanced;
 	}
 	
 }
