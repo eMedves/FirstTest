@@ -77,4 +77,13 @@ Export-Package: com.altova,
  com.mapforce.OUL_R22;uses:="com.altova.xml",
  com.mapforce.OUL_R22.hl7;uses:="com.altova.types,com.altova.xml,org.w3c.dom"
 Bundle-Vendor: Engineering Group
+Import-Package: org.apache.commons.lang;version="2.4.0",
+ org.apache.commons.lang.builder;version="2.4.0",
+ org.apache.commons.lang.enum;version="2.4.0",
+ org.apache.commons.lang.enums;version="2.4.0",
+ org.apache.commons.lang.exception;version="2.4.0",
+ org.apache.commons.lang.math;version="2.4.0",
+ org.apache.commons.lang.mutable;version="2.4.0",
+ org.apache.commons.lang.text;version="2.4.0",
+ org.apache.commons.lang.time;version="2.4.0"
 
