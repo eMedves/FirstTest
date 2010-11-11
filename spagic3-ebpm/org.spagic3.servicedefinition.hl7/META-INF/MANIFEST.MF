@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hl7
 Bundle-SymbolicName: org.spagic3.servicedefinition.hl7;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 3.1.0
 Bundle-Activator: org.spagic3.servicedefinition.hl7.Spagic3Hl7SvcActivator
 Bundle-Vendor: Engineering Group
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

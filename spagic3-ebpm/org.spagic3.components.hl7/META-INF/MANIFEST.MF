@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hl7
 Bundle-SymbolicName: org.spagic3.components.hl7
-Bundle-Version: 3.0.0
+Bundle-Version: 3.1.0
 Bundle-Vendor: Engineering Group
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
