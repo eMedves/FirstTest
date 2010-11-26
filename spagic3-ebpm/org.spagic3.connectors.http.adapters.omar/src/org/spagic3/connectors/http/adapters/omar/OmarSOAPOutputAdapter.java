@@ -8,13 +8,13 @@ import org.eclipse.ebpm.connectors.http.adapters.SOAPProtocolOutputAdapter;
 import org.eclipse.ebpm.connectors.http.adapters.SpagicJettyHTTPExchange;
 import org.eclipse.ebpm.messaging.api.Exchange;
 import org.eclipse.ebpm.soap.api.InterceptorChain;
-import org.eclipse.ebpm.soap.api.Message;
 import org.eclipse.ebpm.soap.api.InterceptorProvider.Phase;
+import org.eclipse.ebpm.soap.api.Message;
 import org.eclipse.ebpm.soap.api.model.Binding;
 import org.eclipse.ebpm.soap.bindings.soap.SoapConstants;
 import org.eclipse.ebpm.util.properties.PropertyConfigurator;
-import org.mortbay.io.ByteArrayBuffer;
-import org.mortbay.jetty.HttpMethods;
+import org.eclipse.jetty.http.HttpMethods;
+import org.eclipse.jetty.io.ByteArrayBuffer;
 
 public class OmarSOAPOutputAdapter extends SOAPProtocolOutputAdapter {
 
