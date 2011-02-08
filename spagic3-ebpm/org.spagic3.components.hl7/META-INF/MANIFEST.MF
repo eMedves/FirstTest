@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.spagic3.components.hl7
 Bundle-Version: 3.2.0
 Bundle-Vendor: Engineering Group
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ClassPath: .,
- lib/commonsaltova.jar
+Bundle-ClassPath: .
 Import-Package: org.apache.commons.codec.binary,
  org.apache.commons.lang;version="2.4.0",
  org.apache.commons.lang.builder;version="2.4.0",
