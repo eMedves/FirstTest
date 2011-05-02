@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JBF WebserviceConnector
 Bundle-SymbolicName: org.spagic3.components.jbf
-Bundle-Version: 3.2.0
+Bundle-Version: 3.3.0
 Bundle-Vendor: Engineering Ing. Informatica
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.dom4j;version="1.6.1",
