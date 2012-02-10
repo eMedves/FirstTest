@@ -6,7 +6,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.Node;
 import org.eclipse.ebpm.core.BaseSpagicService;
 import org.eclipse.ebpm.messaging.api.Exchange;
 import org.eclipse.ebpm.messaging.api.Message;
