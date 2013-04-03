@@ -33,6 +33,7 @@ public class JBFHelper {
 	private boolean balanced  = false;
 	
 	private String sessionId = null;
+	private String cookieLblSessionId = null; //GLC add
 	private String cookieOpenSession = null;
 	
 	private String jbfRequest;
@@ -40,7 +41,15 @@ public class JBFHelper {
 	private String jbfError;
 
 	
-	
+	public String getCookieLblSessionId() {
+		return cookieLblSessionId;
+	}
+
+
+	public void setCookieLblSessionId(String cookieLblSessionId) {
+		this.cookieLblSessionId = cookieLblSessionId;
+	}
+
 	
 	public String getJbfError() {
 		return jbfError;
@@ -161,10 +170,23 @@ public class JBFHelper {
 //			// get cookie per bilanciamento joem 30 11 2009
    		 
 			if (isBalanced()) {
+				
 				this.cookieOpenSession = response.getMimeHeaders().getHeader(
 						"Set-Cookie")[0];
+				//GLC
+				int counterHeader = response.getMimeHeaders().getHeader("Set-Cookie").length;
+				if(counterHeader>1){
+					this.cookieLblSessionId = response.getMimeHeaders().getHeader("Set-Cookie")[1];
+					System.out.println("\nGLC: .... : " + this.cookieLblSessionId);
+				}
+				//GLC controllo se esiste LBL nei coockie
+				//NB. se dovranno essere passati piu coockie, far diventare cookieOpenSession come String [], e usare il for each:
+				//for(String fullCookieStr : response.getMimeHeaders().getHeader("Set-Cookie") )
+				//		System.out.println("\nGLC: .... : " + fullCookieStr);
+				//this.lblSessionId = response.getMimeHeaders().getHeader("lblSessionId")[0];
 			}
-
+			
+			
 			if (isErrorResponse(body)) {
 				setJbfError(retrieveConnectionError(body));
 				setJbfResponse(connectionRefused());
@@ -177,6 +199,7 @@ public class JBFHelper {
 				
 			} else {
 				this.sessionId = retrieveSessionId(body);
+				//this.lblSessionId = retrieveLBLSessionId(body); //GLC non serve lato app
 				return JBFConstants.JBF_OK;
 			}
 		} catch (Throwable e) {
@@ -217,6 +240,8 @@ public class JBFHelper {
 			Document openSessionDoc = DocumentHelper.createDocument();
 			Element inputElement = openSessionDoc.addElement("Input");
 			inputElement.addAttribute("SessionID", this.sessionId);
+			//GLC serve ache per la chiusura? viene aggiunto nella createJBFSoapMessageRequest
+			//inputElement.addAttribute("lblSessionID", this.lblSessionId);
 			inputElement.addElement("CloseSession");
 
 			SOAPMessage jbfSOAPCallRequest = createJBFSoapMessageRequest(inputElement);
@@ -263,6 +288,8 @@ public class JBFHelper {
    		 
    		 if ((this.cookieOpenSession != null) && isBalanced()){
    			message.getMimeHeaders().setHeader("Cookie", cookieOpenSession);
+   			//GLC add
+   			message.getMimeHeaders().setHeader("Cookie", cookieLblSessionId);
    		 }
    		
    		 return message;
@@ -281,7 +308,18 @@ public class JBFHelper {
 		return sessIdDoc.getText();
 		
 	}
-	
+	//GLC LBL non serve lato app
+/*	public String retrieveLBLSessionId(String body) throws Exception {
+		Document bodyDocument = DocumentHelper.parseText(body);
+		org.dom4j.Node callret = bodyDocument.selectSingleNode("/callResponse/callReturn");
+		String callRetText = callret.getText();
+		
+		Document callRetDoc = DocumentHelper.parseText(callRetText);
+		org.dom4j.Node lblSessIdDoc = callRetDoc.selectSingleNode("/Output/OpenSession/lblSessionID");
+		
+		return lblSessIdDoc.getText();
+		
+	}	*/
 	public String retrieveRealResponse(String body) throws Exception {
 		Document bodyDocument = DocumentHelper.parseText(body);
 		org.dom4j.Node callret = bodyDocument.selectSingleNode("/callResponse/callReturn");
