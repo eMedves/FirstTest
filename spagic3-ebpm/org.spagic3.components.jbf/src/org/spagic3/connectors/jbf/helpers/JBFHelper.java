@@ -289,7 +289,7 @@ public class JBFHelper {
    		 if ((this.cookieOpenSession != null) && isBalanced()){
    			message.getMimeHeaders().setHeader("Cookie", cookieOpenSession);
    			//GLC add
-   			message.getMimeHeaders().setHeader("Cookie", cookieLblSessionId);
+   			message.getMimeHeaders().addHeader("Cookie", cookieLblSessionId);
    		 }
    		
    		 return message;
