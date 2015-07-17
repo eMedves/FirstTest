@@ -21,5 +21,8 @@ Import-Package: org.dom4j;version="1.6.1",
  org.dom4j.xpp;version="1.6.1",
  org.eclipse.ebpm.core,
  org.eclipse.ebpm.messaging.api,
- org.eclipse.ebpm.util.resources
+ org.eclipse.ebpm.util.resources,
+ org.slf4j;version="1.6.4",
+ org.slf4j.helpers;version="1.6.4",
+ org.slf4j.spi;version="1.6.4"
 Export-Package: org.spagic3.connectors.jbf.helpers

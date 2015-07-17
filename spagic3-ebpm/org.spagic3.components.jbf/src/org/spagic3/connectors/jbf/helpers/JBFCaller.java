@@ -7,9 +7,13 @@ import org.eclipse.ebpm.messaging.api.Exchange;
 import org.eclipse.ebpm.messaging.api.Message;
 import org.eclipse.ebpm.util.resources.IResource;
 import org.eclipse.ebpm.util.resources.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class JBFCaller {
+	
+	protected Logger logger = LoggerFactory.getLogger(JBFCaller.class);
 	
 	private Properties properties = null;
 	private boolean balanced  = false;
@@ -82,6 +86,7 @@ public class JBFCaller {
 		jbfHelper.setBalanced(balanced);
 	
 		// OPEN SESSION 
+		logger.debug("-- JBFCaller -- Opening session");
 		int openSession = jbfHelper.openSession();
 		if (handleError(openSession, jbfHelper, pc, exchange, in, out))
 			return;
@@ -89,6 +94,7 @@ public class JBFCaller {
 	
 		
 		// CALL
+		logger.debug("-- JBFCaller -- Calling WS");
 		jbfHelper.setJbfRequest(in.getBodyText());
 		int call = jbfHelper.callWS();
 		if (handleError(call, jbfHelper, pc, exchange, in, out))
@@ -100,7 +106,7 @@ public class JBFCaller {
 		
 		
 		// CLOSE SESSION
-		
+		logger.debug("-- JBFCaller -- Closing session");
 		int closeSession = jbfHelper.closeSession();
 		if (handleError(closeSession, jbfHelper, pc, exchange, in, out))
 			return;

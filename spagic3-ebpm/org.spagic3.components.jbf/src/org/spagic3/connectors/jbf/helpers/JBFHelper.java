@@ -3,7 +3,6 @@ package org.spagic3.connectors.jbf.helpers;
 import java.io.StringWriter;
 import java.util.Properties;
 
-
 import javax.xml.soap.Detail;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.SOAPBody;
@@ -26,8 +25,12 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JBFHelper {
+	
+	protected Logger logger = LoggerFactory.getLogger(JBFHelper.class);
 
 	private Properties properties = null;
 	private boolean balanced  = false;
@@ -119,6 +122,8 @@ public class JBFHelper {
 	
 	public int openSession(){
 		try{
+			
+			logger.debug("-- JBFHelper -- Opening session");
 		
          Document openSessionDoc = DocumentHelper.createDocument();
          
@@ -153,12 +158,15 @@ public class JBFHelper {
          entitaEl.setText(getProperty(JBFConstants.JBF_ENTITA));
 
          
-         
          SOAPMessage jbfSOAPCallRequest = createJBFSoapMessageRequest(inputElement);
    		 
+         logger.debug("-- JBFHelper -- Soap Call");
    		 SOAPMessage response = call(this.properties.getProperty(JBFConstants.JBF_URL),jbfSOAPCallRequest);
    		 
+   		 
    		 String body = getBodyAsString(response);
+   		 
+   		logger.debug("-- JBFHelper -- Response From Open Session \n{}", body);
    		 System.out.println( " Response From Open Session ");
    		 System.out.println(body);
    		 
@@ -188,16 +196,19 @@ public class JBFHelper {
 			
 			
 			if (isErrorResponse(body)) {
+				logger.debug("-- JBFHelper -- OpenSession Response contains an error");
 				setJbfError(retrieveConnectionError(body));
 				setJbfResponse(connectionRefused());
 				return JBFConstants.JBF_CONNECTION_ERROR;
 				
 			} else if (isException(body)) {
+				logger.debug("-- JBFHelper -- OpenSession Response contains an exception");
 				setJbfError(retrieveExceptionDescription(body));
 				setJbfResponse(retrieveRealResponse(body));
 				return JBFConstants.JBF_APPLICATION_ERROR;
 				
 			} else {
+				logger.debug("-- JBFHelper -- OpenSession Response is OK");
 				this.sessionId = retrieveSessionId(body);
 				//this.lblSessionId = retrieveLBLSessionId(body); //GLC non serve lato app
 				return JBFConstants.JBF_OK;
@@ -214,16 +225,21 @@ public class JBFHelper {
 			SOAPMessage jbfSOAPCallRequest = createJBFSoapMessageRequest(payloadDoc.getRootElement());
 	   		SOAPMessage response = call(this.properties.getProperty(JBFConstants.JBF_URL),jbfSOAPCallRequest);
 	   		
+	   		
 	   		String body = getBodyAsString(response);
+	   		logger.debug("-- JBFHelper -- Received response: {}", body);
 	   		if (isErrorResponse(body)){
+	   			logger.debug("-- JBFHelper -- Response contains an error");
 	   			setJbfError(retrieveConnectionError(body));
 	   			setJbfResponse(connectionRefused());
 	   			return JBFConstants.JBF_CONNECTION_ERROR;
 			}else if (isException(body)){
+				logger.debug("-- JBFHelper -- Response contains an exception");
 				setJbfError(retrieveExceptionDescription(body));
 				setJbfResponse(retrieveRealResponse(body));
 				return JBFConstants.JBF_APPLICATION_ERROR;
 	   		}else{
+	   			logger.debug("-- JBFHelper -- Response is OK");
 	   			 this.jbfResponse = retrieveRealResponse(body);
 	   			 return JBFConstants.JBF_OK;
 	   		}
@@ -352,11 +368,15 @@ public class JBFHelper {
 	
 	}
 	public boolean isErrorResponse(String body){
-		return body.indexOf("faultstring")>0;
+		return false;
+		// removed because Areas Web Services often do not use a standard to communicate faults
+//		return body.indexOf("faultstring")>0;
 	}
 	
 	public boolean isException(String body){
-		return body.indexOf("Exception")>0;
+		return false;
+		// removed because Areas Web Services often do not use a standard to communicate exceptions
+//		return body.indexOf("Exception")>0;
 	}
 	public static SOAPMessage call(String wsEndpoint, SOAPMessage soapRequest) throws SOAPException {
 		SOAPConnection soapConnection = null;
