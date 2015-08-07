@@ -25,6 +25,14 @@ public class JBFCaller {
 	public void setBalanced(boolean balanced) {
 		this.balanced = balanced;
 	}
+	
+	public boolean isIgnoreFaultStrings() {
+		return ignoreFaultStrings;
+	}
+
+	public void setIgnoreFaultStrings(boolean ignoreFaultStrings) {
+		this.ignoreFaultStrings = ignoreFaultStrings;
+	}
 
 	public JBFCaller(String spagicUri) {
 		this(spagicUri, false);
